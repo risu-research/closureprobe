@@ -1,0 +1,82 @@
+{
+  "name": "@risu-research/closureprobe",
+  "version": "0.1.0-rc1",
+  "description": "Executable conformance for negative-evidence integrity in agentic toolchains",
+  "type": "module",
+  "license": "Apache-2.0",
+  "author": "Moon Lee",
+  "homepage": "https://github.com/risu-research/closureprobe#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/risu-research/closureprobe.git"
+  },
+  "bugs": {
+    "url": "https://github.com/risu-research/closureprobe/issues"
+  },
+  "keywords": [
+    "mcp",
+    "conformance",
+    "query-completeness",
+    "negative-evidence",
+    "ai-agents"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "closureprobe": "./dist/src/cli.js",
+    "closureprobe-mcp": "./dist/src/mcp-server.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "schemas",
+    "corpus",
+    "profiles",
+    "examples",
+    "evidence",
+    "PROFILE.md",
+    "INTEROPERABILITY.md",
+    "ROADMAP.md",
+    "IMPACT.md",
+    "CONTRIBUTING.md",
+    "CLAIMS.md",
+    "LIMITATIONS.md",
+    "SECURITY.md",
+    "CITATION.cff",
+    "LICENSE",
+    "README.md",
+    "MANIFEST.sha256"
+  ],
+  "scripts": {
+    "clean": "node scripts/clean.mjs",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --test dist/tests/**/*.test.js",
+    "conformance": "npm run build && node dist/src/cli.js corpus verify corpus/v0.1/cases.json",
+    "evidence": "npm run build && node dist/src/cli.js corpus report corpus/v0.1/cases.json --json evidence/results.json --html evidence/results.html",
+    "release-audit": "node scripts/release-audit.mjs",
+    "manifest": "node scripts/manifest.mjs",
+    "manifest:verify": "node scripts/verify-manifest.mjs",
+    "package-smoke": "node scripts/package-smoke.mjs",
+    "security:audit": "npm audit --omit=dev --audit-level=high",
+    "quality": "npm run typecheck && npm test && npm run conformance && npm run evidence && npm run release-audit && npm run manifest && npm run manifest:verify && npm run package-smoke",
+    "prepack": "npm run quality"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/core": "2.0.0",
+    "@modelcontextprotocol/server": "2.0.0",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "2.0.0",
+    "@types/node": "26.2.0",
+    "typescript": "7.0.2"
+  }
+}

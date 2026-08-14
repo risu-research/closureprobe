@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://risu-research.org/closureprobe/schemas/corpus.schema.json",
+  "title": "ClosureProbe Frozen Corpus",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["corpusVersion", "profileVersion", "cases"],
+  "properties": {
+    "corpusVersion": { "type": "string", "minLength": 1 },
+    "profileVersion": { "type": "string", "minLength": 1 },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          { "$ref": "#/$defs/observationCase" },
+          { "$ref": "#/$defs/traceCase" }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "baseExpected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["branch", "negativeLicense", "blockers"],
+      "properties": {
+        "branch": {
+          "enum": ["positive_observed", "negative_candidate", "no_result_claim"]
+        },
+        "negativeLicense": {
+          "enum": ["licensed", "not_licensed", "not_applicable"]
+        },
+        "blockers": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        }
+      }
+    },
+    "observationCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "title", "profileId", "request", "response", "expected"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "const": "observation" },
+        "title": { "type": "string", "minLength": 1 },
+        "profileId": { "type": "string", "minLength": 1 },
+        "request": true,
+        "response": true,
+        "expected": { "$ref": "#/$defs/baseExpected" }
+      }
+    },
+    "traceCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "title", "trace", "expectedFindingCodes"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "const": "trace" },
+        "title": { "type": "string", "minLength": 1 },
+        "trace": { "$ref": "closure-trace.schema.json" },
+        "expectedFindingCodes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "guard_signal_loss",
+              "dangerous_mutation",
+              "unlicensed_negative",
+              "unsupported_upgrade",
+              "query_binding_mismatch"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use ClosureProbe, please cite this software."
+title: "ClosureProbe: Executable Conformance for Negative-Evidence Integrity in Agentic Toolchains"
+type: software
+authors:
+  - family-names: Lee
+    given-names: Moon
+repository-code: "https://github.com/risu-research/closureprobe"
+url: "https://github.com/risu-research/closureprobe"
+version: 0.1.0-rc1
+date-released: 2026-08-14
+license: Apache-2.0
+abstract: >-
+  ClosureProbe tests whether query-relative closure signals survive API,
+  adapter, protocol, client, and model-facing boundaries without silently
+  upgrading incomplete observation into an unsupported negative claim.
+keywords:
+  - negative evidence integrity
+  - query completeness
+  - Model Context Protocol
+  - conformance testing
+  - AI agents

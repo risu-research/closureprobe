@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://risu-research.org/closureprobe/schemas/closure-assessment.schema.json",
+  "title": "Closure Assessment",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["observation", "branch", "negativeLicense", "blockers"],
+  "properties": {
+    "observation": {
+      "$ref": "closure-observation.schema.json"
+    },
+    "branch": {
+      "enum": ["positive_observed", "negative_candidate", "no_result_claim"]
+    },
+    "negativeLicense": {
+      "enum": ["licensed", "not_licensed", "not_applicable"]
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "execution_not_success",
+          "cardinality_not_zero",
+          "coverage_not_complete",
+          "continuation_not_exhausted",
+          "scope_not_exact",
+          "validation_not_profile_validated"
+        ]
+      },
+      "uniqueItems": true
+    }
+  }
+}

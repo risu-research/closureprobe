@@ -1,0 +1,21 @@
+{
+  "id": "google-drive-files-list",
+  "version": "0.1.0",
+  "title": "Google Drive files.list Search Closure",
+  "authority": "https://developers.google.com/workspace/drive/api/guides/search-files",
+  "supportedOperation": "Drive API v3 files.list when the fields projection explicitly includes files, nextPageToken, and incompleteSearch.",
+  "conservativeDefaults": {
+    "missingCoverage": "unknown",
+    "missingContinuation": "unknown",
+    "unsupportedVariant": "fail_closed"
+  },
+  "references": [
+    "https://developers.google.com/workspace/drive/api/guides/search-files",
+    "https://developers.google.com/workspace/drive/api/reference/rest/v3/files/list"
+  ],
+  "notes": [
+    "incompleteSearch=true means some documents were omitted.",
+    "A missing signal is unknown when the fields projection did not request it.",
+    "Completeness is limited to the caller's authorized and requested corpus."
+  ]
+}

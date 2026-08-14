@@ -1,0 +1,55 @@
+{
+  "traceId": "example-partial-to-none",
+  "request": {
+    "tool": "search",
+    "arguments": { "q": "needle" }
+  },
+  "stages": [
+    {
+      "stageId": "mcp-wire",
+      "kind": "mcp_wire",
+      "observation": {
+        "profileId": "fixture",
+        "profileVersion": "0.1.0",
+        "queryBinding": {
+          "algorithm": "closureprobe-canonical-json-v1",
+          "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec",
+          "status": "exact"
+        },
+        "execution": "success",
+        "cardinality": "zero",
+        "observedCount": 0,
+        "coverage": "partial",
+        "continuation": "present",
+        "scopeBinding": "exact",
+        "validation": "profile_validated",
+        "evidencePointers": ["/structuredContent/observation"]
+      },
+      "claim": "unknown",
+      "introducedValidatedEvidence": false
+    },
+    {
+      "stageId": "model-projection",
+      "kind": "model_projection",
+      "observation": {
+        "profileId": "fixture",
+        "profileVersion": "0.1.0",
+        "queryBinding": {
+          "algorithm": "closureprobe-canonical-json-v1",
+          "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec",
+          "status": "exact"
+        },
+        "execution": "success",
+        "cardinality": "zero",
+        "observedCount": 0,
+        "coverage": "unknown",
+        "continuation": "unknown",
+        "scopeBinding": "exact",
+        "validation": "profile_validated",
+        "evidencePointers": []
+      },
+      "claim": "none",
+      "introducedValidatedEvidence": false
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://risu-research.org/closureprobe/schemas/closure-observation.schema.json",
+  "title": "Closure Observation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profileId",
+    "profileVersion",
+    "queryBinding",
+    "execution",
+    "cardinality",
+    "coverage",
+    "continuation",
+    "scopeBinding",
+    "validation",
+    "evidencePointers"
+  ],
+  "properties": {
+    "profileId": { "type": "string", "minLength": 1 },
+    "profileVersion": { "type": "string", "minLength": 1 },
+    "queryBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "requestDigest", "status"],
+      "properties": {
+        "algorithm": { "const": "closureprobe-canonical-json-v1" },
+        "requestDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "status": { "enum": ["exact", "narrower", "mismatch", "unbound"] }
+      }
+    },
+    "execution": { "enum": ["success", "denied", "failed", "unknown"] },
+    "cardinality": { "enum": ["zero", "nonzero", "unavailable"] },
+    "observedCount": { "type": "integer", "minimum": 0 },
+    "coverage": { "enum": ["complete", "partial", "unknown"] },
+    "continuation": { "enum": ["exhausted", "present", "unknown"] },
+    "scopeBinding": { "enum": ["exact", "narrower", "mismatch", "unbound"] },
+    "validation": {
+      "enum": ["profile_validated", "declared_only", "invalid", "unavailable"]
+    },
+    "evidencePointers": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "notes": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

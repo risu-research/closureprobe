@@ -1,0 +1,20 @@
+{
+  "id": "graphql-relay-connection",
+  "version": "0.1.0",
+  "title": "GraphQL Relay Connection Closure",
+  "authority": "https://relay.dev/graphql/connections.htm",
+  "supportedOperation": "A GraphQL response exposing data.search.edges and pageInfo.hasNextPage for the exact operation and variables.",
+  "conservativeDefaults": {
+    "missingCoverage": "unknown",
+    "missingContinuation": "unknown",
+    "unsupportedVariant": "fail_closed"
+  },
+  "references": [
+    "https://graphql.org/learn/response/",
+    "https://relay.dev/graphql/connections.htm"
+  ],
+  "notes": [
+    "GraphQL data can coexist with errors; nonempty errors block a negative license in v0.1.",
+    "This profile does not apply to arbitrary GraphQL list fields without explicit pagination semantics."
+  ]
+}

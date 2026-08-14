@@ -1,0 +1,18 @@
+{
+  "id": "generic-enumeration",
+  "version": "0.1.0",
+  "title": "Explicit Generic Enumeration Envelope",
+  "authority": "https://github.com/risu-research/closureprobe/blob/main/PROFILE.md",
+  "supportedOperation": "A synthetic or application-owned enumeration result that explicitly supplies all ClosureProbe axes.",
+  "conservativeDefaults": {
+    "missingCoverage": "unknown",
+    "missingContinuation": "unknown",
+    "unsupportedVariant": "fail_closed"
+  },
+  "references": [
+    "https://github.com/risu-research/closureprobe/blob/main/PROFILE.md"
+  ],
+  "notes": [
+    "This profile is for controlled fixtures and explicit application envelopes, not arbitrary API inference."
+  ]
+}
