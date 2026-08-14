@@ -34,7 +34,7 @@
     }
   },
   "files": [
-    "dist",
+    "dist/src",
     "schemas",
     "corpus",
     "profiles",
