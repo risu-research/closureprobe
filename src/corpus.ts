@@ -11,7 +11,7 @@ import type {
 } from "./types.js";
 import { validateCorpus } from "./validation.js";
 
-export const TOOL_VERSION = "0.1.0-rc1";
+export const TOOL_VERSION = "0.1.0-rc2";
 
 function sorted(values: readonly string[]): string[] {
   return [...values].sort();

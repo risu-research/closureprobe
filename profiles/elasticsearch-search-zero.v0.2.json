@@ -1,0 +1,21 @@
+{
+  "id": "elasticsearch-search-zero",
+  "version": "0.2.0",
+  "title": "Elasticsearch Exact-Total Search Closure",
+  "authority": "https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search",
+  "supportedOperation": "A non-scroll, non-search_after, non-early-terminated search with an exact total over at least one fully successful shard.",
+  "negativeProposition": "The exact Elasticsearch search has an accurate total hit count of zero over the resolved nonempty shard set.",
+  "supportedEvidenceUnits": ["single_root_response"],
+  "conservativeDefaults": {
+    "missingCoverage": "unknown",
+    "missingContinuation": "unknown",
+    "unsupportedVariant": "fail_closed"
+  },
+  "references": [
+    "https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search"
+  ],
+  "notes": [
+    "timed_out, terminated_early, failed shards, gte totals, zero resolved shards, and unsupported request controls block a negative license.",
+    "Cardinality is derived from exact hits.total, not merely the returned page length."
+  ]
+}

@@ -1,0 +1,314 @@
+{
+  "corpusVersion": "closureprobe-corpus-v0.2.0",
+  "profileVersion": "0.2.0",
+  "cases": [
+    {
+      "id": "GEN-001", "kind": "observation", "title": "Explicit complete root traversal licenses the exact negative",
+      "profileId": "generic-enumeration", "request": { "q": "needle" },
+      "response": { "execution": "success", "items": [], "coverage": "complete", "continuation": "exhausted", "scopeBinding": "exact", "traversalStatus": "single_page_complete" },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "licensed", "blockers": [] }
+    },
+    {
+      "id": "GEN-002", "kind": "observation", "title": "Partial coverage remains unlicensed even when the page ended",
+      "profileId": "generic-enumeration", "request": { "q": "needle" },
+      "response": { "execution": "success", "items": [], "coverage": "partial", "continuation": "exhausted", "scopeBinding": "exact", "traversalStatus": "unknown" },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "not_licensed", "blockers": ["coverage_not_complete", "traversal_not_query_complete"] }
+    },
+    {
+      "id": "GEN-003", "kind": "observation", "title": "Continued zero is not query-level absence",
+      "profileId": "generic-enumeration", "request": { "q": "needle" },
+      "response": { "execution": "success", "items": [], "coverage": "partial", "continuation": "present", "scopeBinding": "exact", "traversalStatus": "continued" },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "not_licensed", "blockers": ["coverage_not_complete", "continuation_not_exhausted", "traversal_not_query_complete"] }
+    },
+    {
+      "id": "GEN-004", "kind": "observation", "title": "Final continuation segment remains unlicensed after local exhaustion",
+      "profileId": "generic-enumeration", "request": { "q": "needle", "cursor": "page-2" },
+      "response": { "execution": "success", "items": [], "coverage": "complete", "continuation": "exhausted", "scopeBinding": "exact", "traversalStatus": "segment_only" },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "not_licensed", "blockers": ["traversal_not_query_complete"] }
+    },
+    {
+      "id": "GEN-005", "kind": "observation", "title": "Denied execution does not become an empty result",
+      "profileId": "generic-enumeration", "request": { "q": "needle" },
+      "response": { "execution": "denied", "items": [], "coverage": "unknown", "continuation": "unknown", "scopeBinding": "exact", "traversalStatus": "unknown" },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "not_licensed", "blockers": ["execution_not_success", "coverage_not_complete", "continuation_not_exhausted", "traversal_not_query_complete"] }
+    },
+    {
+      "id": "GEN-006", "kind": "observation", "title": "Positive observation exits the negative branch",
+      "profileId": "generic-enumeration", "request": { "q": "needle" },
+      "response": { "execution": "success", "items": [{ "id": "1" }], "coverage": "partial", "continuation": "present", "scopeBinding": "exact", "traversalStatus": "continued" },
+      "expected": { "branch": "positive_observed", "negativeLicense": "not_applicable", "blockers": [] }
+    },
+
+    {
+      "id": "DRV-001", "kind": "observation", "title": "Drive initial final zero licenses the bounded query",
+      "profileId": "google-drive-files-list", "request": { "q": "name contains 'needle'", "fields": "files(id),incompleteSearch,nextPageToken" },
+      "response": { "files": [], "incompleteSearch": false },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "licensed", "blockers": [] }
+    },
+    {
+      "id": "DRV-002", "kind": "observation", "title": "Drive final continuation page alone is segment-only",
+      "profileId": "google-drive-files-list", "request": { "q": "name contains 'needle'", "fields": "files(id),incompleteSearch,nextPageToken", "pageToken": "page-2" },
+      "response": { "files": [], "incompleteSearch": false },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "not_licensed", "blockers": ["traversal_not_query_complete"] }
+    },
+    {
+      "id": "DRV-003", "kind": "observation", "title": "Drive nextPageToken blocks root-query absence",
+      "profileId": "google-drive-files-list", "request": { "q": "name contains 'needle'", "fields": "files(id),incompleteSearch,nextPageToken" },
+      "response": { "files": [], "incompleteSearch": false, "nextPageToken": "page-2" },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "not_licensed", "blockers": ["coverage_not_complete", "continuation_not_exhausted", "traversal_not_query_complete"] }
+    },
+    {
+      "id": "DRV-004", "kind": "observation", "title": "Token-linked all-zero Drive traversal licenses the root query",
+      "profileId": "google-drive-files-list", "request": { "q": "name contains 'needle'", "fields": "files(id),incompleteSearch,nextPageToken" },
+      "response": { "pages": [
+        { "request": { "q": "name contains 'needle'", "fields": "files(id),incompleteSearch,nextPageToken" }, "response": { "files": [], "incompleteSearch": false, "nextPageToken": "page-2" } },
+        { "request": { "q": "name contains 'needle'", "fields": "files(id),incompleteSearch,nextPageToken", "pageToken": "page-2" }, "response": { "files": [], "incompleteSearch": false } }
+      ] },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "licensed", "blockers": [] }
+    },
+    {
+      "id": "DRV-005", "kind": "observation", "title": "Earlier Drive hit survives a final empty page",
+      "profileId": "google-drive-files-list", "request": { "q": "name contains 'needle'", "fields": "files(id),incompleteSearch,nextPageToken" },
+      "response": { "pages": [
+        { "request": { "q": "name contains 'needle'", "fields": "files(id),incompleteSearch,nextPageToken" }, "response": { "files": [{ "id": "found" }], "incompleteSearch": false, "nextPageToken": "page-2" } },
+        { "request": { "q": "name contains 'needle'", "fields": "files(id),incompleteSearch,nextPageToken", "pageToken": "page-2" }, "response": { "files": [], "incompleteSearch": false } }
+      ] },
+      "expected": { "branch": "positive_observed", "negativeLicense": "not_applicable", "blockers": [] }
+    },
+    {
+      "id": "DRV-006", "kind": "observation", "title": "Drive bundle with a broken token chain fails closed",
+      "profileId": "google-drive-files-list", "request": { "q": "name contains 'needle'", "fields": "files(id),incompleteSearch,nextPageToken" },
+      "response": { "pages": [
+        { "request": { "q": "name contains 'needle'", "fields": "files(id),incompleteSearch,nextPageToken" }, "response": { "files": [], "incompleteSearch": false, "nextPageToken": "right" } },
+        { "request": { "q": "name contains 'needle'", "fields": "files(id),incompleteSearch,nextPageToken", "pageToken": "wrong" }, "response": { "files": [], "incompleteSearch": false } }
+      ] },
+      "expected": { "branch": "no_result_claim", "negativeLicense": "not_licensed", "blockers": ["execution_not_success", "cardinality_not_zero", "coverage_not_complete", "continuation_not_exhausted", "traversal_not_query_complete", "scope_not_exact", "validation_not_profile_validated"] }
+    },
+
+    {
+      "id": "DDB-001", "kind": "observation", "title": "DynamoDB initial final zero licenses the root Query",
+      "profileId": "aws-dynamodb-query", "request": { "TableName": "T", "KeyConditionExpression": "pk = :v" },
+      "response": { "Items": [], "Count": 0 },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "licensed", "blockers": [] }
+    },
+    {
+      "id": "DDB-002", "kind": "observation", "title": "DynamoDB final ExclusiveStartKey segment is not root-query absence",
+      "profileId": "aws-dynamodb-query", "request": { "TableName": "T", "KeyConditionExpression": "pk = :v", "ExclusiveStartKey": { "pk": { "S": "page-2" } } },
+      "response": { "Items": [], "Count": 0 },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "not_licensed", "blockers": ["traversal_not_query_complete"] }
+    },
+    {
+      "id": "DDB-003", "kind": "observation", "title": "DynamoDB LastEvaluatedKey blocks root-query absence",
+      "profileId": "aws-dynamodb-query", "request": { "TableName": "T", "KeyConditionExpression": "pk = :v" },
+      "response": { "Items": [], "Count": 0, "LastEvaluatedKey": { "pk": { "S": "page-2" } } },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "not_licensed", "blockers": ["coverage_not_complete", "continuation_not_exhausted", "traversal_not_query_complete"] }
+    },
+    {
+      "id": "DDB-004", "kind": "observation", "title": "Key-linked all-zero DynamoDB traversal licenses the root Query",
+      "profileId": "aws-dynamodb-query", "request": { "TableName": "T", "KeyConditionExpression": "pk = :v" },
+      "response": { "pages": [
+        { "request": { "TableName": "T", "KeyConditionExpression": "pk = :v" }, "response": { "Items": [], "LastEvaluatedKey": { "pk": { "S": "page-2" } } } },
+        { "request": { "TableName": "T", "KeyConditionExpression": "pk = :v", "ExclusiveStartKey": { "pk": { "S": "page-2" } } }, "response": { "Items": [] } }
+      ] },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "licensed", "blockers": [] }
+    },
+    {
+      "id": "DDB-005", "kind": "observation", "title": "DynamoDB aggregate with a broken key chain fails closed",
+      "profileId": "aws-dynamodb-query", "request": { "TableName": "T", "KeyConditionExpression": "pk = :v" },
+      "response": { "pages": [
+        { "request": { "TableName": "T", "KeyConditionExpression": "pk = :v" }, "response": { "Items": [], "LastEvaluatedKey": { "pk": { "S": "right" } } } },
+        { "request": { "TableName": "T", "KeyConditionExpression": "pk = :v", "ExclusiveStartKey": { "pk": { "S": "wrong" } } }, "response": { "Items": [] } }
+      ] },
+      "expected": { "branch": "no_result_claim", "negativeLicense": "not_licensed", "blockers": ["execution_not_success", "cardinality_not_zero", "coverage_not_complete", "continuation_not_exhausted", "traversal_not_query_complete", "scope_not_exact", "validation_not_profile_validated"] }
+    },
+
+    {
+      "id": "ES-001", "kind": "observation", "title": "Elasticsearch exact zero over a nonempty successful shard set licenses a negative",
+      "profileId": "elasticsearch-search-zero", "request": { "index": "docs", "query": { "match": { "title": "needle" } } },
+      "response": { "timed_out": false, "_shards": { "total": 3, "successful": 3, "failed": 0 }, "hits": { "total": { "value": 0, "relation": "eq" }, "hits": [] } },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "licensed", "blockers": [] }
+    },
+    {
+      "id": "ES-002", "kind": "observation", "title": "Elasticsearch timeout blocks closure",
+      "profileId": "elasticsearch-search-zero", "request": { "index": "docs", "query": { "match_all": {} } },
+      "response": { "timed_out": true, "_shards": { "total": 3, "successful": 3, "failed": 0 }, "hits": { "total": { "value": 0, "relation": "eq" }, "hits": [] } },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "not_licensed", "blockers": ["coverage_not_complete", "continuation_not_exhausted", "traversal_not_query_complete"] }
+    },
+    {
+      "id": "ES-003", "kind": "observation", "title": "Elasticsearch terminated_early blocks closure",
+      "profileId": "elasticsearch-search-zero", "request": { "index": "docs", "query": { "match_all": {} } },
+      "response": { "timed_out": false, "terminated_early": true, "_shards": { "total": 3, "successful": 3, "failed": 0 }, "hits": { "total": { "value": 0, "relation": "eq" }, "hits": [] } },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "not_licensed", "blockers": ["coverage_not_complete", "continuation_not_exhausted", "traversal_not_query_complete"] }
+    },
+    {
+      "id": "ES-004", "kind": "observation", "title": "Elasticsearch failed shard blocks closure",
+      "profileId": "elasticsearch-search-zero", "request": { "index": "docs", "query": { "match_all": {} } },
+      "response": { "timed_out": false, "_shards": { "total": 3, "successful": 2, "failed": 1 }, "hits": { "total": { "value": 0, "relation": "eq" }, "hits": [] } },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "not_licensed", "blockers": ["coverage_not_complete", "continuation_not_exhausted", "traversal_not_query_complete"] }
+    },
+    {
+      "id": "ES-005", "kind": "observation", "title": "Elasticsearch lower-bound total cannot establish zero cardinality",
+      "profileId": "elasticsearch-search-zero", "request": { "index": "docs", "query": { "match_all": {} } },
+      "response": { "timed_out": false, "_shards": { "total": 3, "successful": 3, "failed": 0 }, "hits": { "total": { "value": 0, "relation": "gte" }, "hits": [] } },
+      "expected": { "branch": "no_result_claim", "negativeLicense": "not_licensed", "blockers": ["cardinality_not_zero", "coverage_not_complete", "continuation_not_exhausted", "traversal_not_query_complete"] }
+    },
+    {
+      "id": "ES-006", "kind": "observation", "title": "Exact total preserves a positive even when size zero returns no hit objects",
+      "profileId": "elasticsearch-search-zero", "request": { "index": "docs", "size": 0, "query": { "match_all": {} } },
+      "response": { "timed_out": false, "_shards": { "total": 1, "successful": 1, "failed": 0 }, "hits": { "total": { "value": 3, "relation": "eq" }, "hits": [] } },
+      "expected": { "branch": "positive_observed", "negativeLicense": "not_applicable", "blockers": [] }
+    },
+    {
+      "id": "ES-007", "kind": "observation", "title": "Zero resolved shards fails closed",
+      "profileId": "elasticsearch-search-zero", "request": { "index": "missing-*", "query": { "match_all": {} } },
+      "response": { "timed_out": false, "_shards": { "total": 0, "successful": 0, "failed": 0 }, "hits": { "total": { "value": 0, "relation": "eq" }, "hits": [] } },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "not_licensed", "blockers": ["coverage_not_complete", "continuation_not_exhausted", "traversal_not_query_complete"] }
+    },
+
+    {
+      "id": "GQL-001", "kind": "observation", "title": "Relay forward root with no next page licenses a negative",
+      "profileId": "graphql-relay-forward-connection", "request": { "query": "query { search(first: 10) { edges { node { id } } pageInfo { hasNextPage } } }" },
+      "response": { "data": { "search": { "edges": [], "pageInfo": { "hasNextPage": false } } } },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "licensed", "blockers": [] }
+    },
+    {
+      "id": "GQL-002", "kind": "observation", "title": "Relay hasNextPage true blocks closure",
+      "profileId": "graphql-relay-forward-connection", "request": { "query": "query { search(first: 10) { edges { node { id } } pageInfo { hasNextPage } } }" },
+      "response": { "data": { "search": { "edges": [], "pageInfo": { "hasNextPage": true } } } },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "not_licensed", "blockers": ["coverage_not_complete", "continuation_not_exhausted", "traversal_not_query_complete"] }
+    },
+    {
+      "id": "GQL-003", "kind": "observation", "title": "Relay backward pagination is outside the forward profile",
+      "profileId": "graphql-relay-forward-connection", "request": { "query": "query { search(last: 10, before: \"cursor\") { edges { node { id } } pageInfo { hasNextPage hasPreviousPage } } }" },
+      "response": { "data": { "search": { "edges": [], "pageInfo": { "hasNextPage": false, "hasPreviousPage": true } } } },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "not_licensed", "blockers": ["execution_not_success", "coverage_not_complete", "continuation_not_exhausted", "traversal_not_query_complete", "scope_not_exact", "validation_not_profile_validated"] }
+    },
+    {
+      "id": "GQL-004", "kind": "observation", "title": "Relay final after-cursor response is segment-only",
+      "profileId": "graphql-relay-forward-connection", "request": { "query": "query Search($after: String) { search(first: 10, after: $after) { edges { node { id } } pageInfo { hasNextPage } } }", "variables": { "after": "cursor-1" }, "operationName": "Search" },
+      "response": { "data": { "search": { "edges": [], "pageInfo": { "hasNextPage": false } } } },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "not_licensed", "blockers": ["traversal_not_query_complete"] }
+    },
+    {
+      "id": "GQL-005", "kind": "observation", "title": "GraphQL errors block closure despite a final page",
+      "profileId": "graphql-relay-forward-connection", "request": { "query": "query { search(first: 10) { edges { node { id } } pageInfo { hasNextPage } } }" },
+      "response": { "data": { "search": { "edges": [], "pageInfo": { "hasNextPage": false } } }, "errors": [{ "message": "resolver failed" }] },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "not_licensed", "blockers": ["execution_not_success", "coverage_not_complete"] }
+    },
+
+    {
+      "id": "MSG-001", "kind": "observation", "title": "Single-page zero Graph delta round licenses its exact proposition",
+      "profileId": "microsoft-graph-delta-traversal", "request": { "url": "https://graph.example/users/delta" },
+      "response": { "pages": [{ "requestUrl": "https://graph.example/users/delta", "response": { "value": [], "@odata.deltaLink": "https://graph.example/users/delta?$deltatoken=end" } }] },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "licensed", "blockers": [] }
+    },
+    {
+      "id": "MSG-002", "kind": "observation", "title": "Two-page all-zero Graph delta traversal licenses the round",
+      "profileId": "microsoft-graph-delta-traversal", "request": { "url": "https://graph.example/users/delta" },
+      "response": { "pages": [
+        { "requestUrl": "https://graph.example/users/delta", "response": { "value": [], "@odata.nextLink": "https://graph.example/users/delta?$skiptoken=2" } },
+        { "requestUrl": "https://graph.example/users/delta?$skiptoken=2", "response": { "value": [], "@odata.deltaLink": "https://graph.example/users/delta?$deltatoken=end" } }
+      ] },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "licensed", "blockers": [] }
+    },
+    {
+      "id": "MSG-003", "kind": "observation", "title": "Earlier Graph item survives a final empty deltaLink page",
+      "profileId": "microsoft-graph-delta-traversal", "request": { "url": "https://graph.example/users/delta" },
+      "response": { "pages": [
+        { "requestUrl": "https://graph.example/users/delta", "response": { "value": [{ "id": "alice" }], "@odata.nextLink": "https://graph.example/users/delta?$skiptoken=2" } },
+        { "requestUrl": "https://graph.example/users/delta?$skiptoken=2", "response": { "value": [], "@odata.deltaLink": "https://graph.example/users/delta?$deltatoken=end" } }
+      ] },
+      "expected": { "branch": "positive_observed", "negativeLicense": "not_applicable", "blockers": [] }
+    },
+    {
+      "id": "MSG-004", "kind": "observation", "title": "Captured Graph bundle ending at nextLink remains incomplete",
+      "profileId": "microsoft-graph-delta-traversal", "request": { "url": "https://graph.example/users/delta" },
+      "response": { "pages": [{ "requestUrl": "https://graph.example/users/delta", "response": { "value": [], "@odata.nextLink": "https://graph.example/users/delta?$skiptoken=2" } }] },
+      "expected": { "branch": "negative_candidate", "negativeLicense": "not_licensed", "blockers": ["coverage_not_complete", "continuation_not_exhausted", "traversal_not_query_complete"] }
+    },
+    {
+      "id": "MSG-005", "kind": "observation", "title": "Graph delta bundle with a broken nextLink chain fails closed",
+      "profileId": "microsoft-graph-delta-traversal", "request": { "url": "https://graph.example/users/delta" },
+      "response": { "pages": [
+        { "requestUrl": "https://graph.example/users/delta", "response": { "value": [], "@odata.nextLink": "https://graph.example/users/delta?$skiptoken=right" } },
+        { "requestUrl": "https://graph.example/users/delta?$skiptoken=wrong", "response": { "value": [], "@odata.deltaLink": "https://graph.example/users/delta?$deltatoken=end" } }
+      ] },
+      "expected": { "branch": "no_result_claim", "negativeLicense": "not_licensed", "blockers": ["execution_not_success", "cardinality_not_zero", "coverage_not_complete", "continuation_not_exhausted", "traversal_not_query_complete", "scope_not_exact", "validation_not_profile_validated"] }
+    },
+    {
+      "id": "MSG-006", "kind": "observation", "title": "Graph nextLink URL cannot be relabeled as a root round",
+      "profileId": "microsoft-graph-delta-traversal", "request": { "url": "https://graph.example/users/delta?$skiptoken=2" },
+      "response": { "pages": [{ "requestUrl": "https://graph.example/users/delta?$skiptoken=2", "response": { "value": [], "@odata.deltaLink": "https://graph.example/users/delta?$deltatoken=end" } }] },
+      "expected": { "branch": "no_result_claim", "negativeLicense": "not_licensed", "blockers": ["execution_not_success", "cardinality_not_zero", "coverage_not_complete", "continuation_not_exhausted", "traversal_not_query_complete", "scope_not_exact", "validation_not_profile_validated"] }
+    },
+
+    {
+      "id": "TRC-001", "kind": "trace", "title": "Preserved continuation remains conformant without a negative claim",
+      "trace": { "traceId": "preserved", "request": { "tool": "search", "arguments": { "q": "needle" } }, "proposition": { "subject": { "collection": "documents" }, "predicate": { "q": "needle" }, "scope": { "tenant": "fixture" } }, "stages": [
+        { "stageId": "wire", "kind": "mcp_wire", "observation": { "profileId": "fixture", "profileVersion": "0.2.0", "queryBinding": { "algorithm": "closureprobe-canonical-json-v1", "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "exact" }, "traversalBinding": { "algorithm": "closureprobe-traversal-v1", "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "continued", "pageCount": 1 }, "execution": "success", "cardinality": "zero", "observedCount": 0, "coverage": "partial", "continuation": "present", "scopeBinding": "exact", "validation": "profile_validated", "evidencePointers": ["/next"] }, "claim": { "status": "unknown" } },
+        { "stageId": "client", "kind": "client", "observation": { "profileId": "fixture", "profileVersion": "0.2.0", "queryBinding": { "algorithm": "closureprobe-canonical-json-v1", "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "exact" }, "traversalBinding": { "algorithm": "closureprobe-traversal-v1", "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "continued", "pageCount": 1 }, "execution": "success", "cardinality": "zero", "observedCount": 0, "coverage": "partial", "continuation": "present", "scopeBinding": "exact", "validation": "profile_validated", "evidencePointers": ["/next"] }, "claim": { "status": "unknown" } }
+      ] }, "expectedFindingCodes": []
+    },
+    {
+      "id": "TRC-002", "kind": "trace", "title": "Coverage continuation and traversal guard loss are localized separately",
+      "trace": { "traceId": "guard-loss", "request": { "tool": "search", "arguments": { "q": "needle" } }, "proposition": { "subject": { "collection": "documents" }, "predicate": { "q": "needle" }, "scope": { "tenant": "fixture" } }, "stages": [
+        { "stageId": "wire", "kind": "mcp_wire", "observation": { "profileId": "fixture", "profileVersion": "0.2.0", "queryBinding": { "algorithm": "closureprobe-canonical-json-v1", "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "exact" }, "traversalBinding": { "algorithm": "closureprobe-traversal-v1", "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "continued", "pageCount": 1 }, "execution": "success", "cardinality": "zero", "observedCount": 0, "coverage": "partial", "continuation": "present", "scopeBinding": "exact", "validation": "profile_validated", "evidencePointers": ["/next"] }, "claim": { "status": "unknown" } },
+        { "stageId": "client", "kind": "client", "observation": { "profileId": "fixture", "profileVersion": "0.2.0", "queryBinding": { "algorithm": "closureprobe-canonical-json-v1", "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "exact" }, "traversalBinding": { "algorithm": "closureprobe-traversal-v1", "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "unknown", "pageCount": 1 }, "execution": "success", "cardinality": "zero", "observedCount": 0, "coverage": "unknown", "continuation": "unknown", "scopeBinding": "exact", "validation": "profile_validated", "evidencePointers": [] }, "claim": { "status": "unknown" } }
+      ] }, "expectedFindingCodes": ["guard_signal_loss", "guard_signal_loss", "guard_signal_loss"]
+    },
+    {
+      "id": "TRC-003", "kind": "trace", "title": "Guard loss followed by proposition-bound NONE yields a separate claim finding",
+      "trace": { "traceId": "loss-to-none", "request": { "tool": "search", "arguments": { "q": "needle" } }, "proposition": { "subject": { "collection": "documents" }, "predicate": { "q": "needle" }, "scope": { "tenant": "fixture" } }, "stages": [
+        { "stageId": "wire", "kind": "mcp_wire", "observation": { "profileId": "fixture", "profileVersion": "0.2.0", "queryBinding": { "algorithm": "closureprobe-canonical-json-v1", "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "exact" }, "traversalBinding": { "algorithm": "closureprobe-traversal-v1", "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "continued", "pageCount": 1 }, "execution": "success", "cardinality": "zero", "observedCount": 0, "coverage": "partial", "continuation": "present", "scopeBinding": "exact", "validation": "profile_validated", "evidencePointers": ["/next"] }, "claim": { "status": "unknown" } },
+        { "stageId": "model", "kind": "model_projection", "observation": { "profileId": "fixture", "profileVersion": "0.2.0", "queryBinding": { "algorithm": "closureprobe-canonical-json-v1", "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "exact" }, "traversalBinding": { "algorithm": "closureprobe-traversal-v1", "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "unknown", "pageCount": 1 }, "execution": "success", "cardinality": "zero", "observedCount": 0, "coverage": "unknown", "continuation": "unknown", "scopeBinding": "exact", "validation": "profile_validated", "evidencePointers": [] }, "claim": { "status": "none", "propositionBinding": { "algorithm": "closureprobe-proposition-v1", "propositionDigest": "sha256:1c5b40b584dbd656fd97fa4d7b09fc5a2501d788a840ad5ada375952424f2479" } } }
+      ] }, "expectedFindingCodes": ["guard_signal_loss", "guard_signal_loss", "guard_signal_loss", "unlicensed_negative"]
+    },
+    {
+      "id": "TRC-004", "kind": "trace", "title": "Structured carrier loss is visible before the model claim",
+      "trace": { "traceId": "structured-loss", "request": { "tool": "search", "arguments": { "q": "needle" } }, "proposition": { "subject": { "collection": "documents" }, "predicate": { "q": "needle" }, "scope": { "tenant": "fixture" } }, "stages": [
+        { "stageId": "mcp-wire", "kind": "mcp_wire", "observation": { "profileId": "fixture", "profileVersion": "0.2.0", "queryBinding": { "algorithm": "closureprobe-canonical-json-v1", "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "exact" }, "traversalBinding": { "algorithm": "closureprobe-traversal-v1", "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "continued", "pageCount": 1 }, "execution": "success", "cardinality": "zero", "observedCount": 0, "coverage": "partial", "continuation": "present", "scopeBinding": "exact", "validation": "profile_validated", "evidencePointers": ["/structuredContent"] }, "claim": { "status": "unknown" } },
+        { "stageId": "client", "kind": "client", "observation": { "profileId": "fixture", "profileVersion": "0.2.0", "queryBinding": { "algorithm": "closureprobe-canonical-json-v1", "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "exact" }, "traversalBinding": { "algorithm": "closureprobe-traversal-v1", "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "unknown", "pageCount": 1 }, "execution": "success", "cardinality": "zero", "observedCount": 0, "coverage": "unknown", "continuation": "unknown", "scopeBinding": "exact", "validation": "profile_validated", "evidencePointers": [] }, "claim": { "status": "unknown" } },
+        { "stageId": "model", "kind": "model_projection", "observation": { "profileId": "fixture", "profileVersion": "0.2.0", "queryBinding": { "algorithm": "closureprobe-canonical-json-v1", "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "exact" }, "traversalBinding": { "algorithm": "closureprobe-traversal-v1", "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "unknown", "pageCount": 1 }, "execution": "success", "cardinality": "zero", "observedCount": 0, "coverage": "unknown", "continuation": "unknown", "scopeBinding": "exact", "validation": "profile_validated", "evidencePointers": [] }, "claim": { "status": "none", "propositionBinding": { "algorithm": "closureprobe-proposition-v1", "propositionDigest": "sha256:1c5b40b584dbd656fd97fa4d7b09fc5a2501d788a840ad5ada375952424f2479" } } }
+      ] }, "expectedFindingCodes": ["guard_signal_loss", "guard_signal_loss", "guard_signal_loss", "unlicensed_negative"]
+    },
+    {
+      "id": "TRC-005", "kind": "trace", "title": "Denied unavailable result cannot be mutated into complete root zero",
+      "trace": { "traceId": "denied-upgrade", "request": { "tool": "search", "arguments": { "q": "needle" } }, "proposition": { "subject": { "collection": "documents" }, "predicate": { "q": "needle" }, "scope": { "tenant": "fixture" } }, "stages": [
+        { "stageId": "source", "kind": "source", "observation": { "profileId": "fixture", "profileVersion": "0.2.0", "queryBinding": { "algorithm": "closureprobe-canonical-json-v1", "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "exact" }, "traversalBinding": { "algorithm": "closureprobe-traversal-v1", "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "unknown", "pageCount": 1 }, "execution": "denied", "cardinality": "unavailable", "coverage": "unknown", "continuation": "unknown", "scopeBinding": "exact", "validation": "profile_validated", "evidencePointers": ["/error"] }, "claim": { "status": "unknown" } },
+        { "stageId": "adapter", "kind": "adapter", "observation": { "profileId": "fixture", "profileVersion": "0.2.0", "queryBinding": { "algorithm": "closureprobe-canonical-json-v1", "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "exact" }, "traversalBinding": { "algorithm": "closureprobe-traversal-v1", "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "single_page_complete", "pageCount": 1 }, "execution": "success", "cardinality": "zero", "observedCount": 0, "coverage": "complete", "continuation": "exhausted", "scopeBinding": "exact", "validation": "profile_validated", "evidencePointers": [] }, "claim": { "status": "none", "propositionBinding": { "algorithm": "closureprobe-proposition-v1", "propositionDigest": "sha256:1c5b40b584dbd656fd97fa4d7b09fc5a2501d788a840ad5ada375952424f2479" } } }
+      ] }, "expectedFindingCodes": ["dangerous_mutation", "dangerous_mutation", "dangerous_mutation", "dangerous_mutation", "dangerous_mutation", "unsupported_upgrade"]
+    },
+    {
+      "id": "TRC-006", "kind": "trace", "title": "Valid-looking observation bound to another request is rejected",
+      "trace": { "traceId": "query-mismatch", "request": { "tool": "search", "arguments": { "q": "needle" } }, "proposition": { "subject": { "collection": "documents" }, "predicate": { "q": "needle" }, "scope": { "tenant": "fixture" } }, "stages": [
+        { "stageId": "adapter", "kind": "adapter", "observation": { "profileId": "fixture", "profileVersion": "0.2.0", "queryBinding": { "algorithm": "closureprobe-canonical-json-v1", "requestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000", "status": "exact" }, "traversalBinding": { "algorithm": "closureprobe-traversal-v1", "rootRequestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000", "segmentRequestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000", "status": "single_page_complete", "pageCount": 1 }, "execution": "success", "cardinality": "zero", "observedCount": 0, "coverage": "complete", "continuation": "exhausted", "scopeBinding": "exact", "validation": "profile_validated", "evidencePointers": ["/result"] }, "claim": { "status": "unknown" } }
+      ] }, "expectedFindingCodes": ["query_binding_mismatch"]
+    },
+    {
+      "id": "TRC-007", "kind": "trace", "title": "Naked NONE is rejected even with a locally licensed observation",
+      "trace": { "traceId": "naked-none", "request": { "tool": "search", "arguments": { "q": "needle" } }, "proposition": { "subject": { "collection": "documents" }, "predicate": { "q": "needle" }, "scope": { "tenant": "fixture" } }, "stages": [
+        { "stageId": "agent", "kind": "agent_claim", "observation": { "profileId": "fixture", "profileVersion": "0.2.0", "queryBinding": { "algorithm": "closureprobe-canonical-json-v1", "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "exact" }, "traversalBinding": { "algorithm": "closureprobe-traversal-v1", "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "single_page_complete", "pageCount": 1 }, "execution": "success", "cardinality": "zero", "observedCount": 0, "coverage": "complete", "continuation": "exhausted", "scopeBinding": "exact", "validation": "profile_validated", "evidencePointers": ["/result"] }, "claim": { "status": "none" } }
+      ] }, "expectedFindingCodes": ["claim_binding_missing", "unlicensed_negative"]
+    },
+    {
+      "id": "TRC-008", "kind": "trace", "title": "NONE bound to a broader proposition is rejected",
+      "trace": { "traceId": "claim-mismatch", "request": { "tool": "search", "arguments": { "q": "needle" } }, "proposition": { "subject": { "collection": "documents" }, "predicate": { "q": "needle" }, "scope": { "tenant": "fixture" } }, "stages": [
+        { "stageId": "agent", "kind": "agent_claim", "observation": { "profileId": "fixture", "profileVersion": "0.2.0", "queryBinding": { "algorithm": "closureprobe-canonical-json-v1", "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "exact" }, "traversalBinding": { "algorithm": "closureprobe-traversal-v1", "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "single_page_complete", "pageCount": 1 }, "execution": "success", "cardinality": "zero", "observedCount": 0, "coverage": "complete", "continuation": "exhausted", "scopeBinding": "exact", "validation": "profile_validated", "evidencePointers": ["/result"] }, "claim": { "status": "none", "propositionBinding": { "algorithm": "closureprobe-proposition-v1", "propositionDigest": "sha256:40a1ff4bd5312c6d334ebd0682ac0a30f656ed054879cc449fae3466e81dba69" } } }
+      ] }, "expectedFindingCodes": ["claim_binding_mismatch", "unlicensed_negative"]
+    },
+    {
+      "id": "TRC-009", "kind": "trace", "title": "Forged evidence digest cannot authorize a closure upgrade",
+      "trace": { "traceId": "forged-evidence", "request": { "tool": "search", "arguments": { "q": "needle" } }, "proposition": { "subject": { "collection": "documents" }, "predicate": { "q": "needle" }, "scope": { "tenant": "fixture" } }, "stages": [
+        { "stageId": "source", "kind": "source", "observation": { "profileId": "fixture", "profileVersion": "0.2.0", "queryBinding": { "algorithm": "closureprobe-canonical-json-v1", "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "exact" }, "traversalBinding": { "algorithm": "closureprobe-traversal-v1", "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "continued", "pageCount": 1 }, "execution": "success", "cardinality": "zero", "observedCount": 0, "coverage": "partial", "continuation": "present", "scopeBinding": "exact", "validation": "profile_validated", "evidencePointers": ["/next"] }, "claim": { "status": "unknown" } },
+        { "stageId": "adapter", "kind": "adapter", "observation": { "profileId": "generic-enumeration", "profileVersion": "0.2.0", "queryBinding": { "algorithm": "closureprobe-canonical-json-v1", "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "exact" }, "traversalBinding": { "algorithm": "closureprobe-traversal-v1", "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "single_page_complete", "pageCount": 1 }, "execution": "success", "cardinality": "zero", "observedCount": 0, "coverage": "complete", "continuation": "exhausted", "scopeBinding": "exact", "validation": "profile_validated", "evidencePointers": ["/execution", "/items", "/coverage", "/continuation", "/scopeBinding", "/traversalStatus"] }, "claim": { "status": "none", "propositionBinding": { "algorithm": "closureprobe-proposition-v1", "propositionDigest": "sha256:1c5b40b584dbd656fd97fa4d7b09fc5a2501d788a840ad5ada375952424f2479" } }, "evidenceIntroduction": { "profileId": "generic-enumeration", "profileVersion": "0.2.0", "request": { "tool": "search", "arguments": { "q": "needle" } }, "response": { "execution": "success", "items": [], "coverage": "complete", "continuation": "exhausted", "scopeBinding": "exact", "traversalStatus": "single_page_complete" }, "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "responseDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000" } }
+      ] }, "expectedFindingCodes": ["unverified_evidence_introduction", "dangerous_mutation", "dangerous_mutation", "dangerous_mutation", "unsupported_upgrade"]
+    },
+    {
+      "id": "TRC-010", "kind": "trace", "title": "Receiver-revalidated raw evidence permits a legitimate closure upgrade",
+      "trace": { "traceId": "validated-evidence", "request": { "tool": "search", "arguments": { "q": "needle" } }, "proposition": { "subject": { "collection": "documents" }, "predicate": { "q": "needle" }, "scope": { "tenant": "fixture" } }, "stages": [
+        { "stageId": "source", "kind": "source", "observation": { "profileId": "fixture", "profileVersion": "0.2.0", "queryBinding": { "algorithm": "closureprobe-canonical-json-v1", "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "exact" }, "traversalBinding": { "algorithm": "closureprobe-traversal-v1", "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "continued", "pageCount": 1 }, "execution": "success", "cardinality": "zero", "observedCount": 0, "coverage": "partial", "continuation": "present", "scopeBinding": "exact", "validation": "profile_validated", "evidencePointers": ["/next"] }, "claim": { "status": "unknown" } },
+        { "stageId": "reassessment", "kind": "source", "observation": { "profileId": "generic-enumeration", "profileVersion": "0.2.0", "queryBinding": { "algorithm": "closureprobe-canonical-json-v1", "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "exact" }, "traversalBinding": { "algorithm": "closureprobe-traversal-v1", "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "status": "single_page_complete", "pageCount": 1 }, "execution": "success", "cardinality": "zero", "observedCount": 0, "coverage": "complete", "continuation": "exhausted", "scopeBinding": "exact", "validation": "profile_validated", "evidencePointers": ["/execution", "/items", "/coverage", "/continuation", "/scopeBinding", "/traversalStatus"] }, "claim": { "status": "none", "propositionBinding": { "algorithm": "closureprobe-proposition-v1", "propositionDigest": "sha256:1c5b40b584dbd656fd97fa4d7b09fc5a2501d788a840ad5ada375952424f2479" } }, "evidenceIntroduction": { "profileId": "generic-enumeration", "profileVersion": "0.2.0", "request": { "tool": "search", "arguments": { "q": "needle" } }, "response": { "execution": "success", "items": [], "coverage": "complete", "continuation": "exhausted", "scopeBinding": "exact", "traversalStatus": "single_page_complete" }, "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec", "responseDigest": "sha256:afe092489c6200a413ed0decd752022694e45e6b250e2f4cdfc71a55bfcc4c94" } }
+      ] }, "expectedFindingCodes": []
+    }
+  ]
+}

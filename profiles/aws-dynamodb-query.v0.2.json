@@ -1,0 +1,22 @@
+{
+  "id": "aws-dynamodb-query",
+  "version": "0.2.0",
+  "title": "Amazon DynamoDB Query Root and Traversal Closure",
+  "authority": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.Pagination.html",
+  "supportedOperation": "A low-level DynamoDB Query assessed from an initial response or an exact LastEvaluatedKey to ExclusiveStartKey traversal bundle.",
+  "negativeProposition": "The exact root Query returned zero Items across every validated page.",
+  "supportedEvidenceUnits": ["single_root_response", "validated_traversal_bundle"],
+  "conservativeDefaults": {
+    "missingCoverage": "unknown",
+    "missingContinuation": "unknown",
+    "unsupportedVariant": "fail_closed"
+  },
+  "references": [
+    "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.Pagination.html",
+    "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.KeyConditionExpressions.html"
+  ],
+  "notes": [
+    "A final response requested with ExclusiveStartKey is segment-only unless prior pages are supplied and linked.",
+    "LastEvaluatedKey means the root query traversal has not ended."
+  ]
+}

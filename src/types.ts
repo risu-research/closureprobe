@@ -11,6 +11,12 @@ export type ValidationStatus =
   | "declared_only"
   | "invalid"
   | "unavailable";
+export type TraversalStatus =
+  | "single_page_complete"
+  | "aggregate_complete"
+  | "continued"
+  | "segment_only"
+  | "unknown";
 
 export interface QueryBinding {
   algorithm: "closureprobe-canonical-json-v1";
@@ -18,10 +24,19 @@ export interface QueryBinding {
   status: ScopeBindingStatus;
 }
 
+export interface TraversalBinding {
+  algorithm: "closureprobe-traversal-v1";
+  rootRequestDigest: string;
+  segmentRequestDigest: string;
+  status: TraversalStatus;
+  pageCount: number;
+}
+
 export interface ClosureObservation {
   profileId: string;
   profileVersion: string;
   queryBinding: QueryBinding;
+  traversalBinding: TraversalBinding;
   execution: ExecutionStatus;
   cardinality: CardinalityStatus;
   observedCount?: number;
@@ -43,6 +58,8 @@ export type Blocker =
   | "cardinality_not_zero"
   | "coverage_not_complete"
   | "continuation_not_exhausted"
+  | "traversal_not_query_complete"
+  | "binding_inconsistent"
   | "scope_not_exact"
   | "validation_not_profile_validated";
 
@@ -61,20 +78,47 @@ export type StageKind =
   | "model_projection"
   | "agent_claim"
   | "other";
-export type StageClaim = "none" | "unknown" | "some" | "no_claim";
+export type StageClaimStatus = "none" | "unknown" | "some" | "no_claim";
+
+export interface NegativeProposition {
+  subject: JsonValue;
+  predicate: JsonValue;
+  scope: JsonValue;
+}
+
+export interface PropositionBinding {
+  algorithm: "closureprobe-proposition-v1";
+  propositionDigest: string;
+}
+
+export interface StageClaim {
+  status: StageClaimStatus;
+  propositionBinding?: PropositionBinding;
+  artifactDigest?: string;
+}
+
+export interface EvidenceIntroduction {
+  profileId: string;
+  profileVersion: string;
+  request: JsonValue;
+  response: JsonValue;
+  requestDigest: string;
+  responseDigest: string;
+}
 
 export interface TraceStage {
   stageId: string;
   kind: StageKind;
   observation: ClosureObservation;
   claim: StageClaim;
-  introducedValidatedEvidence: boolean;
+  evidenceIntroduction?: EvidenceIntroduction;
   rawDigest?: string;
 }
 
 export interface ClosureTrace {
   traceId: string;
   request: JsonValue;
+  proposition: NegativeProposition;
   stages: TraceStage[];
 }
 
@@ -83,7 +127,10 @@ export type FindingCode =
   | "dangerous_mutation"
   | "unlicensed_negative"
   | "unsupported_upgrade"
-  | "query_binding_mismatch";
+  | "query_binding_mismatch"
+  | "claim_binding_missing"
+  | "claim_binding_mismatch"
+  | "unverified_evidence_introduction";
 
 export interface TraceFinding {
   code: FindingCode;
@@ -95,9 +142,12 @@ export interface TraceFinding {
     | "cardinality"
     | "coverage"
     | "continuation"
+    | "traversalBinding"
     | "scopeBinding"
     | "validation"
     | "queryBinding"
+    | "propositionBinding"
+    | "evidenceIntroduction"
     | "negativeLicense"
     | "claim";
   upstream?: string;

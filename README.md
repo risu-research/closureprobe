@@ -2,101 +2,119 @@
 
 **Did your agent turn UNKNOWN into NONE?**
 
-ClosureProbe is an executable conformance system for **Negative Evidence
-Integrity** in agentic toolchains. It tests whether incomplete, continued,
-denied, failed, or scope-mismatched empty results become an unsupported claim
-that nothing exists while crossing API, adapter, MCP, client, and model-facing
-boundaries.
+ClosureProbe is an executable falsification and conformance system for
+**Negative Evidence Integrity** in agentic toolchains. It tests whether an
+empty page, incomplete traversal, denied search, failed shard, narrowed scope,
+or lost guard signal is silently upgraded into the claim that nothing exists.
 
-The narrow technical object is an empty enumeration or search result. The larger
-system question is whether an autonomous system has earned the right to stop
-searching, assert absence, and act on that assertion.
+The technical object is deliberately narrow: a query-relative assertion of
+absence. The larger question is consequential: **when has a system earned the
+right to stop searching, assert none, and act on that premise?**
 
-## Core rule
+## The false-zero firewall
 
-A negative claim is licensed only when the exact query completed successfully,
-returned zero results, completely covered its declared scope, exhausted all
-continuations, and passed the pinned source profile.
+A licensed negative requires one coherent evidence chain:
 
-Everything else remains unknown or otherwise non-negative.
+1. the exact root request is cryptographically bound;
+2. the observed evidence unit is either a complete root response or a validated
+   root-to-final traversal—not merely a final page;
+3. execution succeeded, cardinality is zero, coverage is complete,
+   continuation is exhausted, scope is exact, and the pinned profile validates
+   every required signal; and
+4. any `none` claim is bound to an explicit subject, predicate, and scope.
 
-## What it produces
+If a downstream stage strengthens those facts, the receiver must reconstruct
+the new observation from supplied raw request/response evidence and the pinned
+profile. A sender's assertion that evidence was validated is not authority.
 
-- source-profile observations;
-- deterministic negative-license decisions;
-- guard-signal loss and dangerous-mutation findings;
-- first unlicensed-negative boundary localization;
-- JSON and self-contained HTML evidence reports; and
-- an MCP probe server for controlled differential results.
+## What the product does
+
+- converts supported source responses or traversal bundles into conservative,
+  query-bound observations;
+- makes one deterministic negative-license decision;
+- distinguishes a page segment from a complete query traversal;
+- rejects naked or proposition-shifted `none` claims;
+- localizes guard loss, dangerous mutation, request mismatch, forged evidence,
+  and the first unlicensed negative across supplied observable stages;
+- emits machine-readable and self-contained HTML evidence; and
+- runs as an MCP probe server for controlled client experiments.
+
+ClosureProbe does **not** automatically intercept arbitrary clients. Operators
+capture the boundaries they can actually observe and normalize them into the
+published trace schema. Hidden boundaries stay explicitly unobserved; they do
+not become silent passes.
 
 ## Quick start
 
 ```bash
 npm install
 npm run quality
-node dist/src/cli.js corpus verify corpus/v0.1/cases.json
+node dist/src/cli.js corpus verify corpus/v0.2/cases.json
 node dist/src/cli.js assess \
   --profile google-drive-files-list \
   --request examples/drive/request.json \
   --response examples/drive/continued-zero-response.json
 ```
 
-Run the MCP probe server:
+Run the controlled MCP probe:
 
 ```bash
 node dist/src/mcp-server.js
 ```
 
-The continued Drive example returns `negativeLicense: "not_licensed"` even
-though the current page is empty, because `nextPageToken` proves the traversal
-is not exhausted.
+The continued Drive example is not licensed even though its current page is
+empty. A `nextPageToken` proves the root traversal is unfinished. Conversely, a
+validated multi-page bundle counts every page, so an earlier hit cannot vanish
+behind an empty final page.
 
-## Frozen evidence
+## Frozen adversarial evidence
 
-The release-candidate corpus contains 40 deterministic cases: 32
-source-profile observations and 8 cross-boundary traces. It includes positive
-controls and legitimate evidence upgrades, not only expected failures. Run
-`npm run evidence` to regenerate both the machine-readable result and the
-self-contained HTML report.
+The rc2 corpus contains **45 deterministic cases**: 35 source-profile
+observations and 10 cross-boundary traces. It contains both attack cases and
+positive controls, including a legitimate receiver-revalidated evidence
+upgrade. `npm run evidence` regenerates the JSON and self-contained HTML report.
 
-Six pinned profiles exercise genuinely different producer semantics:
-
-| Profile | Closure-sensitive signal |
+| Profile | Evidence boundary enforced |
 | --- | --- |
-| Google Drive `files.list` | `incompleteSearch`, `nextPageToken`, fields projection |
-| DynamoDB `Query` | `LastEvaluatedKey` |
-| Elasticsearch search | timeout, shard success, exact total relation |
-| GraphQL Relay connection | errors, `hasNextPage` |
-| Microsoft Graph delta | `@odata.nextLink`, `@odata.deltaLink` |
-| Generic enumeration | explicit controlled contract |
-
-See [INTEROPERABILITY.md](INTEROPERABILITY.md) for testing real MCP clients and
-[IMPACT.md](IMPACT.md) for the consequential-decision framing, and
-[ROADMAP.md](ROADMAP.md) for the later enforcement boundary.
+| Google Drive `files.list` | root vs `pageToken` segment; exact token-linked aggregate; `incompleteSearch` |
+| DynamoDB `Query` | root vs `ExclusiveStartKey` segment; exact key-linked aggregate |
+| Elasticsearch search | exact total, nonempty successful shard set, timeout and early-termination guards |
+| GraphQL Relay | parsed forward root query, `first`/`after` direction, `hasNextPage`, GraphQL errors |
+| Microsoft Graph delta | complete root-to-`deltaLink` bundle; byte-exact `nextLink` chain; aggregate count |
+| Generic enumeration | explicit controlled contract, including traversal status |
 
 ## Project structure
 
 ```text
 PROFILE.md             normative bounded profile
-schemas/               language-neutral contracts
-profiles/              pinned source-profile descriptors
-corpus/v0.1/           frozen differential cases
-src/                   library, CLI, reports, and MCP probe
-tests/                 deterministic implementation tests
+schemas/               language-neutral observation, trace, and corpus contracts
+profiles/              pinned producer-semantics descriptors
+corpus/v0.2/           frozen adversarial and control cases
+src/                   library, CLI, reports, source profiles, and MCP probe
+tests/                 deterministic implementation and independent-client tests
 examples/              runnable assessments and trace
-evidence/              regenerated corpus results
+evidence/              reproducible corpus results
 ```
 
-## Relationship to other RISU work
+## Claim boundary
 
-ClosureProbe is not an omnibus integration of earlier projects. It contributes a
-new primitive: query-relative closure integrity. Its profile and oracle are
-designed to become inputs to a later runtime `ClosureGate`, where unsupported
-negative premises can block, retry, escalate, or preserve recourse instead of
-silently authorizing an action.
+This is not proof that a source is truthful, current, globally exhaustive, or
+legally sufficient. It is an executable check that the supplied observable
+trace did not claim more absence than its exact, profile-validated evidence
+licensed. Read [PROFILE.md](PROFILE.md), [CLAIMS.md](CLAIMS.md), and
+[LIMITATIONS.md](LIMITATIONS.md) before citing a result.
 
-See [PROFILE.md](PROFILE.md), [CLAIMS.md](CLAIMS.md), and
-[LIMITATIONS.md](LIMITATIONS.md) before citing results.
+[INTEROPERABILITY.md](INTEROPERABILITY.md) defines real-client experiments.
+[IMPACT.md](IMPACT.md) explains why false zero is an authorization and
+procedural-integrity problem. [ROADMAP.md](ROADMAP.md) leaves the next project to
+the evidence rather than pre-committing to a mechanically assembled sequel.
+
+## Release lineage
+
+`v0.1.0-rc1` is preserved as the pre-adversarial-review snapshot. rc2 changes
+the contract incompatibly where correctness required it: traversal identity,
+proposition-bound claims, receiver-revalidated evidence, and narrower source
+profiles.
 
 ## License
 

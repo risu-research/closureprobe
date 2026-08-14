@@ -17,6 +17,7 @@ test("only the complete controlled zero earns a negative license", () => {
     "denied-zero",
     "failed-zero",
     "scope-mismatch-zero",
+    "segment-zero",
   ] as const) {
     assert.equal(
       assessClosure(createProbePayload(scenario, request).observation).negativeLicense,
@@ -36,4 +37,17 @@ test("a positive result is not evaluated as a negative candidate", () => {
   assert.equal(assessment.branch, "positive_observed");
   assert.equal(assessment.negativeLicense, "not_applicable");
   assert.deepEqual(assessment.blockers, []);
+});
+
+test("internally inconsistent request and traversal bindings block a license", () => {
+  const observation = createProbePayload("complete-zero", { q: "needle" }).observation;
+  const assessment = assessClosure({
+    ...observation,
+    traversalBinding: {
+      ...observation.traversalBinding,
+      rootRequestDigest: "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    },
+  });
+  assert.equal(assessment.negativeLicense, "not_licensed");
+  assert.ok(assessment.blockers.includes("binding_inconsistent"));
 });

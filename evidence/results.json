@@ -1,16 +1,16 @@
 {
   "tool": "closureprobe",
-  "toolVersion": "0.1.0-rc1",
-  "corpusVersion": "closureprobe-corpus-v0.1.0",
-  "profileVersion": "0.1.0",
-  "total": 40,
-  "passed": 40,
+  "toolVersion": "0.1.0-rc2",
+  "corpusVersion": "closureprobe-corpus-v0.2.0",
+  "profileVersion": "0.2.0",
+  "total": 45,
+  "passed": 45,
   "failed": 0,
   "results": [
     {
       "id": "GEN-001",
       "kind": "observation",
-      "title": "Explicit complete empty enumeration licenses the exact negative",
+      "title": "Explicit complete root traversal licenses the exact negative",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
@@ -27,20 +27,22 @@
     {
       "id": "GEN-002",
       "kind": "observation",
-      "title": "Partial empty enumeration remains unknown",
+      "title": "Partial coverage remains unlicensed even when the page ended",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
         "negativeLicense": "not_licensed",
         "blockers": [
-          "coverage_not_complete"
+          "coverage_not_complete",
+          "traversal_not_query_complete"
         ]
       },
       "actual": {
         "branch": "negative_candidate",
         "negativeLicense": "not_licensed",
         "blockers": [
-          "coverage_not_complete"
+          "coverage_not_complete",
+          "traversal_not_query_complete"
         ]
       },
       "diagnostics": []
@@ -48,20 +50,24 @@
     {
       "id": "GEN-003",
       "kind": "observation",
-      "title": "A continuation token blocks a negative",
+      "title": "Continued zero is not query-level absence",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
         "negativeLicense": "not_licensed",
         "blockers": [
-          "continuation_not_exhausted"
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "traversal_not_query_complete"
         ]
       },
       "actual": {
         "branch": "negative_candidate",
         "negativeLicense": "not_licensed",
         "blockers": [
-          "continuation_not_exhausted"
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "traversal_not_query_complete"
         ]
       },
       "diagnostics": []
@@ -69,24 +75,20 @@
     {
       "id": "GEN-004",
       "kind": "observation",
-      "title": "Denied execution is not evidence of absence",
+      "title": "Final continuation segment remains unlicensed after local exhaustion",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
         "negativeLicense": "not_licensed",
         "blockers": [
-          "continuation_not_exhausted",
-          "coverage_not_complete",
-          "execution_not_success"
+          "traversal_not_query_complete"
         ]
       },
       "actual": {
         "branch": "negative_candidate",
         "negativeLicense": "not_licensed",
         "blockers": [
-          "continuation_not_exhausted",
-          "coverage_not_complete",
-          "execution_not_success"
+          "traversal_not_query_complete"
         ]
       },
       "diagnostics": []
@@ -94,7 +96,7 @@
     {
       "id": "GEN-005",
       "kind": "observation",
-      "title": "Failed execution is not evidence of absence",
+      "title": "Denied execution does not become an empty result",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
@@ -102,7 +104,8 @@
         "blockers": [
           "continuation_not_exhausted",
           "coverage_not_complete",
-          "execution_not_success"
+          "execution_not_success",
+          "traversal_not_query_complete"
         ]
       },
       "actual": {
@@ -111,7 +114,8 @@
         "blockers": [
           "continuation_not_exhausted",
           "coverage_not_complete",
-          "execution_not_success"
+          "execution_not_success",
+          "traversal_not_query_complete"
         ]
       },
       "diagnostics": []
@@ -119,78 +123,7 @@
     {
       "id": "GEN-006",
       "kind": "observation",
-      "title": "Scope mismatch blocks a negative",
-      "passed": true,
-      "expected": {
-        "branch": "negative_candidate",
-        "negativeLicense": "not_licensed",
-        "blockers": [
-          "scope_not_exact"
-        ]
-      },
-      "actual": {
-        "branch": "negative_candidate",
-        "negativeLicense": "not_licensed",
-        "blockers": [
-          "scope_not_exact"
-        ]
-      },
-      "diagnostics": []
-    },
-    {
-      "id": "GEN-007",
-      "kind": "observation",
-      "title": "Unbound response cannot license the requested proposition",
-      "passed": true,
-      "expected": {
-        "branch": "negative_candidate",
-        "negativeLicense": "not_licensed",
-        "blockers": [
-          "scope_not_exact"
-        ]
-      },
-      "actual": {
-        "branch": "negative_candidate",
-        "negativeLicense": "not_licensed",
-        "blockers": [
-          "scope_not_exact"
-        ]
-      },
-      "diagnostics": []
-    },
-    {
-      "id": "GEN-008",
-      "kind": "observation",
-      "title": "Malformed envelope fails closed without erasing observed zero",
-      "passed": true,
-      "expected": {
-        "branch": "negative_candidate",
-        "negativeLicense": "not_licensed",
-        "blockers": [
-          "continuation_not_exhausted",
-          "coverage_not_complete",
-          "execution_not_success",
-          "scope_not_exact",
-          "validation_not_profile_validated"
-        ]
-      },
-      "actual": {
-        "branch": "negative_candidate",
-        "negativeLicense": "not_licensed",
-        "blockers": [
-          "continuation_not_exhausted",
-          "coverage_not_complete",
-          "execution_not_success",
-          "scope_not_exact",
-          "validation_not_profile_validated"
-        ]
-      },
-      "diagnostics": []
-    },
-    {
-      "id": "GEN-009",
-      "kind": "observation",
-      "title": "A positive observation leaves the negative branch",
+      "title": "Positive observation exits the negative branch",
       "passed": true,
       "expected": {
         "branch": "positive_observed",
@@ -201,34 +134,13 @@
         "branch": "positive_observed",
         "negativeLicense": "not_applicable",
         "blockers": []
-      },
-      "diagnostics": []
-    },
-    {
-      "id": "GEN-010",
-      "kind": "observation",
-      "title": "Missing cardinality cannot become zero by default",
-      "passed": true,
-      "expected": {
-        "branch": "no_result_claim",
-        "negativeLicense": "not_licensed",
-        "blockers": [
-          "cardinality_not_zero"
-        ]
-      },
-      "actual": {
-        "branch": "no_result_claim",
-        "negativeLicense": "not_licensed",
-        "blockers": [
-          "cardinality_not_zero"
-        ]
       },
       "diagnostics": []
     },
     {
       "id": "DRV-001",
       "kind": "observation",
-      "title": "Drive empty final page with explicit projection licenses a negative",
+      "title": "Drive initial final zero licenses the bounded query",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
@@ -245,20 +157,20 @@
     {
       "id": "DRV-002",
       "kind": "observation",
-      "title": "Drive incompleteSearch true blocks absence",
+      "title": "Drive final continuation page alone is segment-only",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
         "negativeLicense": "not_licensed",
         "blockers": [
-          "coverage_not_complete"
+          "traversal_not_query_complete"
         ]
       },
       "actual": {
         "branch": "negative_candidate",
         "negativeLicense": "not_licensed",
         "blockers": [
-          "coverage_not_complete"
+          "traversal_not_query_complete"
         ]
       },
       "diagnostics": []
@@ -266,20 +178,24 @@
     {
       "id": "DRV-003",
       "kind": "observation",
-      "title": "Drive nextPageToken blocks absence even on empty page",
+      "title": "Drive nextPageToken blocks root-query absence",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
         "negativeLicense": "not_licensed",
         "blockers": [
-          "continuation_not_exhausted"
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "traversal_not_query_complete"
         ]
       },
       "actual": {
         "branch": "negative_candidate",
         "negativeLicense": "not_licensed",
         "blockers": [
-          "continuation_not_exhausted"
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "traversal_not_query_complete"
         ]
       },
       "diagnostics": []
@@ -287,51 +203,41 @@
     {
       "id": "DRV-004",
       "kind": "observation",
-      "title": "Projected but missing Drive completeness signal fails closed",
+      "title": "Token-linked all-zero Drive traversal licenses the root query",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
-        "negativeLicense": "not_licensed",
-        "blockers": [
-          "coverage_not_complete"
-        ]
+        "negativeLicense": "licensed",
+        "blockers": []
       },
       "actual": {
         "branch": "negative_candidate",
-        "negativeLicense": "not_licensed",
-        "blockers": [
-          "coverage_not_complete"
-        ]
+        "negativeLicense": "licensed",
+        "blockers": []
       },
       "diagnostics": []
     },
     {
       "id": "DRV-005",
       "kind": "observation",
-      "title": "Drive field projection can erase closure signals",
+      "title": "Earlier Drive hit survives a final empty page",
       "passed": true,
       "expected": {
-        "branch": "negative_candidate",
-        "negativeLicense": "not_licensed",
-        "blockers": [
-          "continuation_not_exhausted",
-          "coverage_not_complete"
-        ]
+        "branch": "positive_observed",
+        "negativeLicense": "not_applicable",
+        "blockers": []
       },
       "actual": {
-        "branch": "negative_candidate",
-        "negativeLicense": "not_licensed",
-        "blockers": [
-          "continuation_not_exhausted",
-          "coverage_not_complete"
-        ]
+        "branch": "positive_observed",
+        "negativeLicense": "not_applicable",
+        "blockers": []
       },
       "diagnostics": []
     },
     {
       "id": "DRV-006",
       "kind": "observation",
-      "title": "Drive authorization denial cannot masquerade as empty files",
+      "title": "Drive bundle with a broken token chain fails closed",
       "passed": true,
       "expected": {
         "branch": "no_result_claim",
@@ -340,7 +246,10 @@
           "cardinality_not_zero",
           "continuation_not_exhausted",
           "coverage_not_complete",
-          "execution_not_success"
+          "execution_not_success",
+          "scope_not_exact",
+          "traversal_not_query_complete",
+          "validation_not_profile_validated"
         ]
       },
       "actual": {
@@ -350,7 +259,10 @@
           "cardinality_not_zero",
           "continuation_not_exhausted",
           "coverage_not_complete",
-          "execution_not_success"
+          "execution_not_success",
+          "scope_not_exact",
+          "traversal_not_query_complete",
+          "validation_not_profile_validated"
         ]
       },
       "diagnostics": []
@@ -358,64 +270,120 @@
     {
       "id": "DDB-001",
       "kind": "observation",
-      "title": "DynamoDB LastEvaluatedKey makes an empty page partial",
+      "title": "DynamoDB initial final zero licenses the root Query",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
-        "negativeLicense": "not_licensed",
-        "blockers": [
-          "continuation_not_exhausted",
-          "coverage_not_complete"
-        ]
+        "negativeLicense": "licensed",
+        "blockers": []
       },
       "actual": {
         "branch": "negative_candidate",
-        "negativeLicense": "not_licensed",
-        "blockers": [
-          "continuation_not_exhausted",
-          "coverage_not_complete"
-        ]
+        "negativeLicense": "licensed",
+        "blockers": []
       },
       "diagnostics": []
     },
     {
       "id": "DDB-002",
       "kind": "observation",
-      "title": "DynamoDB final empty query page licenses the bounded negative",
+      "title": "DynamoDB final ExclusiveStartKey segment is not root-query absence",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
-        "negativeLicense": "licensed",
-        "blockers": []
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "traversal_not_query_complete"
+        ]
       },
       "actual": {
         "branch": "negative_candidate",
-        "negativeLicense": "licensed",
-        "blockers": []
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "traversal_not_query_complete"
+        ]
       },
       "diagnostics": []
     },
     {
       "id": "DDB-003",
       "kind": "observation",
-      "title": "DynamoDB observed item leaves the negative branch",
+      "title": "DynamoDB LastEvaluatedKey blocks root-query absence",
       "passed": true,
       "expected": {
-        "branch": "positive_observed",
-        "negativeLicense": "not_applicable",
+        "branch": "negative_candidate",
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "traversal_not_query_complete"
+        ]
+      },
+      "actual": {
+        "branch": "negative_candidate",
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "traversal_not_query_complete"
+        ]
+      },
+      "diagnostics": []
+    },
+    {
+      "id": "DDB-004",
+      "kind": "observation",
+      "title": "Key-linked all-zero DynamoDB traversal licenses the root Query",
+      "passed": true,
+      "expected": {
+        "branch": "negative_candidate",
+        "negativeLicense": "licensed",
         "blockers": []
       },
       "actual": {
-        "branch": "positive_observed",
-        "negativeLicense": "not_applicable",
+        "branch": "negative_candidate",
+        "negativeLicense": "licensed",
         "blockers": []
+      },
+      "diagnostics": []
+    },
+    {
+      "id": "DDB-005",
+      "kind": "observation",
+      "title": "DynamoDB aggregate with a broken key chain fails closed",
+      "passed": true,
+      "expected": {
+        "branch": "no_result_claim",
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "cardinality_not_zero",
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "execution_not_success",
+          "scope_not_exact",
+          "traversal_not_query_complete",
+          "validation_not_profile_validated"
+        ]
+      },
+      "actual": {
+        "branch": "no_result_claim",
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "cardinality_not_zero",
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "execution_not_success",
+          "scope_not_exact",
+          "traversal_not_query_complete",
+          "validation_not_profile_validated"
+        ]
       },
       "diagnostics": []
     },
     {
       "id": "ES-001",
       "kind": "observation",
-      "title": "Elasticsearch exact zero across all successful shards licenses a negative",
+      "title": "Elasticsearch exact zero over a nonempty successful shard set licenses a negative",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
@@ -432,14 +400,15 @@
     {
       "id": "ES-002",
       "kind": "observation",
-      "title": "Elasticsearch timeout blocks absence",
+      "title": "Elasticsearch timeout blocks closure",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
         "negativeLicense": "not_licensed",
         "blockers": [
           "continuation_not_exhausted",
-          "coverage_not_complete"
+          "coverage_not_complete",
+          "traversal_not_query_complete"
         ]
       },
       "actual": {
@@ -447,7 +416,8 @@
         "negativeLicense": "not_licensed",
         "blockers": [
           "continuation_not_exhausted",
-          "coverage_not_complete"
+          "coverage_not_complete",
+          "traversal_not_query_complete"
         ]
       },
       "diagnostics": []
@@ -455,14 +425,15 @@
     {
       "id": "ES-003",
       "kind": "observation",
-      "title": "Elasticsearch shard failure blocks absence",
+      "title": "Elasticsearch terminated_early blocks closure",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
         "negativeLicense": "not_licensed",
         "blockers": [
           "continuation_not_exhausted",
-          "coverage_not_complete"
+          "coverage_not_complete",
+          "traversal_not_query_complete"
         ]
       },
       "actual": {
@@ -470,7 +441,8 @@
         "negativeLicense": "not_licensed",
         "blockers": [
           "continuation_not_exhausted",
-          "coverage_not_complete"
+          "coverage_not_complete",
+          "traversal_not_query_complete"
         ]
       },
       "diagnostics": []
@@ -478,14 +450,15 @@
     {
       "id": "ES-004",
       "kind": "observation",
-      "title": "Elasticsearch lower-bound total is not exact zero",
+      "title": "Elasticsearch failed shard blocks closure",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
         "negativeLicense": "not_licensed",
         "blockers": [
           "continuation_not_exhausted",
-          "coverage_not_complete"
+          "coverage_not_complete",
+          "traversal_not_query_complete"
         ]
       },
       "actual": {
@@ -493,7 +466,8 @@
         "negativeLicense": "not_licensed",
         "blockers": [
           "continuation_not_exhausted",
-          "coverage_not_complete"
+          "coverage_not_complete",
+          "traversal_not_query_complete"
         ]
       },
       "diagnostics": []
@@ -501,22 +475,26 @@
     {
       "id": "ES-005",
       "kind": "observation",
-      "title": "Unsupported terminate_after request fails closed",
+      "title": "Elasticsearch lower-bound total cannot establish zero cardinality",
       "passed": true,
       "expected": {
-        "branch": "negative_candidate",
+        "branch": "no_result_claim",
         "negativeLicense": "not_licensed",
         "blockers": [
+          "cardinality_not_zero",
           "continuation_not_exhausted",
-          "coverage_not_complete"
+          "coverage_not_complete",
+          "traversal_not_query_complete"
         ]
       },
       "actual": {
-        "branch": "negative_candidate",
+        "branch": "no_result_claim",
         "negativeLicense": "not_licensed",
         "blockers": [
+          "cardinality_not_zero",
           "continuation_not_exhausted",
-          "coverage_not_complete"
+          "coverage_not_complete",
+          "traversal_not_query_complete"
         ]
       },
       "diagnostics": []
@@ -524,7 +502,7 @@
     {
       "id": "ES-006",
       "kind": "observation",
-      "title": "Elasticsearch observed hit leaves the negative branch",
+      "title": "Exact total preserves a positive even when size zero returns no hit objects",
       "passed": true,
       "expected": {
         "branch": "positive_observed",
@@ -539,9 +517,34 @@
       "diagnostics": []
     },
     {
+      "id": "ES-007",
+      "kind": "observation",
+      "title": "Zero resolved shards fails closed",
+      "passed": true,
+      "expected": {
+        "branch": "negative_candidate",
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "traversal_not_query_complete"
+        ]
+      },
+      "actual": {
+        "branch": "negative_candidate",
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "traversal_not_query_complete"
+        ]
+      },
+      "diagnostics": []
+    },
+    {
       "id": "GQL-001",
       "kind": "observation",
-      "title": "Relay final empty connection licenses the bounded negative",
+      "title": "Relay forward root with no next page licenses a negative",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
@@ -558,14 +561,15 @@
     {
       "id": "GQL-002",
       "kind": "observation",
-      "title": "Relay hasNextPage true blocks absence",
+      "title": "Relay hasNextPage true blocks closure",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
         "negativeLicense": "not_licensed",
         "blockers": [
           "continuation_not_exhausted",
-          "coverage_not_complete"
+          "coverage_not_complete",
+          "traversal_not_query_complete"
         ]
       },
       "actual": {
@@ -573,7 +577,8 @@
         "negativeLicense": "not_licensed",
         "blockers": [
           "continuation_not_exhausted",
-          "coverage_not_complete"
+          "coverage_not_complete",
+          "traversal_not_query_complete"
         ]
       },
       "diagnostics": []
@@ -581,7 +586,59 @@
     {
       "id": "GQL-003",
       "kind": "observation",
-      "title": "GraphQL errors preserve partiality even with data",
+      "title": "Relay backward pagination is outside the forward profile",
+      "passed": true,
+      "expected": {
+        "branch": "negative_candidate",
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "execution_not_success",
+          "scope_not_exact",
+          "traversal_not_query_complete",
+          "validation_not_profile_validated"
+        ]
+      },
+      "actual": {
+        "branch": "negative_candidate",
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "execution_not_success",
+          "scope_not_exact",
+          "traversal_not_query_complete",
+          "validation_not_profile_validated"
+        ]
+      },
+      "diagnostics": []
+    },
+    {
+      "id": "GQL-004",
+      "kind": "observation",
+      "title": "Relay final after-cursor response is segment-only",
+      "passed": true,
+      "expected": {
+        "branch": "negative_candidate",
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "traversal_not_query_complete"
+        ]
+      },
+      "actual": {
+        "branch": "negative_candidate",
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "traversal_not_query_complete"
+        ]
+      },
+      "diagnostics": []
+    },
+    {
+      "id": "GQL-005",
+      "kind": "observation",
+      "title": "GraphQL errors block closure despite a final page",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
@@ -604,7 +661,7 @@
     {
       "id": "MSG-001",
       "kind": "observation",
-      "title": "Graph deltaLink closes an empty delta traversal",
+      "title": "Single-page zero Graph delta round licenses its exact proposition",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
@@ -621,53 +678,41 @@
     {
       "id": "MSG-002",
       "kind": "observation",
-      "title": "Graph nextLink preserves continuation",
+      "title": "Two-page all-zero Graph delta traversal licenses the round",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
-        "negativeLicense": "not_licensed",
-        "blockers": [
-          "continuation_not_exhausted",
-          "coverage_not_complete"
-        ]
+        "negativeLicense": "licensed",
+        "blockers": []
       },
       "actual": {
         "branch": "negative_candidate",
-        "negativeLicense": "not_licensed",
-        "blockers": [
-          "continuation_not_exhausted",
-          "coverage_not_complete"
-        ]
+        "negativeLicense": "licensed",
+        "blockers": []
       },
       "diagnostics": []
     },
     {
       "id": "MSG-003",
       "kind": "observation",
-      "title": "Missing Graph traversal link fails closed",
+      "title": "Earlier Graph item survives a final empty deltaLink page",
       "passed": true,
       "expected": {
-        "branch": "negative_candidate",
-        "negativeLicense": "not_licensed",
-        "blockers": [
-          "continuation_not_exhausted",
-          "coverage_not_complete"
-        ]
+        "branch": "positive_observed",
+        "negativeLicense": "not_applicable",
+        "blockers": []
       },
       "actual": {
-        "branch": "negative_candidate",
-        "negativeLicense": "not_licensed",
-        "blockers": [
-          "continuation_not_exhausted",
-          "coverage_not_complete"
-        ]
+        "branch": "positive_observed",
+        "negativeLicense": "not_applicable",
+        "blockers": []
       },
       "diagnostics": []
     },
     {
       "id": "MSG-004",
       "kind": "observation",
-      "title": "Conflicting Graph next and delta links invalidate closure",
+      "title": "Captured Graph bundle ending at nextLink remains incomplete",
       "passed": true,
       "expected": {
         "branch": "negative_candidate",
@@ -675,7 +720,7 @@
         "blockers": [
           "continuation_not_exhausted",
           "coverage_not_complete",
-          "validation_not_profile_validated"
+          "traversal_not_query_complete"
         ]
       },
       "actual": {
@@ -684,6 +729,72 @@
         "blockers": [
           "continuation_not_exhausted",
           "coverage_not_complete",
+          "traversal_not_query_complete"
+        ]
+      },
+      "diagnostics": []
+    },
+    {
+      "id": "MSG-005",
+      "kind": "observation",
+      "title": "Graph delta bundle with a broken nextLink chain fails closed",
+      "passed": true,
+      "expected": {
+        "branch": "no_result_claim",
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "cardinality_not_zero",
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "execution_not_success",
+          "scope_not_exact",
+          "traversal_not_query_complete",
+          "validation_not_profile_validated"
+        ]
+      },
+      "actual": {
+        "branch": "no_result_claim",
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "cardinality_not_zero",
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "execution_not_success",
+          "scope_not_exact",
+          "traversal_not_query_complete",
+          "validation_not_profile_validated"
+        ]
+      },
+      "diagnostics": []
+    },
+    {
+      "id": "MSG-006",
+      "kind": "observation",
+      "title": "Graph nextLink URL cannot be relabeled as a root round",
+      "passed": true,
+      "expected": {
+        "branch": "no_result_claim",
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "cardinality_not_zero",
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "execution_not_success",
+          "scope_not_exact",
+          "traversal_not_query_complete",
+          "validation_not_profile_validated"
+        ]
+      },
+      "actual": {
+        "branch": "no_result_claim",
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "cardinality_not_zero",
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "execution_not_success",
+          "scope_not_exact",
+          "traversal_not_query_complete",
           "validation_not_profile_validated"
         ]
       },
@@ -692,7 +803,7 @@
     {
       "id": "TRC-001",
       "kind": "trace",
-      "title": "Preserved continuation remains conformant when no absence is asserted",
+      "title": "Preserved continuation remains conformant without a negative claim",
       "passed": true,
       "expected": [],
       "actual": [],
@@ -701,13 +812,15 @@
     {
       "id": "TRC-002",
       "kind": "trace",
-      "title": "Earliest loss of partial and continuation guards is localized",
+      "title": "Coverage continuation and traversal guard loss are localized separately",
       "passed": true,
       "expected": [
+        "guard_signal_loss",
         "guard_signal_loss",
         "guard_signal_loss"
       ],
       "actual": [
+        "guard_signal_loss",
         "guard_signal_loss",
         "guard_signal_loss"
       ],
@@ -716,14 +829,16 @@
     {
       "id": "TRC-003",
       "kind": "trace",
-      "title": "Lost guards followed by NONE yields separate transport and claim findings",
+      "title": "Guard loss followed by proposition-bound NONE yields a separate claim finding",
       "passed": true,
       "expected": [
+        "guard_signal_loss",
         "guard_signal_loss",
         "guard_signal_loss",
         "unlicensed_negative"
       ],
       "actual": [
+        "guard_signal_loss",
         "guard_signal_loss",
         "guard_signal_loss",
         "unlicensed_negative"
@@ -733,14 +848,16 @@
     {
       "id": "TRC-004",
       "kind": "trace",
-      "title": "Structured carrier loss is visible at the client boundary before model assertion",
+      "title": "Structured carrier loss is visible before the model claim",
       "passed": true,
       "expected": [
+        "guard_signal_loss",
         "guard_signal_loss",
         "guard_signal_loss",
         "unlicensed_negative"
       ],
       "actual": [
+        "guard_signal_loss",
         "guard_signal_loss",
         "guard_signal_loss",
         "unlicensed_negative"
@@ -750,9 +867,10 @@
     {
       "id": "TRC-005",
       "kind": "trace",
-      "title": "Denied unavailable result cannot be mutated into complete zero",
+      "title": "Denied unavailable result cannot be mutated into complete root zero",
       "passed": true,
       "expected": [
+        "dangerous_mutation",
         "dangerous_mutation",
         "dangerous_mutation",
         "dangerous_mutation",
@@ -760,6 +878,7 @@
         "unsupported_upgrade"
       ],
       "actual": [
+        "dangerous_mutation",
         "dangerous_mutation",
         "dangerous_mutation",
         "dangerous_mutation",
@@ -771,7 +890,7 @@
     {
       "id": "TRC-006",
       "kind": "trace",
-      "title": "A valid-looking observation bound to another request is rejected",
+      "title": "Valid-looking observation bound to another request is rejected",
       "passed": true,
       "expected": [
         "query_binding_mismatch"
@@ -784,16 +903,58 @@
     {
       "id": "TRC-007",
       "kind": "trace",
-      "title": "New independently validated evidence may legitimately close a partial query",
+      "title": "Naked NONE is rejected even with a locally licensed observation",
       "passed": true,
-      "expected": [],
-      "actual": [],
+      "expected": [
+        "claim_binding_missing",
+        "unlicensed_negative"
+      ],
+      "actual": [
+        "claim_binding_missing",
+        "unlicensed_negative"
+      ],
       "diagnostics": []
     },
     {
       "id": "TRC-008",
       "kind": "trace",
-      "title": "Complete exact zero may support an explicit NONE claim",
+      "title": "NONE bound to a broader proposition is rejected",
+      "passed": true,
+      "expected": [
+        "claim_binding_mismatch",
+        "unlicensed_negative"
+      ],
+      "actual": [
+        "claim_binding_mismatch",
+        "unlicensed_negative"
+      ],
+      "diagnostics": []
+    },
+    {
+      "id": "TRC-009",
+      "kind": "trace",
+      "title": "Forged evidence digest cannot authorize a closure upgrade",
+      "passed": true,
+      "expected": [
+        "dangerous_mutation",
+        "dangerous_mutation",
+        "dangerous_mutation",
+        "unsupported_upgrade",
+        "unverified_evidence_introduction"
+      ],
+      "actual": [
+        "dangerous_mutation",
+        "dangerous_mutation",
+        "dangerous_mutation",
+        "unsupported_upgrade",
+        "unverified_evidence_introduction"
+      ],
+      "diagnostics": []
+    },
+    {
+      "id": "TRC-010",
+      "kind": "trace",
+      "title": "Receiver-revalidated raw evidence permits a legitimate closure upgrade",
       "passed": true,
       "expected": [],
       "actual": [],

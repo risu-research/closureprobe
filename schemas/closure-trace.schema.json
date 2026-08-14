@@ -4,23 +4,18 @@
   "title": "Closure Trace",
   "type": "object",
   "additionalProperties": false,
-  "required": ["traceId", "request", "stages"],
+  "required": ["traceId", "request", "proposition", "stages"],
   "properties": {
     "traceId": { "type": "string", "minLength": 1 },
     "request": true,
+    "proposition": { "$ref": "#/$defs/proposition" },
     "stages": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "stageId",
-          "kind",
-          "observation",
-          "claim",
-          "introducedValidatedEvidence"
-        ],
+        "required": ["stageId", "kind", "observation", "claim"],
         "properties": {
           "stageId": { "type": "string", "minLength": 1 },
           "kind": {
@@ -34,13 +29,62 @@
               "other"
             ]
           },
-          "observation": {
-            "$ref": "closure-observation.schema.json"
-          },
-          "claim": { "enum": ["none", "unknown", "some", "no_claim"] },
-          "introducedValidatedEvidence": { "type": "boolean" },
+          "observation": { "$ref": "closure-observation.schema.json" },
+          "claim": { "$ref": "#/$defs/claim" },
+          "evidenceIntroduction": { "$ref": "#/$defs/evidenceIntroduction" },
           "rawDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
         }
+      }
+    }
+  },
+  "$defs": {
+    "proposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subject", "predicate", "scope"],
+      "properties": {
+        "subject": true,
+        "predicate": true,
+        "scope": true
+      }
+    },
+    "propositionBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "propositionDigest"],
+      "properties": {
+        "algorithm": { "const": "closureprobe-proposition-v1" },
+        "propositionDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": { "enum": ["none", "unknown", "some", "no_claim"] },
+        "propositionBinding": { "$ref": "#/$defs/propositionBinding" },
+        "artifactDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+      }
+    },
+    "evidenceIntroduction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profileId",
+        "profileVersion",
+        "request",
+        "response",
+        "requestDigest",
+        "responseDigest"
+      ],
+      "properties": {
+        "profileId": { "type": "string", "minLength": 1 },
+        "profileVersion": { "type": "string", "minLength": 1 },
+        "request": true,
+        "response": true,
+        "requestDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "responseDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
       }
     }
   }

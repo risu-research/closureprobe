@@ -1,0 +1,23 @@
+{
+  "id": "google-drive-files-list",
+  "version": "0.2.0",
+  "title": "Google Drive files.list Root and Traversal Closure",
+  "authority": "https://developers.google.com/workspace/drive/api/reference/rest/v3/files/list",
+  "supportedOperation": "Drive API v3 files.list with files, nextPageToken, and incompleteSearch projected, assessed either from an initial response or an exact token-linked traversal bundle.",
+  "negativeProposition": "The exact root files.list query returned zero files across every validated page in the caller-visible corpus.",
+  "supportedEvidenceUnits": ["single_root_response", "validated_traversal_bundle"],
+  "conservativeDefaults": {
+    "missingCoverage": "unknown",
+    "missingContinuation": "unknown",
+    "unsupportedVariant": "fail_closed"
+  },
+  "references": [
+    "https://developers.google.com/workspace/drive/api/reference/rest/v3/files/list",
+    "https://developers.google.com/workspace/drive/api/guides/search-files"
+  ],
+  "notes": [
+    "A final response requested with pageToken is segment-only unless prior pages are supplied and linked.",
+    "incompleteSearch=true blocks query-relative closure.",
+    "Closure is limited to the exact request and the caller's authorized corpus."
+  ]
+}

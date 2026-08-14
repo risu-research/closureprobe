@@ -7,7 +7,7 @@ authors:
     given-names: Moon
 repository-code: "https://github.com/risu-research/closureprobe"
 url: "https://github.com/risu-research/closureprobe"
-version: 0.1.0-rc1
+version: 0.1.0-rc2
 date-released: 2026-08-14
 license: Apache-2.0
 abstract: >-

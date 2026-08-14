@@ -1,0 +1,21 @@
+{
+  "id": "microsoft-graph-delta-traversal",
+  "version": "0.2.0",
+  "title": "Microsoft Graph Delta Round Traversal Closure",
+  "authority": "https://learn.microsoft.com/en-us/graph/delta-query-overview",
+  "supportedOperation": "A nonempty ordered bundle beginning at the exact root URL, following every @odata.nextLink byte-for-byte, and ending at @odata.deltaLink.",
+  "negativeProposition": "The exact delta round emitted zero resources or change events across the entire validated traversal.",
+  "supportedEvidenceUnits": ["validated_traversal_bundle"],
+  "conservativeDefaults": {
+    "missingCoverage": "unknown",
+    "missingContinuation": "unknown",
+    "unsupportedVariant": "fail_closed"
+  },
+  "references": [
+    "https://learn.microsoft.com/en-us/graph/delta-query-overview"
+  ],
+  "notes": [
+    "A final empty deltaLink page alone is never sufficient because earlier pages may contain resources.",
+    "A deltaLink closes one round; it does not establish eternal absence or source truth."
+  ]
+}

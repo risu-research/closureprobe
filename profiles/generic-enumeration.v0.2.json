@@ -1,0 +1,20 @@
+{
+  "id": "generic-enumeration",
+  "version": "0.2.0",
+  "title": "Explicit Generic Enumeration Fixture",
+  "authority": "https://github.com/risu-research/closureprobe/blob/main/PROFILE.md",
+  "supportedOperation": "A controlled fixture that explicitly supplies every ClosureProbe axis, including traversal status.",
+  "negativeProposition": "The exact controlled query has zero results over its explicitly declared traversal and scope.",
+  "supportedEvidenceUnits": ["controlled_fixture"],
+  "conservativeDefaults": {
+    "missingCoverage": "unknown",
+    "missingContinuation": "unknown",
+    "unsupportedVariant": "fail_closed"
+  },
+  "references": [
+    "https://github.com/risu-research/closureprobe/blob/main/PROFILE.md"
+  ],
+  "notes": [
+    "This profile is for deterministic fixtures and application-owned envelopes, not inference over arbitrary APIs."
+  ]
+}

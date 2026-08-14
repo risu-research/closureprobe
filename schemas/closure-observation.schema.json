@@ -8,6 +8,7 @@
     "profileId",
     "profileVersion",
     "queryBinding",
+    "traversalBinding",
     "execution",
     "cardinality",
     "coverage",
@@ -29,6 +30,32 @@
         "status": { "enum": ["exact", "narrower", "mismatch", "unbound"] }
       }
     },
+    "traversalBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "rootRequestDigest",
+        "segmentRequestDigest",
+        "status",
+        "pageCount"
+      ],
+      "properties": {
+        "algorithm": { "const": "closureprobe-traversal-v1" },
+        "rootRequestDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "segmentRequestDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "status": {
+          "enum": [
+            "single_page_complete",
+            "aggregate_complete",
+            "continued",
+            "segment_only",
+            "unknown"
+          ]
+        },
+        "pageCount": { "type": "integer", "minimum": 1 }
+      }
+    },
     "execution": { "enum": ["success", "denied", "failed", "unknown"] },
     "cardinality": { "enum": ["zero", "nonzero", "unavailable"] },
     "observedCount": { "type": "integer", "minimum": 0 },
@@ -47,5 +74,25 @@
       "type": "array",
       "items": { "type": "string" }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "cardinality": { "const": "zero" } } },
+      "then": {
+        "required": ["observedCount"],
+        "properties": { "observedCount": { "const": 0 } }
+      }
+    },
+    {
+      "if": { "properties": { "cardinality": { "const": "nonzero" } } },
+      "then": {
+        "required": ["observedCount"],
+        "properties": { "observedCount": { "type": "integer", "minimum": 1 } }
+      }
+    },
+    {
+      "if": { "properties": { "cardinality": { "const": "unavailable" } } },
+      "then": { "not": { "required": ["observedCount"] } }
+    }
+  ]
 }

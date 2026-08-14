@@ -1,50 +1,59 @@
 # Interoperability Protocol
 
-ClosureProbe's MCP server emits controlled empty results so a target client can
-be tested without asserting anything about a real data source.
+ClosureProbe's MCP server emits controlled empty-result observations so a target
+client can be tested without making a truth claim about a real source.
 
 ## Minimum differential run
 
-A target run SHOULD invoke `closureprobe_probe` with the same canonical request
-across these scenarios:
+Invoke `closureprobe_probe` with the same canonical request across:
 
-| Scenario | Guard that MUST survive |
+| Scenario | Guard that must survive |
 | --- | --- |
-| `complete-zero` | exact, complete, exhausted zero |
+| `complete-zero` | exact, complete, exhausted root zero |
 | `partial-zero` | `coverage=partial` |
-| `continued-zero` | `continuation=present` and partial coverage |
+| `continued-zero` | continuation present and traversal continued |
+| `segment-zero` | locally final page is only a segment |
 | `denied-zero` | `execution=denied` |
 | `failed-zero` | `execution=failed` |
-| `scope-mismatch-zero` | mismatched query scope |
+| `scope-mismatch-zero` | request scope mismatch |
 
-Each scenario SHOULD be repeated with `dual`, `structured-only`, and
-`text-only` carriers. `structured-only` is an adversarial diagnostic fixture;
-it is not a recommendation to omit backward-compatible text in production MCP
-tools.
+Repeat each scenario with `dual`, `structured-only`, and `text-only` carriers.
+`structured-only` is an adversarial diagnostic fixture, not a production
+recommendation to omit compatible text.
 
 ## Observable stages
 
-Record only boundaries the operator can actually observe. A strong run records:
+Record only boundaries the operator can actually inspect:
 
-1. the exact tool request and versioned target identity;
-2. the MCP wire result;
-3. the client's retained or transformed result;
-4. the model-visible projection, if observable; and
-5. any explicit model or agent claim.
+1. exact request and versioned target identity;
+2. MCP wire result;
+3. client-retained or transformed result;
+4. model-visible projection, if observable; and
+5. explicit model or agent claim, if observable.
 
-Map each stage to `schemas/closure-trace.schema.json`, then run:
+Normalize those records into `schemas/closure-trace.schema.json`. The trace must
+declare the negative proposition that `none` would mean; it must not encode a
+bare claim detached from subject, predicate, and scope.
 
 ```bash
 closureprobe trace target-trace.json --json target-analysis.json
 ```
 
-Exit `0` means no finding was detected in the supplied observable trace. Exit
-`2` means at least one finding was detected. It does not turn unobservable
-boundaries into passing boundaries.
+Exit `0` means no finding was detected **in the supplied observable trace**.
+Exit `2` means at least one finding was detected. Neither status says anything
+about an omitted or hidden boundary.
+
+## Evidence upgrades
+
+If a downstream stage legitimately obtains new source evidence, include the raw
+request, raw response, their canonical digests, and exact profile ID/version in
+`evidenceIntroduction`. ClosureProbe reconstructs the observation itself. Do
+not mark evidence as independently validated merely because the producing stage
+says so.
 
 ## Publication rule
 
-An interoperability result MUST identify target name and version, run date,
-ClosureProbe and corpus versions, carrier, repetitions, observable and hidden
-boundaries, exact commands, raw artifact hashes, and any manual transformations.
-Do not publish “compatible” or “safe” from a single happy-path call.
+A public result must name the target and version, date, ClosureProbe/corpus/
+profile versions, carrier, repetitions, observable and hidden boundaries, exact
+commands, raw hashes, and every manual normalization. Do not generalize from a
+single happy path to “compatible,” “safe,” or “complete.”

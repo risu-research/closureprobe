@@ -7,6 +7,7 @@ export {
 } from "./profiles.js";
 export { analyzeTrace } from "./trace.js";
 export { createProbePayload } from "./probe.js";
+export { bindProposition } from "./proposition.js";
 export { readCorpus, runCorpus, TOOL_VERSION } from "./corpus.js";
 export {
   validateAssessment,

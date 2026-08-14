@@ -4,17 +4,29 @@
     "tool": "search",
     "arguments": { "q": "needle" }
   },
+  "proposition": {
+    "subject": { "collection": "documents" },
+    "predicate": { "q": "needle" },
+    "scope": { "tenant": "fixture" }
+  },
   "stages": [
     {
       "stageId": "mcp-wire",
       "kind": "mcp_wire",
       "observation": {
         "profileId": "fixture",
-        "profileVersion": "0.1.0",
+        "profileVersion": "0.2.0",
         "queryBinding": {
           "algorithm": "closureprobe-canonical-json-v1",
           "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec",
           "status": "exact"
+        },
+        "traversalBinding": {
+          "algorithm": "closureprobe-traversal-v1",
+          "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec",
+          "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec",
+          "status": "continued",
+          "pageCount": 1
         },
         "execution": "success",
         "cardinality": "zero",
@@ -25,19 +37,25 @@
         "validation": "profile_validated",
         "evidencePointers": ["/structuredContent/observation"]
       },
-      "claim": "unknown",
-      "introducedValidatedEvidence": false
+      "claim": { "status": "unknown" }
     },
     {
       "stageId": "model-projection",
       "kind": "model_projection",
       "observation": {
         "profileId": "fixture",
-        "profileVersion": "0.1.0",
+        "profileVersion": "0.2.0",
         "queryBinding": {
           "algorithm": "closureprobe-canonical-json-v1",
           "requestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec",
           "status": "exact"
+        },
+        "traversalBinding": {
+          "algorithm": "closureprobe-traversal-v1",
+          "rootRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec",
+          "segmentRequestDigest": "sha256:f21ac0a787ea44cc0e1fe5cd45a6a6181f62ce63ce0aec2e7b6c65d3574406ec",
+          "status": "unknown",
+          "pageCount": 1
         },
         "execution": "success",
         "cardinality": "zero",
@@ -48,8 +66,13 @@
         "validation": "profile_validated",
         "evidencePointers": []
       },
-      "claim": "none",
-      "introducedValidatedEvidence": false
+      "claim": {
+        "status": "none",
+        "propositionBinding": {
+          "algorithm": "closureprobe-proposition-v1",
+          "propositionDigest": "sha256:1c5b40b584dbd656fd97fa4d7b09fc5a2501d788a840ad5ada375952424f2479"
+        }
+      }
     }
   ]
 }

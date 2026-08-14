@@ -1,30 +1,37 @@
 # Why Negative Evidence Integrity Matters
 
-An empty result is often treated as if it were a fact about the world. In an
-agentic system it can instead be a fact about one failed, truncated,
-unauthorized, projected, or unfinished operation. The dangerous transition is
-not merely a bad answer. It is an **authorization bug**: the system uses an
-unearned negative premise to justify stopping or acting.
+An empty result is often presented as a fact about the world. In an agentic
+system it may instead be a fact about one page, one failed shard, one denied
+repository, one authorization scope, or one lossy projection. The transition
+from “I did not observe it” to “it does not exist” is therefore not merely an
+answer-quality defect. It can become an **authorization bug**: an unearned
+negative premise gives the system permission to stop or act.
 
-Examples include a records search that silently omitted repositories, a
-benefits or administrative workflow that could not access part of a file, a
-sanctions screen with a continued page, a vulnerability scan with failed
-targets, or a literature search with a narrowed corpus. ClosureProbe does not
-decide those domains' substantive or legal standards. It tests the narrower
-technical precondition they share: whether the exact query's negative evidence
-survived the computation that relied on it.
+That matters wherever absence changes someone's position: records discovery,
+benefits and administrative files, sanctions screening, vulnerability search,
+compliance review, scientific retrieval, or eligibility workflows. The legal
+perspective is evidentiary and procedural rather than a claim of legal advice:
+which proposition was actually searched, what universe was covered, who bore
+the consequence of incompleteness, and whether uncertainty or recourse was
+preserved before action.
 
-That is why v0.1 has both halves:
+ClosureProbe makes three category errors executable and testable:
 
-- producer-specific profiles establish what completion means at the source;
-- cross-boundary traces establish whether adapters, protocols, clients, and
-  model projections preserved or strengthened that evidence.
+- **page ≠ traversal** — an empty final page cannot erase earlier results;
+- **successful call ≠ closed query** — HTTP or protocol finality does not prove
+  coverage, authority, or exhaustion; and
+- **none ≠ naked token** — a negative must remain attached to its exact subject,
+  predicate, scope, and evidence chain.
 
-A generic `success=true`, a 200 response, or protocol completion cannot replace
-either half. The result is small enough to test deterministically but large
-enough to sit at a consequential decision boundary.
+The product is intentionally smaller than a domain decision system. It does not
+decide whether a sanctions screen, benefits denial, legal search, or medical
+conclusion is substantively correct. It tests a common technical precondition:
+whether the supplied observable computation earned the negative premise it
+used.
 
-The immediate public artifact is measurement and localization. The leverage is
-that the same receiver-revalidated assessment can later feed a runtime gate:
-continue, retry, preserve unknown, request authority, escalate, or block an
-absence-dependent action. See [ROADMAP.md](ROADMAP.md).
+This boundedness is the leverage. Source profiles make producer semantics
+testable; traversal binding prevents page/query confusion; trace analysis finds
+the first observed laundering boundary; proposition binding stops scope drift;
+and receiver revalidation prevents a sender from authorizing its own evidence
+upgrade. What should be built next is determined by where real deployments
+actually fail. See [ROADMAP.md](ROADMAP.md).

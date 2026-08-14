@@ -69,7 +69,10 @@
               "dangerous_mutation",
               "unlicensed_negative",
               "unsupported_upgrade",
-              "query_binding_mismatch"
+              "query_binding_mismatch",
+              "claim_binding_missing",
+              "claim_binding_mismatch",
+              "unverified_evidence_introduction"
             ]
           }
         }

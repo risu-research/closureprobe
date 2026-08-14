@@ -1,49 +1,77 @@
-# ClosureProbe Profile v0.1
+# ClosureProbe Profile v0.2
 
-Status: Release candidate. The normative keywords MUST, MUST NOT, SHOULD, and
-MAY are to be interpreted as requirements of this profile, not as additions to
-the Model Context Protocol or any upstream API standard.
+Status: adversarially hardened release candidate. The normative keywords MUST,
+MUST NOT, SHOULD, and MAY are requirements of this profile, not additions to
+MCP or any upstream API standard.
 
 ## 1. Scope
 
-This profile applies only to finite enumeration or search operations for which
-a producer-specific profile can identify evidence about:
+This profile applies to a supplied, normalized trace of finite enumeration or
+search operations for which a pinned producer profile can validate:
 
-1. the exact request being assessed;
-2. execution status;
-3. observed result cardinality;
-4. query-relative coverage;
-5. continuation or exhaustion; and
-6. validation of the extracted signals.
+1. the exact root request;
+2. the evidence unit—root response, traversal bundle, or page segment;
+3. execution and observed cardinality;
+4. query-relative coverage and continuation;
+5. declared scope; and
+6. the negative proposition, if one is asserted.
 
-It tests **negative-evidence integrity**: whether a downstream stage asserts a
-negative proposition more strongly than the evidence available at that stage
-licenses.
-
-It does not decide whether the producer's data matches reality.
+It tests whether an observed downstream stage asserts absence more strongly
+than the evidence at that stage licenses. It does not determine whether the
+producer's data matches reality.
 
 ## 2. Core invariant
 
-Without new independently validated evidence, a downstream stage MUST NOT
+Without new **receiver-revalidated** evidence, a downstream stage MUST NOT
 upgrade an unlicensed negative into a licensed negative.
 
-Transport may preserve or weaken closure evidence. It MUST NOT silently turn
-partial, continued, denied, failed, mismatched, unbound, or invalid observation
-into a supported assertion of absence.
+Transport may preserve or weaken evidence. It MUST NOT silently turn partial,
+continued, segment-only, denied, failed, mismatched, unbound, or invalid
+observation into a supported assertion of absence.
 
-## 3. Exact-query binding
+## 3. Three independent bindings
 
-Every observation MUST be bound to a canonical request digest. A digest proves
-byte-level identity under the named canonicalization algorithm only. It does not
-prove semantic equivalence between different requests.
+### 3.1 Exact request
 
-ClosureProbe v0.1 uses `closureprobe-canonical-json-v1`, which recursively sorts
-object keys, preserves array order, rejects non-JSON values, and hashes the UTF-8
-serialization with SHA-256.
+Every observation MUST carry the canonical digest of the exact root request.
+`closureprobe-canonical-json-v1` recursively sorts object keys, preserves array
+order, rejects non-JSON values, serializes as UTF-8 JSON, and hashes with
+SHA-256. This establishes canonical identity, not semantic equivalence between
+different requests.
 
-## 4. Independent axes
+### 3.2 Traversal
 
-An implementation MUST preserve these axes independently:
+Every observation MUST distinguish the root request from the currently observed
+segment and MUST classify the evidence unit as one of:
+
+| Status | Meaning |
+| --- | --- |
+| `single_page_complete` | an initial/root response closes the supported query |
+| `aggregate_complete` | a validated chain begins at the exact root and closes at the final traversal signal |
+| `continued` | the captured root traversal still has a continuation |
+| `segment_only` | the response is for a continuation request without validated prior pages |
+| `unknown` | query-level traversal identity cannot be established |
+
+A locally final `segment_only` response MUST NOT be treated as root-query
+closure. An aggregate MUST preserve the root request, validate every page link,
+and derive cardinality across all pages.
+
+### 3.3 Proposition
+
+A trace MUST declare one negative proposition with explicit `subject`,
+`predicate`, and `scope`. A stage that asserts `none` MUST carry a
+`closureprobe-proposition-v1` digest of that exact proposition. A missing or
+mismatched binding is an unlicensed negative even when the local observation
+would otherwise be licensed.
+
+The proposition mapping is supplied by the trace author. Hashing detects
+mutation; it does not prove that a natural-language claim was normalized
+correctly.
+
+Optional `rawDigest` and `artifactDigest` fields are capture metadata. Without
+the corresponding bytes they do not authorize a stronger observation or claim.
+
+## 4. Independent evidence axes
 
 | Axis | Values |
 | --- | --- |
@@ -51,89 +79,95 @@ An implementation MUST preserve these axes independently:
 | cardinality | `zero`, `nonzero`, `unavailable` |
 | coverage | `complete`, `partial`, `unknown` |
 | continuation | `exhausted`, `present`, `unknown` |
+| traversal | `single_page_complete`, `aggregate_complete`, `continued`, `segment_only`, `unknown` |
 | scope binding | `exact`, `narrower`, `mismatch`, `unbound` |
 | validation | `profile_validated`, `declared_only`, `invalid`, `unavailable` |
 
-These axes MUST NOT be collapsed into a single generic success or completeness
-field.
+These axes MUST remain independent. Protocol completion, HTTP success, page
+length, and source-profile validation MUST NOT substitute for one another.
 
 ## 5. Negative-license rule
 
-A negative proposition is licensed only when all of the following are true:
+A negative candidate is licensed only when every predicate is true:
 
 ```text
-execution     = success
-cardinality   = zero
-coverage      = complete
-continuation  = exhausted
-scopeBinding  = exact
-validation    = profile_validated
+execution      = success
+cardinality    = zero
+coverage       = complete
+continuation   = exhausted
+traversal      = single_page_complete OR aggregate_complete
+query digest   = traversal root digest
+scopeBinding   = exact
+queryBinding   = exact
+validation     = profile_validated
 ```
 
-Every other combination is unlicensed for a negative proposition. Nonzero
-results are positive observations and are outside the negative branch.
+Any other combination is not licensed. A nonzero observation is a positive
+branch and is not evaluated as a negative candidate.
 
-`licensed` is limited to the producer-declared and profile-validated query
-scope. It MUST NOT be represented as proof that the proposition is false in the
-world.
+`licensed` means only that the exact producer-declared, profile-validated query
+returned zero over the validated evidence unit and scope. It MUST NOT be
+represented as global, permanent, or metaphysical nonexistence.
 
-## 6. Trace conformance
+## 6. Receiver-revalidated evidence
 
-A trace is an ordered list of stages. A stage records its observation, any
-explicit claim, the digest of its raw representation when available, and whether
-new independently validated evidence was introduced.
+A stage MAY introduce raw evidence. To authorize a stronger downstream state,
+the receiver MUST:
 
-A conforming analyzer MUST report separately:
+1. recompute the supplied request and response digests;
+2. load the exact installed profile ID and version;
+3. reconstruct the observation from the supplied raw request and response; and
+4. compare the reconstruction canonically with the stage observation.
 
-1. **guard-signal loss**: a value that prevented a negative license becomes
-   less informative downstream;
-2. **dangerous mutation**: a guard value becomes a value favorable to a
-   negative license without new evidence;
-3. **query-binding mismatch**: an observation digest does not match the trace's
-   canonical request digest;
-4. **unlicensed negative**: a stage asserts `none` while its local observation
-   does not license that claim; and
-5. **unsupported upgrade**: a downstream stage becomes negative-licensed while
-   the immediately preceding stage was not, without new validated evidence.
+A boolean self-attestation or serialized assessment alone MUST NOT suppress a
+dangerous-mutation or unsupported-upgrade finding. Revalidation proves only
+consistency with the pinned profile and supplied bytes; it does not authenticate
+their source.
 
-The analyzer MUST identify the earliest stage and boundary for each finding.
+## 7. Trace findings
 
-## 7. Source profiles
+A conforming analyzer MUST report independently:
 
-Source profiles are conservative. An unrecognized, missing, or ambiguous source
-signal MUST yield `unknown`, never `complete` or `exhausted` by default.
+1. `guard_signal_loss` when an explicit blocker becomes unknown;
+2. `dangerous_mutation` when an unfavorable guard becomes favorable without
+   receiver-revalidated evidence;
+3. `unsupported_upgrade` when negative-license state strengthens without such
+   evidence;
+4. `query_binding_mismatch` when a stage is bound to another root request;
+5. `claim_binding_missing` or `claim_binding_mismatch` for a naked or shifted
+   `none`;
+6. `unverified_evidence_introduction` when reconstruction fails; and
+7. `unlicensed_negative` when the stage's exact query, proposition, and local
+   evidence do not jointly license its `none` claim.
 
-Profiles MUST state the exact response and request conditions they support.
-Unsupported variants MUST fail closed.
+The analyzer MUST identify the earliest observed stage or boundary. A missing
+stage is an observation limitation, never an implicit pass.
 
-## 8. MCP boundary
+## 8. Source-profile discipline
 
-MCP `resultType: "complete"` means the protocol request completed and MUST NOT
-be interpreted as query-relative coverage or search exhaustion.
+Source profiles MUST state their supported operation and evidence units.
+Unrecognized, missing, malformed, or ambiguous source signals MUST fail closed.
 
-Closure data MAY be carried in structured content, text content, or a profile
-extension. ClosureProbe records those carriers independently and tests the
-client's model-facing projection rather than assuming wire receipt equals model
-visibility.
+Profile v0.2 specifically distinguishes Drive `pageToken`, DynamoDB
+`ExclusiveStartKey`, Relay `after`, and Graph `@odata.nextLink` segments from a
+complete root traversal. Relay support is forward-only. Microsoft Graph delta
+support requires the entire supplied root-to-`@odata.deltaLink` round.
+Elasticsearch support requires an exact total over a nonempty, fully successful
+shard set and rejects timeout or early-termination conditions.
 
-## 9. Receiver authority
+## 9. MCP boundary
 
-Serialized assessments are evidence inputs, not validation authority. A receiver
-that relies on an imported trace or report SHOULD reconstruct the observation
-from the supplied raw artifact and pinned source profile whenever possible.
+MCP `resultType: "complete"` denotes protocol-result finality and MUST NOT be
+interpreted as query-relative search coverage or exhaustion. Closure evidence
+may be carried in structured content or text, but a conformance result concerns
+what survived each supplied observable boundary, not merely what existed on the
+wire.
 
 ## 10. Conformance claim
 
-A conformance claim MUST identify:
-
-- ClosureProbe version;
-- corpus version or case identifiers;
-- source-profile versions;
-- target and target version;
-- observable boundaries;
-- unobservable boundaries;
-- exact commands; and
-- raw evidence hashes.
+A published result MUST identify ClosureProbe, corpus, and source-profile
+versions; target and target version; exact commands; case IDs; observable and
+hidden boundaries; repetition policy where applicable; and raw artifact hashes.
 
 Passing this profile does not establish general MCP conformance, source truth,
-legal compliance, safety, or fitness for a particular decision.
+legal compliance, safety, or fitness for a consequential decision.

@@ -23,6 +23,8 @@
           "cardinality_not_zero",
           "coverage_not_complete",
           "continuation_not_exhausted",
+          "traversal_not_query_complete",
+          "binding_inconsistent",
           "scope_not_exact",
           "validation_not_profile_validated"
         ]

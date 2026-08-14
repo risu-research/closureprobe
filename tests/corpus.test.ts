@@ -11,10 +11,10 @@ import { validateSourceProfileDescriptor } from "../src/validation.js";
 const projectRoot = fileURLToPath(new URL("../../", import.meta.url));
 
 test("the frozen corpus is schema-valid and fully agrees with the oracle", () => {
-  const result = runCorpus(readCorpus(`${projectRoot}corpus/v0.1/cases.json`));
-  assert.equal(result.total, 40);
+  const result = runCorpus(readCorpus(`${projectRoot}corpus/v0.2/cases.json`));
+  assert.equal(result.total, 45);
   assert.equal(result.failed, 0);
-  assert.equal(result.passed, 40);
+  assert.equal(result.passed, 45);
 });
 
 test("all distributed source-profile descriptors validate", () => {
@@ -29,9 +29,9 @@ test("all distributed source-profile descriptors validate", () => {
 });
 
 test("the evidence report is self-contained and states its limit", () => {
-  const result = runCorpus(readCorpus(`${projectRoot}corpus/v0.1/cases.json`));
+  const result = runCorpus(readCorpus(`${projectRoot}corpus/v0.2/cases.json`));
   const html = corpusResultHtml(result);
-  assert.match(html, /40<\/strong><span>cases/);
+  assert.match(html, /45<\/strong><span>cases/);
   assert.match(html, /does not prove source truth/);
   assert.doesNotMatch(html, /<script|https?:\/\//i);
 });

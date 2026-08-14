@@ -35,6 +35,7 @@ const inputSchema = fromJsonSchema<ProbeInput>({
         "denied-zero",
         "failed-zero",
         "scope-mismatch-zero",
+        "segment-zero",
       ],
     },
     carrier: { type: "string", enum: ["dual", "structured-only", "text-only"] },

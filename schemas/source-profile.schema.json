@@ -10,6 +10,8 @@
     "title",
     "authority",
     "supportedOperation",
+    "negativeProposition",
+    "supportedEvidenceUnits",
     "conservativeDefaults",
     "references"
   ],
@@ -19,6 +21,19 @@
     "title": { "type": "string", "minLength": 1 },
     "authority": { "type": "string", "format": "uri" },
     "supportedOperation": { "type": "string", "minLength": 1 },
+    "negativeProposition": { "type": "string", "minLength": 1 },
+    "supportedEvidenceUnits": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "controlled_fixture",
+          "single_root_response",
+          "validated_traversal_bundle"
+        ]
+      }
+    },
     "conservativeDefaults": {
       "type": "object",
       "additionalProperties": false,

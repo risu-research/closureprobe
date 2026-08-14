@@ -1,14 +1,20 @@
 # Roadmap
 
-ClosureProbe v0.1 deliberately stops at measurement and localization.
+ClosureProbe rc2 deliberately stops at executable measurement and localization.
+It does not pre-announce a fixed P6 or mechanically force earlier projects into
+one architecture.
 
-The next runtime primitive is **ClosureGate**: a policy-enforcement point that
-consumes a receiver-revalidated closure assessment before an agent may stop,
-assert absence, or take an absence-dependent action. A gate could preserve
-unknown, continue pagination, retry, request broader authority, escalate, or
-block the action. ClosureProbe supplies its conformance contract and regression
-corpus; it does not pretend that measurement itself is enforcement.
+The next primitive should be selected by evidence from actual ClosureProbe use:
 
-Longer-term work may combine closure integrity with decision-state and recourse
-signals. That integration should happen only at a real decision boundary, not
-by mechanically concatenating schemas from separate projects.
+| Observed bottleneck | High-leverage next primitive |
+| --- | --- |
+| guard loss clusters in adapters or clients | preservation adapters or a runtime decision gate |
+| trace capture is the dominant cost | target-specific capture and normalization kits |
+| new producer semantics dominate failures | a reviewed profile registry and profile-authoring verifier |
+| absence-dependent actions need accountable review | signed evidence packets, policy hooks, and recourse-aware decision records |
+| none of these produces real demand | do not build the sequel yet |
+
+A runtime gate remains one candidate, not a foregone conclusion. Any later
+integration with decision state, legal process, or recourse must occur at a real
+decision boundary and add enforceable semantics—not simply concatenate schemas
+or project names.

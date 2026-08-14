@@ -9,6 +9,8 @@ export const BLOCKER_ORDER: readonly Blocker[] = [
   "cardinality_not_zero",
   "coverage_not_complete",
   "continuation_not_exhausted",
+  "traversal_not_query_complete",
+  "binding_inconsistent",
   "scope_not_exact",
   "validation_not_profile_validated",
 ];
@@ -35,6 +37,18 @@ export function assessClosure(observation: ClosureObservation): ClosureAssessmen
   }
   if (observation.continuation !== "exhausted") {
     blockers.push("continuation_not_exhausted");
+  }
+  if (
+    observation.traversalBinding.status !== "single_page_complete" &&
+    observation.traversalBinding.status !== "aggregate_complete"
+  ) {
+    blockers.push("traversal_not_query_complete");
+  }
+  if (
+    observation.queryBinding.requestDigest !==
+    observation.traversalBinding.rootRequestDigest
+  ) {
+    blockers.push("binding_inconsistent");
   }
   if (
     observation.scopeBinding !== "exact" ||

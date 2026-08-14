@@ -7,7 +7,8 @@ export type ProbeScenario =
   | "continued-zero"
   | "denied-zero"
   | "failed-zero"
-  | "scope-mismatch-zero";
+  | "scope-mismatch-zero"
+  | "segment-zero";
 export type ProbeCarrier = "dual" | "structured-only" | "text-only";
 
 export interface ProbePayload {
@@ -36,11 +37,24 @@ export function createProbePayload(
     request,
     observation: {
       profileId: "closureprobe-controlled-probe",
-      profileVersion: "0.1.0",
+      profileVersion: "0.2.0",
       queryBinding: {
         algorithm: "closureprobe-canonical-json-v1",
         requestDigest: sha256Digest(request),
         status: scopeBinding,
+      },
+      traversalBinding: {
+        algorithm: "closureprobe-traversal-v1",
+        rootRequestDigest: sha256Digest(request),
+        segmentRequestDigest: sha256Digest(request),
+        status: scenario === "complete-zero" || scenario === "scope-mismatch-zero"
+          ? "single_page_complete"
+          : scenario === "continued-zero"
+            ? "continued"
+            : scenario === "segment-zero"
+              ? "segment_only"
+              : "unknown",
+        pageCount: 1,
       },
       execution,
       cardinality: "zero",

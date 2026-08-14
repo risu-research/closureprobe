@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ClosureProbe closureprobe-corpus-v0.1.0 evidence</title>
+  <title>ClosureProbe closureprobe-corpus-v0.2.0 evidence</title>
   <style>
     :root { color-scheme: light; --ink:#15231c; --muted:#5c6b63; --paper:#f4f7f5; --card:#fff; --ok:#17643a; --bad:#a1252b; --line:#d7e0da; }
     * { box-sizing:border-box; }
@@ -29,19 +29,19 @@
 <body>
 <main>
   <h1>ClosureProbe <span class="pill pass">PASS</span></h1>
-  <p class="subtitle">Deterministic negative-evidence integrity conformance · closureprobe-corpus-v0.1.0</p>
+  <p class="subtitle">Deterministic negative-evidence integrity conformance · closureprobe-corpus-v0.2.0</p>
   <section class="summary" aria-label="Summary">
-    <div class="metric"><strong>40</strong><span>cases</span></div>
-    <div class="metric"><strong>40</strong><span>passed</span></div>
+    <div class="metric"><strong>45</strong><span>cases</span></div>
+    <div class="metric"><strong>45</strong><span>passed</span></div>
     <div class="metric"><strong>0</strong><span>failed</span></div>
-    <div class="metric"><strong>0.1.0-rc1</strong><span>tool version</span></div>
+    <div class="metric"><strong>0.1.0-rc2</strong><span>tool version</span></div>
   </section>
   <table>
     <thead><tr><th>Case</th><th>Meaning</th><th>Result</th><th>Evidence</th></tr></thead>
     <tbody>
         <tr>
           <td><code>GEN-001</code></td>
-          <td>Explicit complete empty enumeration licenses the exact negative</td>
+          <td>Explicit complete root traversal licenses the exact negative</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
@@ -58,74 +58,76 @@
         </tr>
         <tr>
           <td><code>GEN-002</code></td>
-          <td>Partial empty enumeration remains unknown</td>
+          <td>Partial coverage remains unlicensed even when the page ended</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
     &quot;branch&quot;: &quot;negative_candidate&quot;,
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
-      &quot;coverage_not_complete&quot;
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
     ]
   },
   &quot;actual&quot;: {
     &quot;branch&quot;: &quot;negative_candidate&quot;,
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
-      &quot;coverage_not_complete&quot;
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
     ]
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>GEN-003</code></td>
-          <td>A continuation token blocks a negative</td>
+          <td>Continued zero is not query-level absence</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
     &quot;branch&quot;: &quot;negative_candidate&quot;,
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
-      &quot;continuation_not_exhausted&quot;
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
     ]
   },
   &quot;actual&quot;: {
     &quot;branch&quot;: &quot;negative_candidate&quot;,
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
-      &quot;continuation_not_exhausted&quot;
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
     ]
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>GEN-004</code></td>
-          <td>Denied execution is not evidence of absence</td>
+          <td>Final continuation segment remains unlicensed after local exhaustion</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
     &quot;branch&quot;: &quot;negative_candidate&quot;,
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
-      &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;,
-      &quot;execution_not_success&quot;
+      &quot;traversal_not_query_complete&quot;
     ]
   },
   &quot;actual&quot;: {
     &quot;branch&quot;: &quot;negative_candidate&quot;,
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
-      &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;,
-      &quot;execution_not_success&quot;
+      &quot;traversal_not_query_complete&quot;
     ]
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>GEN-005</code></td>
-          <td>Failed execution is not evidence of absence</td>
+          <td>Denied execution does not become an empty result</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
@@ -134,7 +136,8 @@
     &quot;blockers&quot;: [
       &quot;continuation_not_exhausted&quot;,
       &quot;coverage_not_complete&quot;,
-      &quot;execution_not_success&quot;
+      &quot;execution_not_success&quot;,
+      &quot;traversal_not_query_complete&quot;
     ]
   },
   &quot;actual&quot;: {
@@ -143,85 +146,15 @@
     &quot;blockers&quot;: [
       &quot;continuation_not_exhausted&quot;,
       &quot;coverage_not_complete&quot;,
-      &quot;execution_not_success&quot;
+      &quot;execution_not_success&quot;,
+      &quot;traversal_not_query_complete&quot;
     ]
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>GEN-006</code></td>
-          <td>Scope mismatch blocks a negative</td>
-          <td><span class="pill pass">PASS</span></td>
-          <td><details><summary>Expected / actual</summary><pre>{
-  &quot;expected&quot;: {
-    &quot;branch&quot;: &quot;negative_candidate&quot;,
-    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
-    &quot;blockers&quot;: [
-      &quot;scope_not_exact&quot;
-    ]
-  },
-  &quot;actual&quot;: {
-    &quot;branch&quot;: &quot;negative_candidate&quot;,
-    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
-    &quot;blockers&quot;: [
-      &quot;scope_not_exact&quot;
-    ]
-  }
-}</pre></details></td>
-        </tr>
-        <tr>
-          <td><code>GEN-007</code></td>
-          <td>Unbound response cannot license the requested proposition</td>
-          <td><span class="pill pass">PASS</span></td>
-          <td><details><summary>Expected / actual</summary><pre>{
-  &quot;expected&quot;: {
-    &quot;branch&quot;: &quot;negative_candidate&quot;,
-    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
-    &quot;blockers&quot;: [
-      &quot;scope_not_exact&quot;
-    ]
-  },
-  &quot;actual&quot;: {
-    &quot;branch&quot;: &quot;negative_candidate&quot;,
-    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
-    &quot;blockers&quot;: [
-      &quot;scope_not_exact&quot;
-    ]
-  }
-}</pre></details></td>
-        </tr>
-        <tr>
-          <td><code>GEN-008</code></td>
-          <td>Malformed envelope fails closed without erasing observed zero</td>
-          <td><span class="pill pass">PASS</span></td>
-          <td><details><summary>Expected / actual</summary><pre>{
-  &quot;expected&quot;: {
-    &quot;branch&quot;: &quot;negative_candidate&quot;,
-    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
-    &quot;blockers&quot;: [
-      &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;,
-      &quot;execution_not_success&quot;,
-      &quot;scope_not_exact&quot;,
-      &quot;validation_not_profile_validated&quot;
-    ]
-  },
-  &quot;actual&quot;: {
-    &quot;branch&quot;: &quot;negative_candidate&quot;,
-    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
-    &quot;blockers&quot;: [
-      &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;,
-      &quot;execution_not_success&quot;,
-      &quot;scope_not_exact&quot;,
-      &quot;validation_not_profile_validated&quot;
-    ]
-  }
-}</pre></details></td>
-        </tr>
-        <tr>
-          <td><code>GEN-009</code></td>
-          <td>A positive observation leaves the negative branch</td>
+          <td>Positive observation exits the negative branch</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
@@ -233,33 +166,12 @@
     &quot;branch&quot;: &quot;positive_observed&quot;,
     &quot;negativeLicense&quot;: &quot;not_applicable&quot;,
     &quot;blockers&quot;: []
-  }
-}</pre></details></td>
-        </tr>
-        <tr>
-          <td><code>GEN-010</code></td>
-          <td>Missing cardinality cannot become zero by default</td>
-          <td><span class="pill pass">PASS</span></td>
-          <td><details><summary>Expected / actual</summary><pre>{
-  &quot;expected&quot;: {
-    &quot;branch&quot;: &quot;no_result_claim&quot;,
-    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
-    &quot;blockers&quot;: [
-      &quot;cardinality_not_zero&quot;
-    ]
-  },
-  &quot;actual&quot;: {
-    &quot;branch&quot;: &quot;no_result_claim&quot;,
-    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
-    &quot;blockers&quot;: [
-      &quot;cardinality_not_zero&quot;
-    ]
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>DRV-001</code></td>
-          <td>Drive empty final page with explicit projection licenses a negative</td>
+          <td>Drive initial final zero licenses the bounded query</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
@@ -276,93 +188,87 @@
         </tr>
         <tr>
           <td><code>DRV-002</code></td>
-          <td>Drive incompleteSearch true blocks absence</td>
+          <td>Drive final continuation page alone is segment-only</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
     &quot;branch&quot;: &quot;negative_candidate&quot;,
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
-      &quot;coverage_not_complete&quot;
+      &quot;traversal_not_query_complete&quot;
     ]
   },
   &quot;actual&quot;: {
     &quot;branch&quot;: &quot;negative_candidate&quot;,
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
-      &quot;coverage_not_complete&quot;
+      &quot;traversal_not_query_complete&quot;
     ]
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>DRV-003</code></td>
-          <td>Drive nextPageToken blocks absence even on empty page</td>
+          <td>Drive nextPageToken blocks root-query absence</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
     &quot;branch&quot;: &quot;negative_candidate&quot;,
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
-      &quot;continuation_not_exhausted&quot;
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
     ]
   },
   &quot;actual&quot;: {
     &quot;branch&quot;: &quot;negative_candidate&quot;,
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
-      &quot;continuation_not_exhausted&quot;
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
     ]
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>DRV-004</code></td>
-          <td>Projected but missing Drive completeness signal fails closed</td>
+          <td>Token-linked all-zero Drive traversal licenses the root query</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
     &quot;branch&quot;: &quot;negative_candidate&quot;,
-    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
-    &quot;blockers&quot;: [
-      &quot;coverage_not_complete&quot;
-    ]
+    &quot;negativeLicense&quot;: &quot;licensed&quot;,
+    &quot;blockers&quot;: []
   },
   &quot;actual&quot;: {
     &quot;branch&quot;: &quot;negative_candidate&quot;,
-    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
-    &quot;blockers&quot;: [
-      &quot;coverage_not_complete&quot;
-    ]
+    &quot;negativeLicense&quot;: &quot;licensed&quot;,
+    &quot;blockers&quot;: []
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>DRV-005</code></td>
-          <td>Drive field projection can erase closure signals</td>
+          <td>Earlier Drive hit survives a final empty page</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
-    &quot;branch&quot;: &quot;negative_candidate&quot;,
-    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
-    &quot;blockers&quot;: [
-      &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;
-    ]
+    &quot;branch&quot;: &quot;positive_observed&quot;,
+    &quot;negativeLicense&quot;: &quot;not_applicable&quot;,
+    &quot;blockers&quot;: []
   },
   &quot;actual&quot;: {
-    &quot;branch&quot;: &quot;negative_candidate&quot;,
-    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
-    &quot;blockers&quot;: [
-      &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;
-    ]
+    &quot;branch&quot;: &quot;positive_observed&quot;,
+    &quot;negativeLicense&quot;: &quot;not_applicable&quot;,
+    &quot;blockers&quot;: []
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>DRV-006</code></td>
-          <td>Drive authorization denial cannot masquerade as empty files</td>
+          <td>Drive bundle with a broken token chain fails closed</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
@@ -372,7 +278,10 @@
       &quot;cardinality_not_zero&quot;,
       &quot;continuation_not_exhausted&quot;,
       &quot;coverage_not_complete&quot;,
-      &quot;execution_not_success&quot;
+      &quot;execution_not_success&quot;,
+      &quot;scope_not_exact&quot;,
+      &quot;traversal_not_query_complete&quot;,
+      &quot;validation_not_profile_validated&quot;
     ]
   },
   &quot;actual&quot;: {
@@ -382,71 +291,130 @@
       &quot;cardinality_not_zero&quot;,
       &quot;continuation_not_exhausted&quot;,
       &quot;coverage_not_complete&quot;,
-      &quot;execution_not_success&quot;
+      &quot;execution_not_success&quot;,
+      &quot;scope_not_exact&quot;,
+      &quot;traversal_not_query_complete&quot;,
+      &quot;validation_not_profile_validated&quot;
     ]
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>DDB-001</code></td>
-          <td>DynamoDB LastEvaluatedKey makes an empty page partial</td>
+          <td>DynamoDB initial final zero licenses the root Query</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
     &quot;branch&quot;: &quot;negative_candidate&quot;,
-    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
-    &quot;blockers&quot;: [
-      &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;
-    ]
+    &quot;negativeLicense&quot;: &quot;licensed&quot;,
+    &quot;blockers&quot;: []
   },
   &quot;actual&quot;: {
     &quot;branch&quot;: &quot;negative_candidate&quot;,
-    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
-    &quot;blockers&quot;: [
-      &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;
-    ]
+    &quot;negativeLicense&quot;: &quot;licensed&quot;,
+    &quot;blockers&quot;: []
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>DDB-002</code></td>
-          <td>DynamoDB final empty query page licenses the bounded negative</td>
+          <td>DynamoDB final ExclusiveStartKey segment is not root-query absence</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
     &quot;branch&quot;: &quot;negative_candidate&quot;,
-    &quot;negativeLicense&quot;: &quot;licensed&quot;,
-    &quot;blockers&quot;: []
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;traversal_not_query_complete&quot;
+    ]
   },
   &quot;actual&quot;: {
     &quot;branch&quot;: &quot;negative_candidate&quot;,
-    &quot;negativeLicense&quot;: &quot;licensed&quot;,
-    &quot;blockers&quot;: []
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;traversal_not_query_complete&quot;
+    ]
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>DDB-003</code></td>
-          <td>DynamoDB observed item leaves the negative branch</td>
+          <td>DynamoDB LastEvaluatedKey blocks root-query absence</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
-    &quot;branch&quot;: &quot;positive_observed&quot;,
-    &quot;negativeLicense&quot;: &quot;not_applicable&quot;,
+    &quot;branch&quot;: &quot;negative_candidate&quot;,
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
+    ]
+  },
+  &quot;actual&quot;: {
+    &quot;branch&quot;: &quot;negative_candidate&quot;,
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
+    ]
+  }
+}</pre></details></td>
+        </tr>
+        <tr>
+          <td><code>DDB-004</code></td>
+          <td>Key-linked all-zero DynamoDB traversal licenses the root Query</td>
+          <td><span class="pill pass">PASS</span></td>
+          <td><details><summary>Expected / actual</summary><pre>{
+  &quot;expected&quot;: {
+    &quot;branch&quot;: &quot;negative_candidate&quot;,
+    &quot;negativeLicense&quot;: &quot;licensed&quot;,
     &quot;blockers&quot;: []
   },
   &quot;actual&quot;: {
-    &quot;branch&quot;: &quot;positive_observed&quot;,
-    &quot;negativeLicense&quot;: &quot;not_applicable&quot;,
+    &quot;branch&quot;: &quot;negative_candidate&quot;,
+    &quot;negativeLicense&quot;: &quot;licensed&quot;,
     &quot;blockers&quot;: []
   }
 }</pre></details></td>
         </tr>
         <tr>
+          <td><code>DDB-005</code></td>
+          <td>DynamoDB aggregate with a broken key chain fails closed</td>
+          <td><span class="pill pass">PASS</span></td>
+          <td><details><summary>Expected / actual</summary><pre>{
+  &quot;expected&quot;: {
+    &quot;branch&quot;: &quot;no_result_claim&quot;,
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;cardinality_not_zero&quot;,
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;execution_not_success&quot;,
+      &quot;scope_not_exact&quot;,
+      &quot;traversal_not_query_complete&quot;,
+      &quot;validation_not_profile_validated&quot;
+    ]
+  },
+  &quot;actual&quot;: {
+    &quot;branch&quot;: &quot;no_result_claim&quot;,
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;cardinality_not_zero&quot;,
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;execution_not_success&quot;,
+      &quot;scope_not_exact&quot;,
+      &quot;traversal_not_query_complete&quot;,
+      &quot;validation_not_profile_validated&quot;
+    ]
+  }
+}</pre></details></td>
+        </tr>
+        <tr>
           <td><code>ES-001</code></td>
-          <td>Elasticsearch exact zero across all successful shards licenses a negative</td>
+          <td>Elasticsearch exact zero over a nonempty successful shard set licenses a negative</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
@@ -463,7 +431,7 @@
         </tr>
         <tr>
           <td><code>ES-002</code></td>
-          <td>Elasticsearch timeout blocks absence</td>
+          <td>Elasticsearch timeout blocks closure</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
@@ -471,7 +439,8 @@
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
       &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
     ]
   },
   &quot;actual&quot;: {
@@ -479,14 +448,15 @@
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
       &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
     ]
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>ES-003</code></td>
-          <td>Elasticsearch shard failure blocks absence</td>
+          <td>Elasticsearch terminated_early blocks closure</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
@@ -494,7 +464,8 @@
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
       &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
     ]
   },
   &quot;actual&quot;: {
@@ -502,14 +473,15 @@
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
       &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
     ]
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>ES-004</code></td>
-          <td>Elasticsearch lower-bound total is not exact zero</td>
+          <td>Elasticsearch failed shard blocks closure</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
@@ -517,7 +489,8 @@
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
       &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
     ]
   },
   &quot;actual&quot;: {
@@ -525,37 +498,42 @@
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
       &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
     ]
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>ES-005</code></td>
-          <td>Unsupported terminate_after request fails closed</td>
+          <td>Elasticsearch lower-bound total cannot establish zero cardinality</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
-    &quot;branch&quot;: &quot;negative_candidate&quot;,
+    &quot;branch&quot;: &quot;no_result_claim&quot;,
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
+      &quot;cardinality_not_zero&quot;,
       &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
     ]
   },
   &quot;actual&quot;: {
-    &quot;branch&quot;: &quot;negative_candidate&quot;,
+    &quot;branch&quot;: &quot;no_result_claim&quot;,
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
+      &quot;cardinality_not_zero&quot;,
       &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
     ]
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>ES-006</code></td>
-          <td>Elasticsearch observed hit leaves the negative branch</td>
+          <td>Exact total preserves a positive even when size zero returns no hit objects</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
@@ -571,8 +549,33 @@
 }</pre></details></td>
         </tr>
         <tr>
+          <td><code>ES-007</code></td>
+          <td>Zero resolved shards fails closed</td>
+          <td><span class="pill pass">PASS</span></td>
+          <td><details><summary>Expected / actual</summary><pre>{
+  &quot;expected&quot;: {
+    &quot;branch&quot;: &quot;negative_candidate&quot;,
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
+    ]
+  },
+  &quot;actual&quot;: {
+    &quot;branch&quot;: &quot;negative_candidate&quot;,
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
+    ]
+  }
+}</pre></details></td>
+        </tr>
+        <tr>
           <td><code>GQL-001</code></td>
-          <td>Relay final empty connection licenses the bounded negative</td>
+          <td>Relay forward root with no next page licenses a negative</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
@@ -589,7 +592,7 @@
         </tr>
         <tr>
           <td><code>GQL-002</code></td>
-          <td>Relay hasNextPage true blocks absence</td>
+          <td>Relay hasNextPage true blocks closure</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
@@ -597,7 +600,8 @@
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
       &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
     ]
   },
   &quot;actual&quot;: {
@@ -605,14 +609,67 @@
     &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
     &quot;blockers&quot;: [
       &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;
+      &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
     ]
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>GQL-003</code></td>
-          <td>GraphQL errors preserve partiality even with data</td>
+          <td>Relay backward pagination is outside the forward profile</td>
+          <td><span class="pill pass">PASS</span></td>
+          <td><details><summary>Expected / actual</summary><pre>{
+  &quot;expected&quot;: {
+    &quot;branch&quot;: &quot;negative_candidate&quot;,
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;execution_not_success&quot;,
+      &quot;scope_not_exact&quot;,
+      &quot;traversal_not_query_complete&quot;,
+      &quot;validation_not_profile_validated&quot;
+    ]
+  },
+  &quot;actual&quot;: {
+    &quot;branch&quot;: &quot;negative_candidate&quot;,
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;execution_not_success&quot;,
+      &quot;scope_not_exact&quot;,
+      &quot;traversal_not_query_complete&quot;,
+      &quot;validation_not_profile_validated&quot;
+    ]
+  }
+}</pre></details></td>
+        </tr>
+        <tr>
+          <td><code>GQL-004</code></td>
+          <td>Relay final after-cursor response is segment-only</td>
+          <td><span class="pill pass">PASS</span></td>
+          <td><details><summary>Expected / actual</summary><pre>{
+  &quot;expected&quot;: {
+    &quot;branch&quot;: &quot;negative_candidate&quot;,
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;traversal_not_query_complete&quot;
+    ]
+  },
+  &quot;actual&quot;: {
+    &quot;branch&quot;: &quot;negative_candidate&quot;,
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;traversal_not_query_complete&quot;
+    ]
+  }
+}</pre></details></td>
+        </tr>
+        <tr>
+          <td><code>GQL-005</code></td>
+          <td>GraphQL errors block closure despite a final page</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
@@ -635,7 +692,7 @@
         </tr>
         <tr>
           <td><code>MSG-001</code></td>
-          <td>Graph deltaLink closes an empty delta traversal</td>
+          <td>Single-page zero Graph delta round licenses its exact proposition</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
@@ -652,53 +709,41 @@
         </tr>
         <tr>
           <td><code>MSG-002</code></td>
-          <td>Graph nextLink preserves continuation</td>
+          <td>Two-page all-zero Graph delta traversal licenses the round</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
     &quot;branch&quot;: &quot;negative_candidate&quot;,
-    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
-    &quot;blockers&quot;: [
-      &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;
-    ]
+    &quot;negativeLicense&quot;: &quot;licensed&quot;,
+    &quot;blockers&quot;: []
   },
   &quot;actual&quot;: {
     &quot;branch&quot;: &quot;negative_candidate&quot;,
-    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
-    &quot;blockers&quot;: [
-      &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;
-    ]
+    &quot;negativeLicense&quot;: &quot;licensed&quot;,
+    &quot;blockers&quot;: []
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>MSG-003</code></td>
-          <td>Missing Graph traversal link fails closed</td>
+          <td>Earlier Graph item survives a final empty deltaLink page</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
-    &quot;branch&quot;: &quot;negative_candidate&quot;,
-    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
-    &quot;blockers&quot;: [
-      &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;
-    ]
+    &quot;branch&quot;: &quot;positive_observed&quot;,
+    &quot;negativeLicense&quot;: &quot;not_applicable&quot;,
+    &quot;blockers&quot;: []
   },
   &quot;actual&quot;: {
-    &quot;branch&quot;: &quot;negative_candidate&quot;,
-    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
-    &quot;blockers&quot;: [
-      &quot;continuation_not_exhausted&quot;,
-      &quot;coverage_not_complete&quot;
-    ]
+    &quot;branch&quot;: &quot;positive_observed&quot;,
+    &quot;negativeLicense&quot;: &quot;not_applicable&quot;,
+    &quot;blockers&quot;: []
   }
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>MSG-004</code></td>
-          <td>Conflicting Graph next and delta links invalidate closure</td>
+          <td>Captured Graph bundle ending at nextLink remains incomplete</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: {
@@ -707,7 +752,7 @@
     &quot;blockers&quot;: [
       &quot;continuation_not_exhausted&quot;,
       &quot;coverage_not_complete&quot;,
-      &quot;validation_not_profile_validated&quot;
+      &quot;traversal_not_query_complete&quot;
     ]
   },
   &quot;actual&quot;: {
@@ -716,6 +761,72 @@
     &quot;blockers&quot;: [
       &quot;continuation_not_exhausted&quot;,
       &quot;coverage_not_complete&quot;,
+      &quot;traversal_not_query_complete&quot;
+    ]
+  }
+}</pre></details></td>
+        </tr>
+        <tr>
+          <td><code>MSG-005</code></td>
+          <td>Graph delta bundle with a broken nextLink chain fails closed</td>
+          <td><span class="pill pass">PASS</span></td>
+          <td><details><summary>Expected / actual</summary><pre>{
+  &quot;expected&quot;: {
+    &quot;branch&quot;: &quot;no_result_claim&quot;,
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;cardinality_not_zero&quot;,
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;execution_not_success&quot;,
+      &quot;scope_not_exact&quot;,
+      &quot;traversal_not_query_complete&quot;,
+      &quot;validation_not_profile_validated&quot;
+    ]
+  },
+  &quot;actual&quot;: {
+    &quot;branch&quot;: &quot;no_result_claim&quot;,
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;cardinality_not_zero&quot;,
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;execution_not_success&quot;,
+      &quot;scope_not_exact&quot;,
+      &quot;traversal_not_query_complete&quot;,
+      &quot;validation_not_profile_validated&quot;
+    ]
+  }
+}</pre></details></td>
+        </tr>
+        <tr>
+          <td><code>MSG-006</code></td>
+          <td>Graph nextLink URL cannot be relabeled as a root round</td>
+          <td><span class="pill pass">PASS</span></td>
+          <td><details><summary>Expected / actual</summary><pre>{
+  &quot;expected&quot;: {
+    &quot;branch&quot;: &quot;no_result_claim&quot;,
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;cardinality_not_zero&quot;,
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;execution_not_success&quot;,
+      &quot;scope_not_exact&quot;,
+      &quot;traversal_not_query_complete&quot;,
+      &quot;validation_not_profile_validated&quot;
+    ]
+  },
+  &quot;actual&quot;: {
+    &quot;branch&quot;: &quot;no_result_claim&quot;,
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;cardinality_not_zero&quot;,
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;execution_not_success&quot;,
+      &quot;scope_not_exact&quot;,
+      &quot;traversal_not_query_complete&quot;,
       &quot;validation_not_profile_validated&quot;
     ]
   }
@@ -723,7 +834,7 @@
         </tr>
         <tr>
           <td><code>TRC-001</code></td>
-          <td>Preserved continuation remains conformant when no absence is asserted</td>
+          <td>Preserved continuation remains conformant without a negative claim</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: [],
@@ -732,14 +843,16 @@
         </tr>
         <tr>
           <td><code>TRC-002</code></td>
-          <td>Earliest loss of partial and continuation guards is localized</td>
+          <td>Coverage continuation and traversal guard loss are localized separately</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: [
     &quot;guard_signal_loss&quot;,
+    &quot;guard_signal_loss&quot;,
     &quot;guard_signal_loss&quot;
   ],
   &quot;actual&quot;: [
+    &quot;guard_signal_loss&quot;,
     &quot;guard_signal_loss&quot;,
     &quot;guard_signal_loss&quot;
   ]
@@ -747,15 +860,17 @@
         </tr>
         <tr>
           <td><code>TRC-003</code></td>
-          <td>Lost guards followed by NONE yields separate transport and claim findings</td>
+          <td>Guard loss followed by proposition-bound NONE yields a separate claim finding</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: [
     &quot;guard_signal_loss&quot;,
     &quot;guard_signal_loss&quot;,
+    &quot;guard_signal_loss&quot;,
     &quot;unlicensed_negative&quot;
   ],
   &quot;actual&quot;: [
+    &quot;guard_signal_loss&quot;,
     &quot;guard_signal_loss&quot;,
     &quot;guard_signal_loss&quot;,
     &quot;unlicensed_negative&quot;
@@ -764,15 +879,17 @@
         </tr>
         <tr>
           <td><code>TRC-004</code></td>
-          <td>Structured carrier loss is visible at the client boundary before model assertion</td>
+          <td>Structured carrier loss is visible before the model claim</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: [
     &quot;guard_signal_loss&quot;,
     &quot;guard_signal_loss&quot;,
+    &quot;guard_signal_loss&quot;,
     &quot;unlicensed_negative&quot;
   ],
   &quot;actual&quot;: [
+    &quot;guard_signal_loss&quot;,
     &quot;guard_signal_loss&quot;,
     &quot;guard_signal_loss&quot;,
     &quot;unlicensed_negative&quot;
@@ -781,7 +898,7 @@
         </tr>
         <tr>
           <td><code>TRC-005</code></td>
-          <td>Denied unavailable result cannot be mutated into complete zero</td>
+          <td>Denied unavailable result cannot be mutated into complete root zero</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: [
@@ -789,9 +906,11 @@
     &quot;dangerous_mutation&quot;,
     &quot;dangerous_mutation&quot;,
     &quot;dangerous_mutation&quot;,
+    &quot;dangerous_mutation&quot;,
     &quot;unsupported_upgrade&quot;
   ],
   &quot;actual&quot;: [
+    &quot;dangerous_mutation&quot;,
     &quot;dangerous_mutation&quot;,
     &quot;dangerous_mutation&quot;,
     &quot;dangerous_mutation&quot;,
@@ -802,7 +921,7 @@
         </tr>
         <tr>
           <td><code>TRC-006</code></td>
-          <td>A valid-looking observation bound to another request is rejected</td>
+          <td>Valid-looking observation bound to another request is rejected</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: [
@@ -815,16 +934,58 @@
         </tr>
         <tr>
           <td><code>TRC-007</code></td>
-          <td>New independently validated evidence may legitimately close a partial query</td>
+          <td>Naked NONE is rejected even with a locally licensed observation</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
-  &quot;expected&quot;: [],
-  &quot;actual&quot;: []
+  &quot;expected&quot;: [
+    &quot;claim_binding_missing&quot;,
+    &quot;unlicensed_negative&quot;
+  ],
+  &quot;actual&quot;: [
+    &quot;claim_binding_missing&quot;,
+    &quot;unlicensed_negative&quot;
+  ]
 }</pre></details></td>
         </tr>
         <tr>
           <td><code>TRC-008</code></td>
-          <td>Complete exact zero may support an explicit NONE claim</td>
+          <td>NONE bound to a broader proposition is rejected</td>
+          <td><span class="pill pass">PASS</span></td>
+          <td><details><summary>Expected / actual</summary><pre>{
+  &quot;expected&quot;: [
+    &quot;claim_binding_mismatch&quot;,
+    &quot;unlicensed_negative&quot;
+  ],
+  &quot;actual&quot;: [
+    &quot;claim_binding_mismatch&quot;,
+    &quot;unlicensed_negative&quot;
+  ]
+}</pre></details></td>
+        </tr>
+        <tr>
+          <td><code>TRC-009</code></td>
+          <td>Forged evidence digest cannot authorize a closure upgrade</td>
+          <td><span class="pill pass">PASS</span></td>
+          <td><details><summary>Expected / actual</summary><pre>{
+  &quot;expected&quot;: [
+    &quot;dangerous_mutation&quot;,
+    &quot;dangerous_mutation&quot;,
+    &quot;dangerous_mutation&quot;,
+    &quot;unsupported_upgrade&quot;,
+    &quot;unverified_evidence_introduction&quot;
+  ],
+  &quot;actual&quot;: [
+    &quot;dangerous_mutation&quot;,
+    &quot;dangerous_mutation&quot;,
+    &quot;dangerous_mutation&quot;,
+    &quot;unsupported_upgrade&quot;,
+    &quot;unverified_evidence_introduction&quot;
+  ]
+}</pre></details></td>
+        </tr>
+        <tr>
+          <td><code>TRC-010</code></td>
+          <td>Receiver-revalidated raw evidence permits a legitimate closure upgrade</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: [],
