@@ -24,6 +24,23 @@ export interface QueryBinding {
   status: ScopeBindingStatus;
 }
 
+export interface SourceContextIdentity {
+  producer: string;
+  instance: JsonValue;
+  authority: JsonValue;
+}
+
+export interface SourceGrounding {
+  sourceContext: SourceContextIdentity;
+  propositionScope: JsonValue;
+}
+
+export interface GroundingBinding {
+  algorithm: "closureprobe-grounding-v1";
+  sourceContextDigest: string;
+  propositionScopeDigest: string;
+}
+
 export interface TraversalBinding {
   algorithm: "closureprobe-traversal-v1";
   rootRequestDigest: string;
@@ -36,6 +53,7 @@ export interface ClosureObservation {
   profileId: string;
   profileVersion: string;
   queryBinding: QueryBinding;
+  groundingBinding: GroundingBinding;
   traversalBinding: TraversalBinding;
   execution: ExecutionStatus;
   cardinality: CardinalityStatus;
@@ -87,7 +105,8 @@ export interface NegativeProposition {
 }
 
 export interface PropositionBinding {
-  algorithm: "closureprobe-proposition-v1";
+  algorithm: "closureprobe-proposition-v2";
+  sourceContextDigest: string;
   propositionDigest: string;
 }
 
@@ -102,6 +121,7 @@ export interface EvidenceIntroduction {
   profileVersion: string;
   request: JsonValue;
   response: JsonValue;
+  grounding: SourceGrounding;
   requestDigest: string;
   responseDigest: string;
 }
@@ -118,7 +138,9 @@ export interface TraceStage {
 export interface ClosureTrace {
   traceId: string;
   request: JsonValue;
+  sourceContext: SourceContextIdentity;
   proposition: NegativeProposition;
+  rootEvidence: EvidenceIntroduction;
   stages: TraceStage[];
 }
 
@@ -130,7 +152,10 @@ export type FindingCode =
   | "query_binding_mismatch"
   | "claim_binding_missing"
   | "claim_binding_mismatch"
-  | "unverified_evidence_introduction";
+  | "unverified_evidence_introduction"
+  | "unanchored_root_evidence"
+  | "grounding_binding_mismatch"
+  | "profile_binding_change";
 
 export interface TraceFinding {
   code: FindingCode;
@@ -146,8 +171,11 @@ export interface TraceFinding {
     | "scopeBinding"
     | "validation"
     | "queryBinding"
+    | "groundingBinding"
     | "propositionBinding"
     | "evidenceIntroduction"
+    | "rootEvidence"
+    | "profileBinding"
     | "negativeLicense"
     | "claim";
   upstream?: string;
@@ -161,6 +189,7 @@ export interface TraceAnalysis {
     stageId: string;
     assessment: ClosureAssessment;
     claim: StageClaim;
+    evidenceAnchored: boolean;
   }>;
   findings: TraceFinding[];
   firstGuardSignalLoss?: TraceFinding;
@@ -171,7 +200,11 @@ export interface TraceAnalysis {
 export interface SourceProfile {
   readonly id: string;
   readonly version: string;
-  assess(request: JsonValue, response: JsonValue): ClosureObservation;
+  assess(
+    request: JsonValue,
+    response: JsonValue,
+    grounding: SourceGrounding,
+  ): ClosureObservation;
 }
 
 export interface ExpectedAssessment {
@@ -187,6 +220,7 @@ export interface ObservationCase {
   profileId: string;
   request: JsonValue;
   response: JsonValue;
+  grounding: SourceGrounding;
   expected: ExpectedAssessment;
 }
 

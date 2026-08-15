@@ -7,8 +7,8 @@ authors:
     given-names: Moon
 repository-code: "https://github.com/risu-research/closureprobe"
 url: "https://github.com/risu-research/closureprobe"
-version: 0.1.0-rc2
-date-released: 2026-08-14
+version: 0.1.0-rc3
+date-released: 2026-08-15
 license: Apache-2.0
 abstract: >-
   ClosureProbe tests whether query-relative closure signals survive API,

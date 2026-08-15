@@ -11,6 +11,7 @@ import type {
   ClosureTrace,
   FrozenCorpus,
   JsonValue,
+  SourceGrounding,
 } from "./types.js";
 
 const assetRoot = fileURLToPath(new URL("../../", import.meta.url));
@@ -31,11 +32,13 @@ const ajv = new Ajv2020({
 addFormats(ajv);
 
 const observationSchema = loadSchema("closure-observation.schema.json");
+const groundingSchema = loadSchema("source-grounding.schema.json");
 const assessmentSchema = loadSchema("closure-assessment.schema.json");
 const traceSchema = loadSchema("closure-trace.schema.json");
 const sourceProfileSchema = loadSchema("source-profile.schema.json");
 const corpusSchema = loadSchema("corpus.schema.json");
 
+ajv.addSchema(groundingSchema);
 ajv.addSchema(observationSchema);
 ajv.addSchema(assessmentSchema);
 ajv.addSchema(traceSchema);
@@ -61,6 +64,9 @@ function requireValid<T>(validator: ValidateFunction, value: unknown, label: str
 const validateObservationSchema = ajv.getSchema(
   "https://risu-research.org/closureprobe/schemas/closure-observation.schema.json",
 )!;
+const validateGroundingSchema = ajv.getSchema(
+  "https://risu-research.org/closureprobe/schemas/source-grounding.schema.json",
+)!;
 const validateAssessmentSchema = ajv.getSchema(
   "https://risu-research.org/closureprobe/schemas/closure-assessment.schema.json",
 )!;
@@ -76,6 +82,10 @@ const validateSourceProfileSchema = ajv.getSchema(
 
 export function validateObservation(value: unknown): ClosureObservation {
   return requireValid(validateObservationSchema, value, "Closure observation");
+}
+
+export function validateGrounding(value: unknown): SourceGrounding {
+  return requireValid(validateGroundingSchema, value, "Source grounding");
 }
 
 export function validateAssessment(value: unknown): ClosureAssessment {

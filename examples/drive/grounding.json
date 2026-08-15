@@ -1,0 +1,10 @@
+{
+  "sourceContext": {
+    "producer": "google-drive",
+    "instance": { "account": "fixture-drive-account" },
+    "authority": { "principal": "fixture-user" }
+  },
+  "propositionScope": {
+    "corpus": "caller-visible-drive-files"
+  }
+}

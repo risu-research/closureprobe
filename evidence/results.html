@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ClosureProbe closureprobe-corpus-v0.2.0 evidence</title>
+  <title>ClosureProbe closureprobe-corpus-v0.3.0 evidence</title>
   <style>
     :root { color-scheme: light; --ink:#15231c; --muted:#5c6b63; --paper:#f4f7f5; --card:#fff; --ok:#17643a; --bad:#a1252b; --line:#d7e0da; }
     * { box-sizing:border-box; }
@@ -29,12 +29,12 @@
 <body>
 <main>
   <h1>ClosureProbe <span class="pill pass">PASS</span></h1>
-  <p class="subtitle">Deterministic negative-evidence integrity conformance · closureprobe-corpus-v0.2.0</p>
+  <p class="subtitle">Deterministic negative-evidence integrity conformance · closureprobe-corpus-v0.3.0</p>
   <section class="summary" aria-label="Summary">
-    <div class="metric"><strong>45</strong><span>cases</span></div>
-    <div class="metric"><strong>45</strong><span>passed</span></div>
+    <div class="metric"><strong>50</strong><span>cases</span></div>
+    <div class="metric"><strong>50</strong><span>passed</span></div>
     <div class="metric"><strong>0</strong><span>failed</span></div>
-    <div class="metric"><strong>0.1.0-rc2</strong><span>tool version</span></div>
+    <div class="metric"><strong>0.1.0-rc3</strong><span>tool version</span></div>
   </section>
   <table>
     <thead><tr><th>Case</th><th>Meaning</th><th>Result</th><th>Evidence</th></tr></thead>
@@ -833,6 +833,72 @@
 }</pre></details></td>
         </tr>
         <tr>
+          <td><code>ES-008</code></td>
+          <td>Cross-cluster zero with a skipped remote cluster is outside the local-only profile</td>
+          <td><span class="pill pass">PASS</span></td>
+          <td><details><summary>Expected / actual</summary><pre>{
+  &quot;expected&quot;: {
+    &quot;branch&quot;: &quot;no_result_claim&quot;,
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;cardinality_not_zero&quot;,
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;execution_not_success&quot;,
+      &quot;scope_not_exact&quot;,
+      &quot;traversal_not_query_complete&quot;,
+      &quot;validation_not_profile_validated&quot;
+    ]
+  },
+  &quot;actual&quot;: {
+    &quot;branch&quot;: &quot;no_result_claim&quot;,
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;cardinality_not_zero&quot;,
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;execution_not_success&quot;,
+      &quot;scope_not_exact&quot;,
+      &quot;traversal_not_query_complete&quot;,
+      &quot;validation_not_profile_validated&quot;
+    ]
+  }
+}</pre></details></td>
+        </tr>
+        <tr>
+          <td><code>MSG-007</code></td>
+          <td>Empty Graph deltaLink cannot close a traversal</td>
+          <td><span class="pill pass">PASS</span></td>
+          <td><details><summary>Expected / actual</summary><pre>{
+  &quot;expected&quot;: {
+    &quot;branch&quot;: &quot;no_result_claim&quot;,
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;cardinality_not_zero&quot;,
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;execution_not_success&quot;,
+      &quot;scope_not_exact&quot;,
+      &quot;traversal_not_query_complete&quot;,
+      &quot;validation_not_profile_validated&quot;
+    ]
+  },
+  &quot;actual&quot;: {
+    &quot;branch&quot;: &quot;no_result_claim&quot;,
+    &quot;negativeLicense&quot;: &quot;not_licensed&quot;,
+    &quot;blockers&quot;: [
+      &quot;cardinality_not_zero&quot;,
+      &quot;continuation_not_exhausted&quot;,
+      &quot;coverage_not_complete&quot;,
+      &quot;execution_not_success&quot;,
+      &quot;scope_not_exact&quot;,
+      &quot;traversal_not_query_complete&quot;,
+      &quot;validation_not_profile_validated&quot;
+    ]
+  }
+}</pre></details></td>
+        </tr>
+        <tr>
           <td><code>TRC-001</code></td>
           <td>Preserved continuation remains conformant without a negative claim</td>
           <td><span class="pill pass">PASS</span></td>
@@ -898,23 +964,19 @@
         </tr>
         <tr>
           <td><code>TRC-005</code></td>
-          <td>Denied unavailable result cannot be mutated into complete root zero</td>
+          <td>Denied result cannot be mutated into complete root zero</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: [
     &quot;dangerous_mutation&quot;,
     &quot;dangerous_mutation&quot;,
-    &quot;dangerous_mutation&quot;,
-    &quot;dangerous_mutation&quot;,
-    &quot;dangerous_mutation&quot;,
+    &quot;unlicensed_negative&quot;,
     &quot;unsupported_upgrade&quot;
   ],
   &quot;actual&quot;: [
     &quot;dangerous_mutation&quot;,
     &quot;dangerous_mutation&quot;,
-    &quot;dangerous_mutation&quot;,
-    &quot;dangerous_mutation&quot;,
-    &quot;dangerous_mutation&quot;,
+    &quot;unlicensed_negative&quot;,
     &quot;unsupported_upgrade&quot;
   ]
 }</pre></details></td>
@@ -925,10 +987,12 @@
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: [
-    &quot;query_binding_mismatch&quot;
+    &quot;query_binding_mismatch&quot;,
+    &quot;unanchored_root_evidence&quot;
   ],
   &quot;actual&quot;: [
-    &quot;query_binding_mismatch&quot;
+    &quot;query_binding_mismatch&quot;,
+    &quot;unanchored_root_evidence&quot;
   ]
 }</pre></details></td>
         </tr>
@@ -971,6 +1035,7 @@
     &quot;dangerous_mutation&quot;,
     &quot;dangerous_mutation&quot;,
     &quot;dangerous_mutation&quot;,
+    &quot;unlicensed_negative&quot;,
     &quot;unsupported_upgrade&quot;,
     &quot;unverified_evidence_introduction&quot;
   ],
@@ -978,6 +1043,7 @@
     &quot;dangerous_mutation&quot;,
     &quot;dangerous_mutation&quot;,
     &quot;dangerous_mutation&quot;,
+    &quot;unlicensed_negative&quot;,
     &quot;unsupported_upgrade&quot;,
     &quot;unverified_evidence_introduction&quot;
   ]
@@ -985,11 +1051,56 @@
         </tr>
         <tr>
           <td><code>TRC-010</code></td>
-          <td>Receiver-revalidated raw evidence permits a legitimate closure upgrade</td>
+          <td>Receiver-reconstructed canonical evidence permits a legitimate closure upgrade</td>
           <td><span class="pill pass">PASS</span></td>
           <td><details><summary>Expected / actual</summary><pre>{
   &quot;expected&quot;: [],
   &quot;actual&quot;: []
+}</pre></details></td>
+        </tr>
+        <tr>
+          <td><code>TRC-011</code></td>
+          <td>Self-declared profile validation cannot anchor the root</td>
+          <td><span class="pill pass">PASS</span></td>
+          <td><details><summary>Expected / actual</summary><pre>{
+  &quot;expected&quot;: [
+    &quot;unanchored_root_evidence&quot;,
+    &quot;unlicensed_negative&quot;
+  ],
+  &quot;actual&quot;: [
+    &quot;unanchored_root_evidence&quot;,
+    &quot;unlicensed_negative&quot;
+  ]
+}</pre></details></td>
+        </tr>
+        <tr>
+          <td><code>TRC-012</code></td>
+          <td>Scope drift breaks the receiver-anchored evidence chain</td>
+          <td><span class="pill pass">PASS</span></td>
+          <td><details><summary>Expected / actual</summary><pre>{
+  &quot;expected&quot;: [
+    &quot;grounding_binding_mismatch&quot;,
+    &quot;unlicensed_negative&quot;
+  ],
+  &quot;actual&quot;: [
+    &quot;grounding_binding_mismatch&quot;,
+    &quot;unlicensed_negative&quot;
+  ]
+}</pre></details></td>
+        </tr>
+        <tr>
+          <td><code>TRC-013</code></td>
+          <td>Profile substitution without new evidence breaks the chain</td>
+          <td><span class="pill pass">PASS</span></td>
+          <td><details><summary>Expected / actual</summary><pre>{
+  &quot;expected&quot;: [
+    &quot;profile_binding_change&quot;,
+    &quot;unlicensed_negative&quot;
+  ],
+  &quot;actual&quot;: [
+    &quot;profile_binding_change&quot;,
+    &quot;unlicensed_negative&quot;
+  ]
 }</pre></details></td>
         </tr></tbody>
   </table>

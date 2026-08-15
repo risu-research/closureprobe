@@ -6,12 +6,12 @@ import { readCorpus, runCorpus } from "./corpus.js";
 import { readJson, writeText } from "./io.js";
 import { assessWithProfile, sourceProfiles } from "./profiles.js";
 import { analyzeTrace } from "./trace.js";
-import { validateAssessment, validateTrace } from "./validation.js";
+import { validateAssessment, validateGrounding, validateTrace } from "./validation.js";
 
 const HELP = `ClosureProbe — executable negative-evidence integrity conformance
 
 Usage:
-  closureprobe assess --profile ID --request FILE --response FILE [--json FILE]
+  closureprobe assess --profile ID --request FILE --response FILE --grounding FILE [--json FILE]
   closureprobe trace FILE [--json FILE]
   closureprobe corpus verify FILE
   closureprobe corpus report FILE --json FILE --html FILE
@@ -83,7 +83,7 @@ async function main(args: readonly string[]): Promise<number> {
 
   if (args[0] === "assess") {
     const options = parseOptions(args.slice(1));
-    assertOnlyOptions(options, ["--profile", "--request", "--response", "--json"]);
+    assertOnlyOptions(options, ["--profile", "--request", "--response", "--grounding", "--json"]);
     if (options.positional.length !== 0) {
       throw new Error("assess accepts options only");
     }
@@ -91,6 +91,7 @@ async function main(args: readonly string[]): Promise<number> {
       required(options, "--profile"),
       readJson(required(options, "--request")),
       readJson(required(options, "--response")),
+      validateGrounding(readJson(required(options, "--grounding"))),
     );
     const assessment = validateAssessment(assessClosure(observation));
     emitJson(assessment, options.values.get("--json"));

@@ -1,37 +1,36 @@
 # Why Negative Evidence Integrity Matters
 
 An empty result is often presented as a fact about the world. In an agentic
-system it may instead be a fact about one page, one failed shard, one denied
-repository, one authorization scope, or one lossy projection. The transition
-from “I did not observe it” to “it does not exist” is therefore not merely an
-answer-quality defect. It can become an **authorization bug**: an unearned
-negative premise gives the system permission to stop or act.
+system it may instead describe one page, failed shard, denied repository,
+authority context, or lossy projection. Turning “not observed” into “does not
+exist” can become an **authorization bug**: an unearned negative premise gives
+the system permission to stop or act.
 
 That matters wherever absence changes someone's position: records discovery,
 benefits and administrative files, sanctions screening, vulnerability search,
 compliance review, scientific retrieval, or eligibility workflows. The legal
 perspective is evidentiary and procedural rather than a claim of legal advice:
-which proposition was actually searched, what universe was covered, who bore
-the consequence of incompleteness, and whether uncertainty or recourse was
-preserved before action.
+what proposition was searched, which declared universe was covered, what
+evidence anchored that description, who bears incompleteness, and whether
+uncertainty or recourse survived before action.
 
-ClosureProbe makes three category errors executable and testable:
+ClosureProbe makes four category errors executable and testable:
 
+- **declaration ≠ validation** — a chain cannot begin because its author typed
+  `profile_validated`;
 - **page ≠ traversal** — an empty final page cannot erase earlier results;
-- **successful call ≠ closed query** — HTTP or protocol finality does not prove
-  coverage, authority, or exhaustion; and
-- **none ≠ naked token** — a negative must remain attached to its exact subject,
-  predicate, scope, and evidence chain.
+- **successful call ≠ closed query** — protocol finality cannot prove coverage,
+  authority, or exhaustion; and
+- **none ≠ detached proposition** — a negative must remain attached to its
+  request, source context, subject, predicate, scope, and evidence ancestry.
 
-The product is intentionally smaller than a domain decision system. It does not
-decide whether a sanctions screen, benefits denial, legal search, or medical
-conclusion is substantively correct. It tests a common technical precondition:
-whether the supplied observable computation earned the negative premise it
-used.
+The product does not decide whether a legal search, sanctions screen, benefits
+denial, or medical conclusion is substantively correct. It tests a shared
+technical precondition: whether the supplied observable computation earned and
+preserved the negative premise it used.
 
-This boundedness is the leverage. Source profiles make producer semantics
-testable; traversal binding prevents page/query confusion; trace analysis finds
-the first observed laundering boundary; proposition binding stops scope drift;
-and receiver revalidation prevents a sender from authorizing its own evidence
-upgrade. What should be built next is determined by where real deployments
-actually fail. See [ROADMAP.md](ROADMAP.md).
+Source profiles make producer semantics testable. Root reconstruction prevents
+self-licensing. Grounding exposes the declared universe. Traversal binding
+prevents page/query confusion. Trace analysis finds the first observed
+laundering boundary. What should be built next is determined by real client
+measurements, not internal feature accumulation.

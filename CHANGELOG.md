@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.1.0-rc3 — 2026-08-15
+
+Final planned internal semantic-hardening release.
+
+- makes receiver-reconstructed `rootEvidence` mandatory for every trace;
+- adds machine-readable producer instance, authority, and proposition-scope
+  grounding with independent canonical bindings;
+- upgrades proposition binding to include source context;
+- propagates explicit `evidenceAnchored` state across trace stages;
+- detects unanchored roots, grounding drift, and source-profile substitution;
+- narrows Elasticsearch to explicitly grounded local-cluster searches and
+  rejects cross-cluster results;
+- rejects empty, relative, non-HTTPS, and cross-origin Microsoft Graph traversal
+  links; and
+- expands frozen evidence to 50 adversarial and control cases.
+
 ## 0.1.0-rc2 — 2026-08-14
 
 Adversarial hardening release. This candidate intentionally changes the rc1

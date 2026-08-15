@@ -19,6 +19,7 @@ test("CLI assess emits a schema-valid licensed result", () => {
     "--profile", "google-drive-files-list",
     "--request", "examples/drive/request.json",
     "--response", "examples/drive/complete-zero-response.json",
+    "--grounding", "examples/drive/grounding.json",
   ]);
   assert.equal(result.status, 0, result.stderr);
   assert.equal(JSON.parse(result.stdout).negativeLicense, "licensed");
@@ -29,6 +30,6 @@ test("CLI uses exit 2 for detected trace non-conformance while retaining JSON", 
   assert.equal(result.status, 2, result.stderr);
   const output = JSON.parse(result.stdout);
   assert.equal(output.conformant, false);
-  assert.equal(output.firstGuardSignalLoss.boundary, "mcp-wire->model-projection");
-  assert.equal(output.firstUnlicensedNegative.stageId, "model-projection");
+  assert.equal(output.firstGuardSignalLoss.boundary, "wire->model");
+  assert.equal(output.firstUnlicensedNegative.stageId, "model");
 });

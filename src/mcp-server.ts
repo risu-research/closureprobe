@@ -6,17 +6,19 @@ import { serveStdio } from "@modelcontextprotocol/server/stdio";
 import { assessClosure } from "./oracle.js";
 import { createProbePayload, type ProbeCarrier, type ProbeScenario } from "./probe.js";
 import { TOOL_VERSION } from "./corpus.js";
-import type { ClosureAssessment, ClosureObservation, JsonValue } from "./types.js";
+import type { ClosureAssessment, ClosureObservation, JsonValue, SourceGrounding } from "./types.js";
 
 interface ProbeInput {
   scenario: ProbeScenario;
   carrier: ProbeCarrier;
   request: JsonValue;
+  grounding: SourceGrounding;
 }
 
 interface ProbeOutput {
   scenario: ProbeScenario;
   request: JsonValue;
+  grounding: SourceGrounding;
   observation: ClosureObservation;
   assessment: ClosureAssessment;
 }
@@ -24,7 +26,7 @@ interface ProbeOutput {
 const inputSchema = fromJsonSchema<ProbeInput>({
   type: "object",
   additionalProperties: false,
-  required: ["scenario", "carrier", "request"],
+  required: ["scenario", "carrier", "request", "grounding"],
   properties: {
     scenario: {
       type: "string",
@@ -40,16 +42,35 @@ const inputSchema = fromJsonSchema<ProbeInput>({
     },
     carrier: { type: "string", enum: ["dual", "structured-only", "text-only"] },
     request: true,
+    grounding: {
+      type: "object",
+      additionalProperties: false,
+      required: ["sourceContext", "propositionScope"],
+      properties: {
+        sourceContext: {
+          type: "object",
+          additionalProperties: false,
+          required: ["producer", "instance", "authority"],
+          properties: {
+            producer: { type: "string", minLength: 1 },
+            instance: { type: "object", minProperties: 1 },
+            authority: { type: "object", minProperties: 1 },
+          },
+        },
+        propositionScope: { type: "object", minProperties: 1 },
+      },
+    },
   },
 });
 
 const outputSchema = fromJsonSchema<ProbeOutput>({
   type: "object",
   additionalProperties: false,
-  required: ["scenario", "request", "observation", "assessment"],
+  required: ["scenario", "request", "grounding", "observation", "assessment"],
   properties: {
     scenario: { type: "string" },
     request: true,
+    grounding: { type: "object" },
     observation: { type: "object" },
     assessment: { type: "object" },
   },
@@ -71,8 +92,8 @@ function buildServer(): McpServer {
       outputSchema,
       annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
     },
-    async ({ scenario, carrier, request }) => {
-      const payload = createProbePayload(scenario, request);
+    async ({ scenario, carrier, request, grounding }) => {
+      const payload = createProbePayload(scenario, request, grounding);
       const structuredContent = {
         ...payload,
         assessment: assessClosure(payload.observation),

@@ -1,6 +1,8 @@
 import { Kind, parse, type FieldNode, type OperationDefinitionNode, type ValueNode } from "graphql";
 
 import { canonicalizeJson, sha256Digest } from "./canonical.js";
+import { bindGrounding, isValidGrounding } from "./grounding.js";
+import { createProbePayload, type ProbeScenario } from "./probe.js";
 import type {
   CardinalityStatus,
   ClosureObservation,
@@ -8,6 +10,7 @@ import type {
   CoverageStatus,
   ExecutionStatus,
   JsonValue,
+  SourceGrounding,
   SourceProfile,
   TraversalStatus,
   ValidationStatus,
@@ -59,6 +62,18 @@ function hasOwn(value: JsonObject, key: string): boolean {
   return Object.prototype.hasOwnProperty.call(value, key);
 }
 
+function absoluteHttpsUrl(value: string | undefined): URL | undefined {
+  if (value === undefined || value.length === 0) return undefined;
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "https:" && parsed.hostname.length > 0
+      ? parsed
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 function cardinalityFromCount(count: number | undefined): {
   status: CardinalityStatus;
   count?: number;
@@ -89,6 +104,7 @@ interface ObservationInput {
   profileId: string;
   profileVersion: string;
   rootRequest: JsonValue;
+  grounding: SourceGrounding;
   segmentRequest?: JsonValue;
   traversalStatus: TraversalStatus;
   pageCount?: number;
@@ -115,6 +131,7 @@ function observation(input: ObservationInput): ClosureObservation {
       requestDigest: rootDigest,
       status: scopeBinding,
     },
+    groundingBinding: bindGrounding(input.grounding),
     traversalBinding: {
       algorithm: "closureprobe-traversal-v1",
       rootRequestDigest: rootDigest,
@@ -138,12 +155,14 @@ function invalidObservation(
   profileId: string,
   profileVersion: string,
   request: JsonValue,
+  grounding: SourceGrounding,
   note: string,
 ): ClosureObservation {
   return observation({
     profileId,
     profileVersion,
     rootRequest: request,
+    grounding,
     traversalStatus: "unknown",
     execution: "unknown",
     cardinality: "unavailable",
@@ -156,14 +175,17 @@ function invalidObservation(
   });
 }
 
-const PROFILE_VERSION = "0.2.0";
+const PROFILE_VERSION = "0.3.0";
 
 const generic: SourceProfile = {
   id: "generic-enumeration",
   version: PROFILE_VERSION,
-  assess(request, response) {
+  assess(request, response, grounding) {
+    if (!isValidGrounding(grounding, "controlled")) {
+      return invalidObservation(this.id, this.version, request, grounding, "Grounding is invalid for the controlled producer");
+    }
     if (!isObject(response)) {
-      return invalidObservation(this.id, this.version, request, "Response is not an object");
+      return invalidObservation(this.id, this.version, request, grounding, "Response is not an object");
     }
     const items = getArray(response, "items");
     const count = cardinalityFromCount(items?.length);
@@ -183,6 +205,7 @@ const generic: SourceProfile = {
       profileId: this.id,
       profileVersion: this.version,
       rootRequest: request,
+      grounding,
       traversalStatus: valid ? traversalStatus as TraversalStatus : "unknown",
       execution: valid ? execution as ExecutionStatus : "unknown",
       cardinality: count.status,
@@ -232,49 +255,52 @@ function driveProjection(request: JsonObject): boolean {
 const googleDrive: SourceProfile = {
   id: "google-drive-files-list",
   version: PROFILE_VERSION,
-  assess(request, response) {
+  assess(request, response, grounding) {
+    if (!isValidGrounding(grounding, "google-drive")) {
+      return invalidObservation(this.id, this.version, request, grounding, "Grounding is invalid for Google Drive");
+    }
     if (!isObject(request) || !isObject(response)) {
-      return invalidObservation(this.id, this.version, request, "Request and response must be objects");
+      return invalidObservation(this.id, this.version, request, grounding, "Request and response must be objects");
     }
 
     const pages = pagePairs(response);
     if (response.pages !== undefined && pages === undefined) {
-      return invalidObservation(this.id, this.version, request, "pages is not a nonempty request/response bundle");
+      return invalidObservation(this.id, this.version, request, grounding, "pages is not a nonempty request/response bundle");
     }
     if (pages !== undefined) {
       if (request.pageToken !== undefined || !sameJson(pages[0]!.request, request)) {
-        return invalidObservation(this.id, this.version, request, "Drive aggregate must start at the exact root request without pageToken");
+        return invalidObservation(this.id, this.version, request, grounding, "Drive aggregate must start at the exact root request without pageToken");
       }
       let count = 0;
       let priorToken: string | undefined;
       let partial = false;
       for (const [index, page] of pages.entries()) {
         if (!sameJson(withoutKey(page.request, "pageToken"), request)) {
-          return invalidObservation(this.id, this.version, request, `Drive page ${index + 1} changed the root query`);
+          return invalidObservation(this.id, this.version, request, grounding, `Drive page ${index + 1} changed the root query`);
         }
         if (!driveProjection(page.request)) {
-          return invalidObservation(this.id, this.version, request, `Drive page ${index + 1} omitted closure fields`);
+          return invalidObservation(this.id, this.version, request, grounding, `Drive page ${index + 1} omitted closure fields`);
         }
         const suppliedToken = stringValue(page.request, "pageToken");
         if (index === 0 ? suppliedToken !== undefined : suppliedToken !== priorToken) {
-          return invalidObservation(this.id, this.version, request, `Drive page ${index + 1} does not follow the prior nextPageToken`);
+          return invalidObservation(this.id, this.version, request, grounding, `Drive page ${index + 1} does not follow the prior nextPageToken`);
         }
         if (executionFromError(page.response) !== "success") {
-          return invalidObservation(this.id, this.version, request, `Drive page ${index + 1} contains an error`);
+          return invalidObservation(this.id, this.version, request, grounding, `Drive page ${index + 1} contains an error`);
         }
         const files = getArray(page.response, "files");
         const incomplete = explicitBoolean(page.response, "incompleteSearch");
         if (files === undefined || incomplete === undefined) {
-          return invalidObservation(this.id, this.version, request, `Drive page ${index + 1} is missing files or incompleteSearch`);
+          return invalidObservation(this.id, this.version, request, grounding, `Drive page ${index + 1} is missing files or incompleteSearch`);
         }
         if (hasOwn(page.response, "nextPageToken") && stringValue(page.response, "nextPageToken") === undefined) {
-          return invalidObservation(this.id, this.version, request, `Drive page ${index + 1} has a malformed nextPageToken`);
+          return invalidObservation(this.id, this.version, request, grounding, `Drive page ${index + 1} has a malformed nextPageToken`);
         }
         count += files.length;
         partial ||= incomplete;
         priorToken = stringValue(page.response, "nextPageToken");
         if (index < pages.length - 1 && priorToken === undefined) {
-          return invalidObservation(this.id, this.version, request, `Drive page ${index + 1} ended before the supplied bundle`);
+          return invalidObservation(this.id, this.version, request, grounding, `Drive page ${index + 1} ended before the supplied bundle`);
         }
       }
       const completed = priorToken === undefined;
@@ -283,6 +309,7 @@ const googleDrive: SourceProfile = {
         profileId: this.id,
         profileVersion: this.version,
         rootRequest: request,
+        grounding,
         segmentRequest: pages.at(-1)!.request,
         traversalStatus: completed ? "aggregate_complete" : "continued",
         pageCount: pages.length,
@@ -307,6 +334,7 @@ const googleDrive: SourceProfile = {
         profileId: this.id,
         profileVersion: this.version,
         rootRequest: request,
+        grounding,
         traversalStatus: request.pageToken === undefined ? "unknown" : "segment_only",
         execution,
         cardinality: "unavailable",
@@ -318,12 +346,12 @@ const googleDrive: SourceProfile = {
     }
     const files = getArray(response, "files");
     if (files === undefined) {
-      return invalidObservation(this.id, this.version, request, "files is not an array");
+      return invalidObservation(this.id, this.version, request, grounding, "files is not an array");
     }
     const projection = driveProjection(request);
     const incomplete = explicitBoolean(response, "incompleteSearch");
     if (hasOwn(response, "nextPageToken") && stringValue(response, "nextPageToken") === undefined) {
-      return invalidObservation(this.id, this.version, request, "nextPageToken is present but is not a string");
+      return invalidObservation(this.id, this.version, request, grounding, "nextPageToken is present but is not a string");
     }
     const nextToken = stringValue(response, "nextPageToken");
     const isContinuationSegment = request.pageToken !== undefined;
@@ -338,6 +366,7 @@ const googleDrive: SourceProfile = {
       profileId: this.id,
       profileVersion: this.version,
       rootRequest: request,
+      grounding,
       traversalStatus,
       execution,
       cardinality: files.length === 0 ? "zero" : "nonzero",
@@ -358,45 +387,48 @@ const googleDrive: SourceProfile = {
 const dynamoDb: SourceProfile = {
   id: "aws-dynamodb-query",
   version: PROFILE_VERSION,
-  assess(request, response) {
+  assess(request, response, grounding) {
+    if (!isValidGrounding(grounding, "aws-dynamodb")) {
+      return invalidObservation(this.id, this.version, request, grounding, "Grounding is invalid for DynamoDB");
+    }
     if (!isObject(request) || !isObject(response)) {
-      return invalidObservation(this.id, this.version, request, "Request and response must be objects");
+      return invalidObservation(this.id, this.version, request, grounding, "Request and response must be objects");
     }
     const pages = pagePairs(response);
     if (response.pages !== undefined && pages === undefined) {
-      return invalidObservation(this.id, this.version, request, "pages is not a nonempty request/response bundle");
+      return invalidObservation(this.id, this.version, request, grounding, "pages is not a nonempty request/response bundle");
     }
     if (pages !== undefined) {
       if (request.ExclusiveStartKey !== undefined || !sameJson(pages[0]!.request, request)) {
-        return invalidObservation(this.id, this.version, request, "DynamoDB aggregate must start at the exact root request without ExclusiveStartKey");
+        return invalidObservation(this.id, this.version, request, grounding, "DynamoDB aggregate must start at the exact root request without ExclusiveStartKey");
       }
       let count = 0;
       let priorKey: JsonObject | undefined;
       for (const [index, page] of pages.entries()) {
         if (!sameJson(withoutKey(page.request, "ExclusiveStartKey"), request)) {
-          return invalidObservation(this.id, this.version, request, `DynamoDB page ${index + 1} changed the root query`);
+          return invalidObservation(this.id, this.version, request, grounding, `DynamoDB page ${index + 1} changed the root query`);
         }
         const suppliedKey = isObject(page.request.ExclusiveStartKey)
           ? page.request.ExclusiveStartKey
           : undefined;
         if (index === 0 ? suppliedKey !== undefined : suppliedKey === undefined || !sameJson(suppliedKey, priorKey!)) {
-          return invalidObservation(this.id, this.version, request, `DynamoDB page ${index + 1} does not follow the prior LastEvaluatedKey`);
+          return invalidObservation(this.id, this.version, request, grounding, `DynamoDB page ${index + 1} does not follow the prior LastEvaluatedKey`);
         }
         if (executionFromError(page.response) !== "success") {
-          return invalidObservation(this.id, this.version, request, `DynamoDB page ${index + 1} contains an error`);
+          return invalidObservation(this.id, this.version, request, grounding, `DynamoDB page ${index + 1} contains an error`);
         }
         const items = getArray(page.response, "Items");
         if (items === undefined) {
-          return invalidObservation(this.id, this.version, request, `DynamoDB page ${index + 1} has no Items array`);
+          return invalidObservation(this.id, this.version, request, grounding, `DynamoDB page ${index + 1} has no Items array`);
         }
         count += items.length;
         const lastKey = page.response.LastEvaluatedKey;
         if (hasOwn(page.response, "LastEvaluatedKey") && !isObject(lastKey)) {
-          return invalidObservation(this.id, this.version, request, `DynamoDB page ${index + 1} has a malformed LastEvaluatedKey`);
+          return invalidObservation(this.id, this.version, request, grounding, `DynamoDB page ${index + 1} has a malformed LastEvaluatedKey`);
         }
         priorKey = isObject(lastKey) && Object.keys(lastKey).length > 0 ? lastKey : undefined;
         if (index < pages.length - 1 && priorKey === undefined) {
-          return invalidObservation(this.id, this.version, request, `DynamoDB page ${index + 1} ended before the supplied bundle`);
+          return invalidObservation(this.id, this.version, request, grounding, `DynamoDB page ${index + 1} ended before the supplied bundle`);
         }
       }
       const completed = priorKey === undefined;
@@ -404,6 +436,7 @@ const dynamoDb: SourceProfile = {
         profileId: this.id,
         profileVersion: this.version,
         rootRequest: request,
+        grounding,
         segmentRequest: pages.at(-1)!.request,
         traversalStatus: completed ? "aggregate_complete" : "continued",
         pageCount: pages.length,
@@ -427,6 +460,7 @@ const dynamoDb: SourceProfile = {
         profileId: this.id,
         profileVersion: this.version,
         rootRequest: request,
+        grounding,
         traversalStatus: request.ExclusiveStartKey === undefined ? "unknown" : "segment_only",
         execution,
         cardinality: "unavailable",
@@ -438,11 +472,11 @@ const dynamoDb: SourceProfile = {
     }
     const items = getArray(response, "Items");
     if (items === undefined) {
-      return invalidObservation(this.id, this.version, request, "Items is not an array");
+      return invalidObservation(this.id, this.version, request, grounding, "Items is not an array");
     }
     const lastKey = response.LastEvaluatedKey;
     if (hasOwn(response, "LastEvaluatedKey") && !isObject(lastKey)) {
-      return invalidObservation(this.id, this.version, request, "LastEvaluatedKey is present but is not an object");
+      return invalidObservation(this.id, this.version, request, grounding, "LastEvaluatedKey is present but is not an object");
     }
     const hasLastKey = isObject(lastKey) && Object.keys(lastKey).length > 0;
     const isContinuationSegment = request.ExclusiveStartKey !== undefined;
@@ -450,6 +484,7 @@ const dynamoDb: SourceProfile = {
       profileId: this.id,
       profileVersion: this.version,
       rootRequest: request,
+      grounding,
       traversalStatus: isContinuationSegment
         ? "segment_only"
         : hasLastKey ? "continued" : "single_page_complete",
@@ -476,12 +511,38 @@ function unsupportedElasticsearchRequest(request: JsonObject): boolean {
     request.ignore_unavailable === true;
 }
 
+function targetsRemoteElasticsearchCluster(request: JsonObject): boolean {
+  const index = request.index;
+  if (typeof index === "string") return index.includes(":");
+  return Array.isArray(index) && index.some(
+    (item) => typeof item === "string" && item.includes(":"),
+  );
+}
+
 const elasticsearch: SourceProfile = {
   id: "elasticsearch-search-zero",
   version: PROFILE_VERSION,
-  assess(request, response) {
+  assess(request, response, grounding) {
+    if (!isValidGrounding(grounding, "elasticsearch")) {
+      return invalidObservation(this.id, this.version, request, grounding, "Grounding is invalid for Elasticsearch");
+    }
     if (!isObject(request) || !isObject(response)) {
-      return invalidObservation(this.id, this.version, request, "Request and response must be objects");
+      return invalidObservation(this.id, this.version, request, grounding, "Request and response must be objects");
+    }
+    const elasticInstance = grounding.sourceContext.instance;
+    if (
+      !isObject(elasticInstance) ||
+      elasticInstance.mode !== "local" ||
+      hasOwn(response, "_clusters") ||
+      targetsRemoteElasticsearchCluster(request)
+    ) {
+      return invalidObservation(
+        this.id,
+        this.version,
+        request,
+        grounding,
+        "Profile v0.3 supports explicitly grounded local-cluster searches only",
+      );
     }
     const execution = executionFromError(response);
     if (execution !== "success") {
@@ -489,6 +550,7 @@ const elasticsearch: SourceProfile = {
         profileId: this.id,
         profileVersion: this.version,
         rootRequest: request,
+        grounding,
         traversalStatus: "unknown",
         execution,
         cardinality: "unavailable",
@@ -503,7 +565,7 @@ const elasticsearch: SourceProfile = {
     const total = hits === undefined ? undefined : getObject(hits, "total");
     const shards = getObject(response, "_shards");
     if (hitItems === undefined || total === undefined || shards === undefined) {
-      return invalidObservation(this.id, this.version, request, "hits.hits, hits.total, or _shards is missing");
+      return invalidObservation(this.id, this.version, request, grounding, "hits.hits, hits.total, or _shards is missing");
     }
     const timedOut = explicitBoolean(response, "timed_out");
     const terminatedEarly = explicitBoolean(response, "terminated_early");
@@ -531,6 +593,7 @@ const elasticsearch: SourceProfile = {
       profileId: this.id,
       profileVersion: this.version,
       rootRequest: request,
+      grounding,
       traversalStatus: explicitlyComplete ? "single_page_complete" : "unknown",
       execution,
       cardinality: count.status,
@@ -539,7 +602,7 @@ const elasticsearch: SourceProfile = {
       continuation: explicitlyComplete ? "exhausted" : "unknown",
       validation: "profile_validated",
       evidencePointers: ["/timed_out", "/terminated_early", "/_shards", "/hits/total", "/hits/hits"],
-      ...(unsupported ? { notes: ["Request variant is unsupported by profile v0.2"] } : {}),
+      ...(unsupported ? { notes: ["Request variant is unsupported by profile v0.3"] } : {}),
     });
   },
 };
@@ -626,21 +689,24 @@ function relayRequest(request: JsonObject): RelayRequest {
 const graphqlRelay: SourceProfile = {
   id: "graphql-relay-forward-connection",
   version: PROFILE_VERSION,
-  assess(request, response) {
+  assess(request, response, grounding) {
+    if (!isValidGrounding(grounding, "graphql-relay")) {
+      return invalidObservation(this.id, this.version, request, grounding, "Grounding is invalid for GraphQL Relay");
+    }
     if (!isObject(request) || !isObject(response)) {
-      return invalidObservation(this.id, this.version, request, "Request and response must be objects");
+      return invalidObservation(this.id, this.version, request, grounding, "Request and response must be objects");
     }
     const parsedRequest = relayRequest(request);
     const errors = getArray(response, "errors");
     if (hasOwn(response, "errors") && errors === undefined) {
-      return invalidObservation(this.id, this.version, request, "errors is present but is not an array");
+      return invalidObservation(this.id, this.version, request, grounding, "errors is present but is not an array");
     }
     const data = getObject(response, "data");
     const search = data === undefined ? undefined : getObject(data, "search");
     const edges = search === undefined ? undefined : getArray(search, "edges");
     const pageInfo = search === undefined ? undefined : getObject(search, "pageInfo");
     if (edges === undefined || pageInfo === undefined) {
-      return invalidObservation(this.id, this.version, request, "data.search.edges or pageInfo is missing");
+      return invalidObservation(this.id, this.version, request, grounding, "data.search.edges or pageInfo is missing");
     }
     const hasNextPage = explicitBoolean(pageInfo, "hasNextPage");
     const hasErrors = errors !== undefined && errors.length > 0;
@@ -649,6 +715,7 @@ const graphqlRelay: SourceProfile = {
         profileId: this.id,
         profileVersion: this.version,
         rootRequest: request,
+        grounding,
         traversalStatus: "unknown",
         execution: hasErrors ? "failed" : "unknown",
         cardinality: edges.length === 0 ? "zero" : "nonzero",
@@ -665,6 +732,7 @@ const graphqlRelay: SourceProfile = {
       profileId: this.id,
       profileVersion: this.version,
       rootRequest: request,
+      grounding,
       traversalStatus: parsedRequest.root
         ? hasNextPage ? "continued" : "single_page_complete"
         : "segment_only",
@@ -685,17 +753,21 @@ const graphqlRelay: SourceProfile = {
 const graphDelta: SourceProfile = {
   id: "microsoft-graph-delta-traversal",
   version: PROFILE_VERSION,
-  assess(request, response) {
+  assess(request, response, grounding) {
+    if (!isValidGrounding(grounding, "microsoft-graph")) {
+      return invalidObservation(this.id, this.version, request, grounding, "Grounding is invalid for Microsoft Graph");
+    }
     if (!isObject(request) || !isObject(response)) {
-      return invalidObservation(this.id, this.version, request, "Request and response must be objects");
+      return invalidObservation(this.id, this.version, request, grounding, "Request and response must be objects");
     }
     const rootUrl = stringValue(request, "url");
     const pagesValue = response.pages;
-    if (rootUrl === undefined || !Array.isArray(pagesValue) || pagesValue.length === 0) {
-      return invalidObservation(this.id, this.version, request, "Graph delta requires a root url and a nonempty traversal bundle");
+    const parsedRootUrl = absoluteHttpsUrl(rootUrl);
+    if (rootUrl === undefined || parsedRootUrl === undefined || !Array.isArray(pagesValue) || pagesValue.length === 0) {
+      return invalidObservation(this.id, this.version, request, grounding, "Graph delta requires a root url and a nonempty traversal bundle");
     }
     if (/skiptoken/i.test(rootUrl)) {
-      return invalidObservation(this.id, this.version, request, "Graph delta root URL cannot be a continuation nextLink");
+      return invalidObservation(this.id, this.version, request, grounding, "Graph delta root URL cannot be a continuation nextLink");
     }
     let count = 0;
     let expectedUrl = rootUrl;
@@ -703,18 +775,18 @@ const graphDelta: SourceProfile = {
     let finalKind: "next" | "delta" | undefined;
     for (const [index, pageValue] of pagesValue.entries()) {
       if (!isObject(pageValue) || typeof pageValue.requestUrl !== "string" || !isObject(pageValue.response)) {
-        return invalidObservation(this.id, this.version, request, `Graph delta page ${index + 1} is malformed`);
+        return invalidObservation(this.id, this.version, request, grounding, `Graph delta page ${index + 1} is malformed`);
       }
       if (pageValue.requestUrl !== expectedUrl) {
-        return invalidObservation(this.id, this.version, request, `Graph delta page ${index + 1} does not follow the prior nextLink`);
+        return invalidObservation(this.id, this.version, request, grounding, `Graph delta page ${index + 1} does not follow the prior nextLink`);
       }
       lastRequest = { url: pageValue.requestUrl };
       if (executionFromError(pageValue.response) !== "success") {
-        return invalidObservation(this.id, this.version, request, `Graph delta page ${index + 1} contains an error`);
+        return invalidObservation(this.id, this.version, request, grounding, `Graph delta page ${index + 1} contains an error`);
       }
       const values = getArray(pageValue.response, "value");
       if (values === undefined) {
-        return invalidObservation(this.id, this.version, request, `Graph delta page ${index + 1} has no value array`);
+        return invalidObservation(this.id, this.version, request, grounding, `Graph delta page ${index + 1} has no value array`);
       }
       count += values.length;
       const nextLink = stringValue(pageValue.response, "@odata.nextLink");
@@ -723,13 +795,21 @@ const graphDelta: SourceProfile = {
         (hasOwn(pageValue.response, "@odata.nextLink") && nextLink === undefined) ||
         (hasOwn(pageValue.response, "@odata.deltaLink") && deltaLink === undefined)
       ) {
-        return invalidObservation(this.id, this.version, request, `Graph delta page ${index + 1} has a malformed traversal link`);
+        return invalidObservation(this.id, this.version, request, grounding, `Graph delta page ${index + 1} has a malformed traversal link`);
+      }
+      const traversalLink = nextLink ?? deltaLink;
+      const parsedTraversalLink = absoluteHttpsUrl(traversalLink);
+      if (
+        parsedTraversalLink === undefined ||
+        parsedTraversalLink.origin !== parsedRootUrl.origin
+      ) {
+        return invalidObservation(this.id, this.version, request, grounding, `Graph delta page ${index + 1} has a non-HTTPS, relative, empty, or cross-origin traversal link`);
       }
       if ((nextLink === undefined) === (deltaLink === undefined)) {
-        return invalidObservation(this.id, this.version, request, `Graph delta page ${index + 1} must contain exactly one traversal link`);
+        return invalidObservation(this.id, this.version, request, grounding, `Graph delta page ${index + 1} must contain exactly one traversal link`);
       }
       if (deltaLink !== undefined && index !== pagesValue.length - 1) {
-        return invalidObservation(this.id, this.version, request, `Graph delta page ${index + 1} closes before the supplied bundle ends`);
+        return invalidObservation(this.id, this.version, request, grounding, `Graph delta page ${index + 1} closes before the supplied bundle ends`);
       }
       if (nextLink !== undefined) {
         expectedUrl = nextLink;
@@ -743,6 +823,7 @@ const graphDelta: SourceProfile = {
       profileId: this.id,
       profileVersion: this.version,
       rootRequest: request,
+      grounding,
       segmentRequest: lastRequest,
       traversalStatus: completed ? "aggregate_complete" : "continued",
       pageCount: pagesValue.length,
@@ -765,6 +846,42 @@ const graphDelta: SourceProfile = {
   },
 };
 
+const CONTROLLED_SCENARIOS = new Set<ProbeScenario>([
+  "complete-zero",
+  "partial-zero",
+  "continued-zero",
+  "denied-zero",
+  "failed-zero",
+  "scope-mismatch-zero",
+  "segment-zero",
+]);
+
+const controlledProbe: SourceProfile = {
+  id: "closureprobe-controlled-probe",
+  version: PROFILE_VERSION,
+  assess(request, response, grounding) {
+    if (
+      !isValidGrounding(grounding, this.id) ||
+      !isObject(response) ||
+      typeof response.scenario !== "string" ||
+      !CONTROLLED_SCENARIOS.has(response.scenario as ProbeScenario)
+    ) {
+      return invalidObservation(
+        this.id,
+        this.version,
+        request,
+        grounding,
+        "Controlled probe evidence requires a recognized scenario and matching grounding",
+      );
+    }
+    return createProbePayload(
+      response.scenario as ProbeScenario,
+      request,
+      grounding,
+    ).observation;
+  },
+};
+
 const profileList: readonly SourceProfile[] = [
   generic,
   googleDrive,
@@ -778,8 +895,12 @@ export const sourceProfiles: ReadonlyMap<string, SourceProfile> = new Map(
   profileList.map((profile) => [profile.id, profile]),
 );
 
+const installedProfiles: ReadonlyMap<string, SourceProfile> = new Map(
+  [...profileList, controlledProbe].map((profile) => [profile.id, profile]),
+);
+
 export function getSourceProfile(profileId: string): SourceProfile {
-  const profile = sourceProfiles.get(profileId);
+  const profile = installedProfiles.get(profileId);
   if (profile === undefined) throw new Error(`Unknown source profile: ${profileId}`);
   return profile;
 }
@@ -788,6 +909,7 @@ export function assessWithProfile(
   profileId: string,
   request: JsonValue,
   response: JsonValue,
+  grounding: SourceGrounding,
 ): ClosureObservation {
-  return getSourceProfile(profileId).assess(request, response);
+  return getSourceProfile(profileId).assess(request, response, grounding);
 }

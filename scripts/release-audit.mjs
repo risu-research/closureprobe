@@ -7,8 +7,8 @@ const excludedDirectories = new Set([".git", ".npm-cache", "dist", "node_modules
 const excludedFiles = new Set(["MANIFEST.sha256", "package-lock.json"]);
 const requiredFiles = [
   "README.md", "PROFILE.md", "CLAIMS.md", "LIMITATIONS.md", "SECURITY.md", "CHANGELOG.md",
-  "INTEROPERABILITY.md", "ROADMAP.md", "CITATION.cff", "LICENSE",
-  "corpus/v0.2/cases.json",
+  "INTEROPERABILITY.md", "POSITIONING.md", "ROADMAP.md", "CITATION.cff", "LICENSE",
+  "corpus/v0.3/cases.json",
 ];
 
 function walk(directory) {
@@ -22,6 +22,62 @@ function walk(directory) {
 }
 
 const failures = [];
+
+function readJson(relativePath) {
+  try {
+    return JSON.parse(readFileSync(resolve(root, relativePath), "utf8"));
+  } catch (error) {
+    failures.push(
+      `${relativePath}: cannot read release metadata (${error instanceof Error ? error.message : error})`,
+    );
+    return undefined;
+  }
+}
+
+const packageMetadata = readJson("package.json");
+const lockMetadata = readJson("package-lock.json");
+const corpusMetadata = readJson("corpus/v0.3/cases.json");
+const evidenceMetadata = readJson("evidence/results.json");
+
+if (packageMetadata !== undefined) {
+  const releaseVersion = packageMetadata.version;
+  const rootLock = lockMetadata?.packages?.[""];
+  if (lockMetadata?.version !== releaseVersion || rootLock?.version !== releaseVersion) {
+    failures.push("package-lock.json: root versions do not match package.json");
+  }
+  if (evidenceMetadata?.toolVersion !== releaseVersion) {
+    failures.push("evidence/results.json: toolVersion does not match package.json");
+  }
+  const corpusSource = readFileSync(resolve(root, "src/corpus.ts"), "utf8");
+  if (!corpusSource.includes(`TOOL_VERSION = "${releaseVersion}"`)) {
+    failures.push("src/corpus.ts: TOOL_VERSION does not match package.json");
+  }
+  const citation = readFileSync(resolve(root, "CITATION.cff"), "utf8");
+  if (!citation.includes(`version: ${releaseVersion}`)) {
+    failures.push("CITATION.cff: version does not match package.json");
+  }
+}
+
+if (corpusMetadata !== undefined && evidenceMetadata !== undefined) {
+  if (evidenceMetadata.corpusVersion !== corpusMetadata.corpusVersion) {
+    failures.push("evidence/results.json: corpusVersion does not match the frozen corpus");
+  }
+  if (
+    evidenceMetadata.total !== corpusMetadata.cases?.length ||
+    evidenceMetadata.passed !== evidenceMetadata.total ||
+    evidenceMetadata.failed !== 0
+  ) {
+    failures.push("evidence/results.json: report is not a complete passing result for the frozen corpus");
+  }
+  for (const name of readdirSync(resolve(root, "profiles"))) {
+    if (!name.endsWith(".json")) continue;
+    const descriptor = readJson(`profiles/${name}`);
+    if (descriptor?.version !== corpusMetadata.profileVersion) {
+      failures.push(`profiles/${name}: version does not match corpus profileVersion`);
+    }
+  }
+}
+
 for (const file of requiredFiles) {
   try {
     statSync(resolve(root, file));

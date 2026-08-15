@@ -3,6 +3,27 @@ import { test } from "node:test";
 
 import { assessClosure } from "../src/oracle.js";
 import { assessWithProfile } from "../src/profiles.js";
+import type { SourceGrounding } from "../src/types.js";
+
+function grounding(
+  producer: string,
+  instance: Record<string, string> = { tenant: "fixture" },
+): SourceGrounding {
+  return {
+    sourceContext: {
+      producer,
+      instance,
+      authority: { principal: "fixture-user" },
+    },
+    propositionScope: { corpus: "fixture-corpus" },
+  };
+}
+
+const driveGrounding = grounding("google-drive");
+const dynamoGrounding = grounding("aws-dynamodb");
+const relayGrounding = grounding("graphql-relay");
+const graphGrounding = grounding("microsoft-graph");
+const elasticGrounding = grounding("elasticsearch", { cluster: "fixture", mode: "local" });
 
 test("Drive final continuation segment cannot establish root-query emptiness", () => {
   const request = {
@@ -14,6 +35,7 @@ test("Drive final continuation segment cannot establish root-query emptiness", (
     "google-drive-files-list",
     request,
     { files: [], incompleteSearch: false },
+    driveGrounding,
   ));
   assert.equal(assessment.observation.traversalBinding.status, "segment_only");
   assert.ok(assessment.blockers.includes("traversal_not_query_complete"));
@@ -39,6 +61,7 @@ test("Drive aggregate links every page and counts earlier results", () => {
         },
       ],
     },
+    driveGrounding,
   ));
   assert.equal(assessment.observation.traversalBinding.status, "aggregate_complete");
   assert.equal(assessment.observation.observedCount, 1);
@@ -50,6 +73,7 @@ test("malformed or lookalike Drive closure fields fail closed", () => {
     "google-drive-files-list",
     { fields: "notfiles,nextPageToken,incompleteSearch" },
     { files: [], incompleteSearch: false },
+    driveGrounding,
   );
   assert.equal(assessClosure(lookalike).negativeLicense, "not_licensed");
 
@@ -57,6 +81,7 @@ test("malformed or lookalike Drive closure fields fail closed", () => {
     "google-drive-files-list",
     { fields: "files(id),nextPageToken,incompleteSearch" },
     { files: [], incompleteSearch: false, nextPageToken: 7 },
+    driveGrounding,
   );
   assert.equal(malformedToken.validation, "invalid");
 });
@@ -72,6 +97,7 @@ test("DynamoDB rejects a broken pagination chain", () => {
         { request: { ...root, ExclusiveStartKey: { pk: { S: "wrong" } } }, response: { Items: [] } },
       ],
     },
+    dynamoGrounding,
   );
   assert.equal(observation.validation, "invalid");
   assert.equal(observation.traversalBinding.status, "unknown");
@@ -83,11 +109,13 @@ test("Relay profile accepts forward root and rejects backward pagination", () =>
     "graphql-relay-forward-connection",
     { query: "query { search(first: 10) { edges { node { id } } pageInfo { hasNextPage } } }" },
     response,
+    relayGrounding,
   ));
   const backward = assessClosure(assessWithProfile(
     "graphql-relay-forward-connection",
     { query: "query { search(last: 10, before: \"cursor\") { edges { node { id } } pageInfo { hasNextPage hasPreviousPage } } }" },
     response,
+    relayGrounding,
   ));
   assert.equal(forward.negativeLicense, "licensed");
   assert.equal(backward.observation.validation, "invalid");
@@ -103,6 +131,7 @@ test("Relay after cursor is segment-only even on a final empty response", () => 
       operationName: "Search",
     },
     { data: { search: { edges: [], pageInfo: { hasNextPage: false } } } },
+    relayGrounding,
   ));
   assert.equal(assessment.observation.traversalBinding.status, "segment_only");
   assert.ok(assessment.blockers.includes("traversal_not_query_complete"));
@@ -125,6 +154,7 @@ test("Graph delta counts all linked pages rather than only the final page", () =
         },
       ],
     },
+    graphGrounding,
   ));
   assert.equal(assessment.observation.observedCount, 1);
   assert.equal(assessment.branch, "positive_observed");
@@ -140,6 +170,7 @@ test("Elasticsearch exact total controls cardinality and early termination block
     "elasticsearch-search-zero",
     { index: "docs", size: 0 },
     base,
+    elasticGrounding,
   ));
   assert.equal(positive.branch, "positive_observed");
   assert.equal(positive.observation.observedCount, 3);
@@ -148,6 +179,7 @@ test("Elasticsearch exact total controls cardinality and early termination block
     "elasticsearch-search-zero",
     { index: "docs" },
     { ...base, terminated_early: true, hits: { total: { value: 0, relation: "eq" }, hits: [] } },
+    elasticGrounding,
   ));
   assert.equal(early.negativeLicense, "not_licensed");
   assert.equal(early.observation.coverage, "partial");
@@ -162,6 +194,7 @@ test("Elasticsearch zero resolved shards fails closed", () => {
       _shards: { total: 0, successful: 0, failed: 0 },
       hits: { total: { value: 0, relation: "eq" }, hits: [] },
     },
+    elasticGrounding,
   ));
   assert.equal(assessment.negativeLicense, "not_licensed");
 });
@@ -175,6 +208,7 @@ test("malformed Elasticsearch counts and GraphQL errors fail closed", () => {
       _shards: { total: 1.5, successful: 1.5, failed: 0 },
       hits: { total: { value: 0, relation: "eq" }, hits: [] },
     },
+    elasticGrounding,
   );
   assert.equal(assessClosure(elastic).negativeLicense, "not_licensed");
 
@@ -182,6 +216,36 @@ test("malformed Elasticsearch counts and GraphQL errors fail closed", () => {
     "graphql-relay-forward-connection",
     { query: "query { search(first: 10) { edges { node { id } } pageInfo { hasNextPage } } }" },
     { errors: {}, data: { search: { edges: [], pageInfo: { hasNextPage: false } } } },
+    relayGrounding,
   );
   assert.equal(relay.validation, "invalid");
+});
+
+test("Elasticsearch cross-cluster responses are outside the local-only profile", () => {
+  const observation = assessWithProfile(
+    "elasticsearch-search-zero",
+    { index: "local:docs" },
+    {
+      timed_out: false,
+      _shards: { total: 1, successful: 1, failed: 0 },
+      _clusters: { total: 2, successful: 1, skipped: 1, partial: 0, failed: 0, running: 0 },
+      hits: { total: { value: 0, relation: "eq" }, hits: [] },
+    },
+    elasticGrounding,
+  );
+  assert.equal(observation.validation, "invalid");
+  assert.equal(assessClosure(observation).negativeLicense, "not_licensed");
+});
+
+test("Graph delta rejects empty relative and cross-origin traversal links", () => {
+  const root = { url: "https://graph.example/users/delta" };
+  for (const link of ["", "/users/delta?$deltatoken=end", "https://other.example/users/delta"] as const) {
+    const observation = assessWithProfile(
+      "microsoft-graph-delta-traversal",
+      root,
+      { pages: [{ requestUrl: root.url, response: { value: [], "@odata.deltaLink": link } }] },
+      graphGrounding,
+    );
+    assert.equal(observation.validation, "invalid", link);
+  }
 });

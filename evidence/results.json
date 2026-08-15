@@ -1,10 +1,10 @@
 {
   "tool": "closureprobe",
-  "toolVersion": "0.1.0-rc2",
-  "corpusVersion": "closureprobe-corpus-v0.2.0",
-  "profileVersion": "0.2.0",
-  "total": 45,
-  "passed": 45,
+  "toolVersion": "0.1.0-rc3",
+  "corpusVersion": "closureprobe-corpus-v0.3.0",
+  "profileVersion": "0.3.0",
+  "total": 50,
+  "passed": 50,
   "failed": 0,
   "results": [
     {
@@ -801,6 +801,72 @@
       "diagnostics": []
     },
     {
+      "id": "ES-008",
+      "kind": "observation",
+      "title": "Cross-cluster zero with a skipped remote cluster is outside the local-only profile",
+      "passed": true,
+      "expected": {
+        "branch": "no_result_claim",
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "cardinality_not_zero",
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "execution_not_success",
+          "scope_not_exact",
+          "traversal_not_query_complete",
+          "validation_not_profile_validated"
+        ]
+      },
+      "actual": {
+        "branch": "no_result_claim",
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "cardinality_not_zero",
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "execution_not_success",
+          "scope_not_exact",
+          "traversal_not_query_complete",
+          "validation_not_profile_validated"
+        ]
+      },
+      "diagnostics": []
+    },
+    {
+      "id": "MSG-007",
+      "kind": "observation",
+      "title": "Empty Graph deltaLink cannot close a traversal",
+      "passed": true,
+      "expected": {
+        "branch": "no_result_claim",
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "cardinality_not_zero",
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "execution_not_success",
+          "scope_not_exact",
+          "traversal_not_query_complete",
+          "validation_not_profile_validated"
+        ]
+      },
+      "actual": {
+        "branch": "no_result_claim",
+        "negativeLicense": "not_licensed",
+        "blockers": [
+          "cardinality_not_zero",
+          "continuation_not_exhausted",
+          "coverage_not_complete",
+          "execution_not_success",
+          "scope_not_exact",
+          "traversal_not_query_complete",
+          "validation_not_profile_validated"
+        ]
+      },
+      "diagnostics": []
+    },
+    {
       "id": "TRC-001",
       "kind": "trace",
       "title": "Preserved continuation remains conformant without a negative claim",
@@ -867,22 +933,18 @@
     {
       "id": "TRC-005",
       "kind": "trace",
-      "title": "Denied unavailable result cannot be mutated into complete root zero",
+      "title": "Denied result cannot be mutated into complete root zero",
       "passed": true,
       "expected": [
         "dangerous_mutation",
         "dangerous_mutation",
-        "dangerous_mutation",
-        "dangerous_mutation",
-        "dangerous_mutation",
+        "unlicensed_negative",
         "unsupported_upgrade"
       ],
       "actual": [
         "dangerous_mutation",
         "dangerous_mutation",
-        "dangerous_mutation",
-        "dangerous_mutation",
-        "dangerous_mutation",
+        "unlicensed_negative",
         "unsupported_upgrade"
       ],
       "diagnostics": []
@@ -893,10 +955,12 @@
       "title": "Valid-looking observation bound to another request is rejected",
       "passed": true,
       "expected": [
-        "query_binding_mismatch"
+        "query_binding_mismatch",
+        "unanchored_root_evidence"
       ],
       "actual": [
-        "query_binding_mismatch"
+        "query_binding_mismatch",
+        "unanchored_root_evidence"
       ],
       "diagnostics": []
     },
@@ -939,6 +1003,7 @@
         "dangerous_mutation",
         "dangerous_mutation",
         "dangerous_mutation",
+        "unlicensed_negative",
         "unsupported_upgrade",
         "unverified_evidence_introduction"
       ],
@@ -946,6 +1011,7 @@
         "dangerous_mutation",
         "dangerous_mutation",
         "dangerous_mutation",
+        "unlicensed_negative",
         "unsupported_upgrade",
         "unverified_evidence_introduction"
       ],
@@ -954,10 +1020,55 @@
     {
       "id": "TRC-010",
       "kind": "trace",
-      "title": "Receiver-revalidated raw evidence permits a legitimate closure upgrade",
+      "title": "Receiver-reconstructed canonical evidence permits a legitimate closure upgrade",
       "passed": true,
       "expected": [],
       "actual": [],
+      "diagnostics": []
+    },
+    {
+      "id": "TRC-011",
+      "kind": "trace",
+      "title": "Self-declared profile validation cannot anchor the root",
+      "passed": true,
+      "expected": [
+        "unanchored_root_evidence",
+        "unlicensed_negative"
+      ],
+      "actual": [
+        "unanchored_root_evidence",
+        "unlicensed_negative"
+      ],
+      "diagnostics": []
+    },
+    {
+      "id": "TRC-012",
+      "kind": "trace",
+      "title": "Scope drift breaks the receiver-anchored evidence chain",
+      "passed": true,
+      "expected": [
+        "grounding_binding_mismatch",
+        "unlicensed_negative"
+      ],
+      "actual": [
+        "grounding_binding_mismatch",
+        "unlicensed_negative"
+      ],
+      "diagnostics": []
+    },
+    {
+      "id": "TRC-013",
+      "kind": "trace",
+      "title": "Profile substitution without new evidence breaks the chain",
+      "passed": true,
+      "expected": [
+        "profile_binding_change",
+        "unlicensed_negative"
+      ],
+      "actual": [
+        "profile_binding_change",
+        "unlicensed_negative"
+      ],
       "diagnostics": []
     }
   ]

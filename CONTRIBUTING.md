@@ -8,8 +8,9 @@ ClosureProbe welcomes narrowly reviewable contributions in three forms:
 3. an adapter that reconstructs observations from raw, hash-bound artifacts.
 
 Every new source profile MUST fail closed on missing and unsupported signals,
-bind the exact request, include a frozen corpus slice, and state what the source
-cannot prove. A target result MUST follow the publication rule in
+declare its grounding producer, bind the exact request and grounding, include a
+frozen corpus slice, and state what the source cannot prove. Every trace MUST
+begin with receiver-reconstructed root evidence. A target result MUST follow the publication rule in
 [INTEROPERABILITY.md](INTEROPERABILITY.md). Generated counts or compatibility
 claims must never be hand-edited into documentation.
 

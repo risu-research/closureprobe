@@ -1,0 +1,23 @@
+{
+  "id": "elasticsearch-search-zero",
+  "version": "0.3.0",
+  "title": "Elasticsearch Local-Cluster Exact-Total Search Closure",
+  "authority": "https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search",
+  "groundingProducer": "elasticsearch",
+  "supportedOperation": "A context-grounded local-cluster, non-scroll, non-search_after, non-early-terminated search with an exact total over at least one fully successful shard.",
+  "negativeProposition": "The exact local-cluster Elasticsearch search has an accurate total hit count of zero over the declared and resolved nonempty shard set.",
+  "supportedEvidenceUnits": ["single_root_response"],
+  "conservativeDefaults": {
+    "missingCoverage": "unknown",
+    "missingContinuation": "unknown",
+    "unsupportedVariant": "fail_closed"
+  },
+  "references": [
+    "https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search"
+  ],
+  "notes": [
+    "timed_out, terminated_early, failed shards, gte totals, zero resolved shards, and unsupported request controls block a negative license.",
+    "Cardinality is derived from exact hits.total, not merely the returned page length.",
+    "Cross-cluster targets and responses containing _clusters are outside v0.3 because an unavailable optional remote cluster can be skipped while the request succeeds."
+  ]
+}

@@ -6,6 +6,14 @@ import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 
 const projectRoot = fileURLToPath(new URL("../../", import.meta.url));
+const grounding = {
+  sourceContext: {
+    producer: "closureprobe-controlled-probe",
+    instance: { server: "independent-client-fixture" },
+    authority: { principal: "test-client" },
+  },
+  propositionScope: { tenant: "fixture" },
+};
 
 test("an independent official MCP client observes all three carriers", async (context) => {
   const transport = new StdioClientTransport({
@@ -25,7 +33,7 @@ test("an independent official MCP client observes all three carriers", async (co
 
   const dual = await client.callTool({
     name: "closureprobe_probe",
-    arguments: { scenario: "continued-zero", carrier: "dual", request: { q: "needle" } },
+    arguments: { scenario: "continued-zero", carrier: "dual", request: { q: "needle" }, grounding },
   });
   assert.equal(dual.content.length, 1);
   const dualStructured = dual.structuredContent as
@@ -35,7 +43,7 @@ test("an independent official MCP client observes all three carriers", async (co
 
   const structured = await client.callTool({
     name: "closureprobe_probe",
-    arguments: { scenario: "partial-zero", carrier: "structured-only", request: { q: "needle" } },
+    arguments: { scenario: "partial-zero", carrier: "structured-only", request: { q: "needle" }, grounding },
   });
   assert.deepEqual(structured.content, []);
   const structuredPayload = structured.structuredContent as
@@ -45,7 +53,7 @@ test("an independent official MCP client observes all three carriers", async (co
 
   const text = await client.callTool({
     name: "closureprobe_probe",
-    arguments: { scenario: "complete-zero", carrier: "text-only", request: { q: "needle" } },
+    arguments: { scenario: "complete-zero", carrier: "text-only", request: { q: "needle" }, grounding },
   });
   assert.equal(text.structuredContent, undefined);
   assert.equal(text.content[0]?.type, "text");

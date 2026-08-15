@@ -34,11 +34,13 @@ try {
     "dist/src/index.js",
     "dist/src/cli.js",
     "dist/src/mcp-server.js",
-    "corpus/v0.2/cases.json",
+    "corpus/v0.3/cases.json",
     "schemas/closure-trace.schema.json",
+    "schemas/source-grounding.schema.json",
     "evidence/results.json",
     "evidence/results.html",
     "PROFILE.md",
+    "POSITIONING.md",
     "CHANGELOG.md",
     "IMPACT.md",
     "LIMITATIONS.md",
@@ -66,7 +68,7 @@ try {
     [
       "--input-type=module",
       "--eval",
-      "import { createProbePayload, assessClosure } from '@risu-research/closureprobe'; const result=assessClosure(createProbePayload('continued-zero',{q:'needle'}).observation); if(result.negativeLicense!=='not_licensed') process.exit(2);",
+      "import { createProbePayload, assessClosure } from '@risu-research/closureprobe'; const grounding={sourceContext:{producer:'closureprobe-controlled-probe',instance:{server:'fixture'},authority:{principal:'fixture'}},propositionScope:{tenant:'fixture'}}; const result=assessClosure(createProbePayload('continued-zero',{q:'needle'},grounding).observation); if(result.negativeLicense!=='not_licensed') process.exit(2);",
     ],
     { cwd: consumer, stdio: "pipe" },
   );

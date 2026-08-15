@@ -4,56 +4,68 @@
 
 ClosureProbe is an executable falsification and conformance system for
 **Negative Evidence Integrity** in agentic toolchains. It tests whether an
-empty page, incomplete traversal, denied search, failed shard, narrowed scope,
-or lost guard signal is silently upgraded into the claim that nothing exists.
+empty page, incomplete traversal, denied search, failed shard, narrowed source
+context, or lost guard signal is silently upgraded into the claim that nothing
+exists.
 
 The technical object is deliberately narrow: a query-relative assertion of
-absence. The larger question is consequential: **when has a system earned the
-right to stop searching, assert none, and act on that premise?**
+absence. The consequential question is larger: **when has an observed system
+earned the right to stop searching and assert none?**
 
 ## The false-zero firewall
 
-A licensed negative requires one coherent evidence chain:
+A `none` claim in a trace is admissible only when one receiver-checkable chain
+holds:
 
-1. the exact root request is cryptographically bound;
-2. the observed evidence unit is either a complete root response or a validated
-   root-to-final traversal—not merely a final page;
-3. execution succeeded, cardinality is zero, coverage is complete,
-   continuation is exhausted, scope is exact, and the pinned profile validates
-   every required signal; and
-4. any `none` claim is bound to an explicit subject, predicate, and scope.
+1. the trace begins with supplied request/response evidence that the receiver
+   reconstructs through the exact installed source profile;
+2. the exact root request, declared source instance, authority context, and
+   proposition scope are canonically bound;
+3. the evidence unit is a complete root response or a validated root-to-final
+   traversal—not merely a final continuation page;
+4. execution succeeded, cardinality is zero, coverage is complete,
+   continuation is exhausted, scope is exact, and every required producer
+   signal validates; and
+5. the claim is bound to the same source context and exact subject, predicate,
+   and scope.
 
-If a downstream stage strengthens those facts, the receiver must reconstruct
-the new observation from supplied raw request/response evidence and the pinned
-profile. A sender's assertion that evidence was validated is not authority.
+The anchor may flow through a weakening transformation. It cannot survive a
+scope/context change, source-profile substitution, or favorable evidence
+mutation unless the receiver reconstructs new supplied evidence.
 
-## What the product does
+## What rc3 changes
 
-- converts supported source responses or traversal bundles into conservative,
-  query-bound observations;
-- makes one deterministic negative-license decision;
-- distinguishes a page segment from a complete query traversal;
-- rejects naked or proposition-shifted `none` claims;
-- localizes guard loss, dangerous mutation, request mismatch, forged evidence,
-  and the first unlicensed negative across supplied observable stages;
-- emits machine-readable and self-contained HTML evidence; and
-- runs as an MCP probe server for controlled client experiments.
+rc2 prevented a sender from self-authorizing a downstream evidence upgrade.
+rc3 closes the earlier trust gap: a trace can no longer begin with a naked
+`profile_validated` observation.
 
-ClosureProbe does **not** automatically intercept arbitrary clients. Operators
-capture the boundaries they can actually observe and normalize them into the
-published trace schema. Hidden boundaries stay explicitly unobserved; they do
-not become silent passes.
+- `rootEvidence` is mandatory and receiver-reconstructed.
+- Every stage exposes `evidenceAnchored` in the analysis.
+- `sourceContext` identifies the declared producer, instance, and authority.
+- The observation binds that context and the proposition scope independently.
+- Proposition binding v2 binds `none` to both its proposition and source context.
+- Unverified root evidence, grounding drift, and profile substitution have
+  distinct findings.
+- Elasticsearch v0.3 is deliberately local-cluster only; cross-cluster results
+  are rejected rather than inferred complete from shard counts.
+- Microsoft Graph traversal links must be nonempty, absolute HTTPS, and
+  same-origin with the root URL.
+
+These are consistency and reconstruction guarantees over supplied evidence.
+They do not authenticate the producer or prove that a declared authority scope
+matches the world.
 
 ## Quick start
 
 ```bash
 npm install
 npm run quality
-node dist/src/cli.js corpus verify corpus/v0.2/cases.json
+node dist/src/cli.js corpus verify corpus/v0.3/cases.json
 node dist/src/cli.js assess \
   --profile google-drive-files-list \
   --request examples/drive/request.json \
-  --response examples/drive/continued-zero-response.json
+  --response examples/drive/continued-zero-response.json \
+  --grounding examples/drive/grounding.json
 ```
 
 Run the controlled MCP probe:
@@ -62,59 +74,60 @@ Run the controlled MCP probe:
 node dist/src/mcp-server.js
 ```
 
-The continued Drive example is not licensed even though its current page is
-empty. A `nextPageToken` proves the root traversal is unfinished. Conversely, a
-validated multi-page bundle counts every page, so an earlier hit cannot vanish
-behind an empty final page.
+The Drive example remains unlicensed because its current page contains a
+`nextPageToken`. A validated multi-page bundle counts every page, so an earlier
+hit cannot disappear behind an empty final page.
 
 ## Frozen adversarial evidence
 
-The rc2 corpus contains **45 deterministic cases**: 35 source-profile
-observations and 10 cross-boundary traces. It contains both attack cases and
-positive controls, including a legitimate receiver-revalidated evidence
-upgrade. `npm run evidence` regenerates the JSON and self-contained HTML report.
+The rc3 corpus contains **50 deterministic cases**: 37 source-profile
+observations and 13 cross-boundary traces. New attacks cover a forged root
+anchor, source-scope drift, profile substitution, skipped cross-cluster search,
+and malformed Graph traversal links. Positive controls include preservation and
+a legitimate receiver-reconstructed evidence upgrade.
 
 | Profile | Evidence boundary enforced |
 | --- | --- |
-| Google Drive `files.list` | root vs `pageToken` segment; exact token-linked aggregate; `incompleteSearch` |
-| DynamoDB `Query` | root vs `ExclusiveStartKey` segment; exact key-linked aggregate |
-| Elasticsearch search | exact total, nonempty successful shard set, timeout and early-termination guards |
-| GraphQL Relay | parsed forward root query, `first`/`after` direction, `hasNextPage`, GraphQL errors |
-| Microsoft Graph delta | complete root-to-`deltaLink` bundle; byte-exact `nextLink` chain; aggregate count |
+| Google Drive `files.list` | root vs `pageToken`; exact token-linked aggregate; `incompleteSearch` |
+| DynamoDB `Query` | root vs `ExclusiveStartKey`; exact key-linked aggregate |
+| Elasticsearch search | grounded local cluster; exact total; complete nonempty shard set; no early termination |
+| GraphQL Relay | parsed forward root query; `first`/`after`; `hasNextPage`; GraphQL errors |
+| Microsoft Graph delta | complete root-to-`deltaLink` bundle; exact `nextLink` chain; safe URL shape |
 | Generic enumeration | explicit controlled contract, including traversal status |
 
 ## Project structure
 
 ```text
 PROFILE.md             normative bounded profile
-schemas/               language-neutral observation, trace, and corpus contracts
+POSITIONING.md         distinction from adjacent research and protocol testing
+schemas/               observations, grounding, traces, profiles, and corpus
 profiles/              pinned producer-semantics descriptors
-corpus/v0.2/           frozen adversarial and control cases
+corpus/v0.3/           frozen adversarial and control cases
 src/                   library, CLI, reports, source profiles, and MCP probe
-tests/                 deterministic implementation and independent-client tests
-examples/              runnable assessments and trace
+tests/                 deterministic and independent-client tests
+examples/              runnable assessment grounding and trace
 evidence/              reproducible corpus results
 ```
 
 ## Claim boundary
 
-This is not proof that a source is truthful, current, globally exhaustive, or
-legally sufficient. It is an executable check that the supplied observable
-trace did not claim more absence than its exact, profile-validated evidence
-licensed. Read [PROFILE.md](PROFILE.md), [CLAIMS.md](CLAIMS.md), and
-[LIMITATIONS.md](LIMITATIONS.md) before citing a result.
+ClosureProbe does not prove that a source is truthful, current, authenticated,
+globally exhaustive, or legally sufficient. It checks whether a **supplied
+observable trace** preserves a receiver-reconstructed, exact-query, declared-
+context negative-evidence chain.
 
-[INTEROPERABILITY.md](INTEROPERABILITY.md) defines real-client experiments.
-[IMPACT.md](IMPACT.md) explains why false zero is an authorization and
-procedural-integrity problem. [ROADMAP.md](ROADMAP.md) leaves the next project to
-the evidence rather than pre-committing to a mechanically assembled sequel.
+Read [PROFILE.md](PROFILE.md), [CLAIMS.md](CLAIMS.md), and
+[LIMITATIONS.md](LIMITATIONS.md) before citing a result. See
+[POSITIONING.md](POSITIONING.md) for the research wedge and
+[INTEROPERABILITY.md](INTEROPERABILITY.md) for real-client experiments.
 
 ## Release lineage
 
-`v0.1.0-rc1` is preserved as the pre-adversarial-review snapshot. rc2 changes
-the contract incompatibly where correctness required it: traversal identity,
-proposition-bound claims, receiver-revalidated evidence, and narrower source
-profiles.
+- `v0.1.0-rc1`: initial pre-adversarial-review snapshot;
+- `v0.1.0-rc2`: page/traversal separation, proposition binding, and downstream
+  receiver reconstruction; and
+- `v0.1.0-rc3`: receiver-anchored root, declared source-context grounding,
+  anchored-state propagation, and producer soundness narrowing.
 
 ## License
 

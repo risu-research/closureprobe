@@ -8,6 +8,7 @@
     "profileId",
     "profileVersion",
     "queryBinding",
+    "groundingBinding",
     "traversalBinding",
     "execution",
     "cardinality",
@@ -28,6 +29,16 @@
         "algorithm": { "const": "closureprobe-canonical-json-v1" },
         "requestDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
         "status": { "enum": ["exact", "narrower", "mismatch", "unbound"] }
+      }
+    },
+    "groundingBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "sourceContextDigest", "propositionScopeDigest"],
+      "properties": {
+        "algorithm": { "const": "closureprobe-grounding-v1" },
+        "sourceContextDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "propositionScopeDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
       }
     },
     "traversalBinding": {

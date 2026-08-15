@@ -9,6 +9,7 @@
     "version",
     "title",
     "authority",
+    "groundingProducer",
     "supportedOperation",
     "negativeProposition",
     "supportedEvidenceUnits",
@@ -20,6 +21,7 @@
     "version": { "type": "string", "minLength": 1 },
     "title": { "type": "string", "minLength": 1 },
     "authority": { "type": "string", "format": "uri" },
+    "groundingProducer": { "type": "string", "minLength": 1 },
     "supportedOperation": { "type": "string", "minLength": 1 },
     "negativeProposition": { "type": "string", "minLength": 1 },
     "supportedEvidenceUnits": {

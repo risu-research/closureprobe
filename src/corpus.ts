@@ -11,7 +11,7 @@ import type {
 } from "./types.js";
 import { validateCorpus } from "./validation.js";
 
-export const TOOL_VERSION = "0.1.0-rc2";
+export const TOOL_VERSION = "0.1.0-rc3";
 
 function sorted(values: readonly string[]): string[] {
   return [...values].sort();
@@ -33,6 +33,7 @@ export function runCorpus(corpus: FrozenCorpus): CorpusResult {
         testCase.profileId,
         testCase.request,
         testCase.response,
+        testCase.grounding,
       );
       const assessment = assessClosure(observation);
       const expected = {

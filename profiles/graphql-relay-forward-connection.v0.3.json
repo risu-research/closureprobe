@@ -1,8 +1,9 @@
 {
   "id": "graphql-relay-forward-connection",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "title": "GraphQL Relay Forward Root Connection Closure",
   "authority": "https://relay.dev/graphql/connections.htm",
+  "groundingProducer": "graphql-relay",
   "supportedOperation": "An unaliased top-level search connection using positive first and optional after, with edges and pageInfo.hasNextPage directly selected.",
   "negativeProposition": "The exact root forward search connection has zero edges and no next page.",
   "supportedEvidenceUnits": ["single_root_response"],
@@ -16,8 +17,9 @@
     "https://relay.dev/graphql/connections.htm"
   ],
   "notes": [
-    "Backward last/before and mixed pagination are outside v0.2.",
+    "Backward last/before and mixed pagination are outside v0.3.",
     "A request with a non-null after cursor is segment-only.",
-    "GraphQL errors block a negative license even when partial data is present."
+    "GraphQL errors block a negative license even when partial data is present.",
+    "The declared GraphQL service instance, authority context, and proposition scope are hash-bound into the observation."
   ]
 }

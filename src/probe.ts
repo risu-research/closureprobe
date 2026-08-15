@@ -1,5 +1,6 @@
 import { sha256Digest } from "./canonical.js";
-import type { ClosureObservation, JsonValue } from "./types.js";
+import { bindGrounding, isValidGrounding } from "./grounding.js";
+import type { ClosureObservation, JsonValue, SourceGrounding } from "./types.js";
 
 export type ProbeScenario =
   | "complete-zero"
@@ -14,13 +15,18 @@ export type ProbeCarrier = "dual" | "structured-only" | "text-only";
 export interface ProbePayload {
   scenario: ProbeScenario;
   request: JsonValue;
+  grounding: SourceGrounding;
   observation: ClosureObservation;
 }
 
 export function createProbePayload(
   scenario: ProbeScenario,
   request: JsonValue,
+  grounding: SourceGrounding,
 ): ProbePayload {
+  if (!isValidGrounding(grounding, "closureprobe-controlled-probe")) {
+    throw new Error("Controlled probe grounding must identify closureprobe-controlled-probe");
+  }
   const execution = scenario === "denied-zero"
     ? "denied"
     : scenario === "failed-zero"
@@ -35,14 +41,16 @@ export function createProbePayload(
   return {
     scenario,
     request,
+    grounding,
     observation: {
       profileId: "closureprobe-controlled-probe",
-      profileVersion: "0.2.0",
+      profileVersion: "0.3.0",
       queryBinding: {
         algorithm: "closureprobe-canonical-json-v1",
         requestDigest: sha256Digest(request),
         status: scopeBinding,
       },
+      groundingBinding: bindGrounding(grounding),
       traversalBinding: {
         algorithm: "closureprobe-traversal-v1",
         rootRequestDigest: sha256Digest(request),
