@@ -1,0 +1,66 @@
+{
+  "studyId": "closureprobe-vscode-01",
+  "recordFormat": "closureprobe-post-publication-anchor-v1",
+  "gate": "A2-preregistration",
+  "repositoryUrl": "https://github.com/risu-research/closureprobe",
+  "releaseId": 371051060,
+  "commit": "66dd84f24e407c938d4f8dab3fa31bca22edbdce",
+  "tag": "study-vscode-01-prereg-v3",
+  "releaseUrl": "https://github.com/risu-research/closureprobe/releases/tag/study-vscode-01-prereg-v3",
+  "publishedAt": "2026-08-15T13:16:50Z",
+  "immutableRelease": true,
+  "releaseAttestationUrl": "https://github.com/risu-research/closureprobe/attestations/40912272/download",
+  "assets": [
+    {
+      "name": "AMENDMENT-01.md",
+      "byteLength": 2743,
+      "localSha256": "sha256:ab99349fdf4e247b530e13b654d753987a7a4f16b0c7922f8e483063a48ac99e",
+      "apiDigest": "sha256:ab99349fdf4e247b530e13b654d753987a7a4f16b0c7922f8e483063a48ac99e"
+    },
+    {
+      "name": "AMENDMENT-02.md",
+      "byteLength": 3295,
+      "localSha256": "sha256:1c93bce386ce42bba5d003c838b751ba4e6242aac55a14a377db2f1d99d86988",
+      "apiDigest": "sha256:1c93bce386ce42bba5d003c838b751ba4e6242aac55a14a377db2f1d99d86988"
+    },
+    {
+      "name": "AMENDMENT-03.md",
+      "byteLength": 5064,
+      "localSha256": "sha256:573d415c8bf64019e9fa0193122a189f00ca783f800e70766a5277007e0b4038",
+      "apiDigest": "sha256:573d415c8bf64019e9fa0193122a189f00ca783f800e70766a5277007e0b4038"
+    },
+    {
+      "name": "closureprobe-study-vscode-01-prereg-v3.zip",
+      "byteLength": 202038,
+      "localSha256": "sha256:eb3e4d84874d85c91c744cc3cb0834853c8a8f2549a861e331b5a462d874e860",
+      "apiDigest": "sha256:eb3e4d84874d85c91c744cc3cb0834853c8a8f2549a861e331b5a462d874e860"
+    },
+    {
+      "name": "MANIFEST.sha256",
+      "byteLength": 12927,
+      "localSha256": "sha256:285c8e367c199f4677468dc55ec13bac8ad1e056adcccd7b21780f963312ef0f",
+      "apiDigest": "sha256:285c8e367c199f4677468dc55ec13bac8ad1e056adcccd7b21780f963312ef0f"
+    },
+    {
+      "name": "PREREGISTRATION.md",
+      "byteLength": 13944,
+      "localSha256": "sha256:eb7f17e1e0da02d9a2d233b835a0b31b70eb3f22589599e246b226343fa74445",
+      "apiDigest": "sha256:eb7f17e1e0da02d9a2d233b835a0b31b70eb3f22589599e246b226343fa74445"
+    }
+  ],
+  "manifestSha256": "sha256:285c8e367c199f4677468dc55ec13bac8ad1e056adcccd7b21780f963312ef0f",
+  "externalExecutionsObservedBeforeAnchor": {
+    "commissioning": 0,
+    "primary": 0
+  },
+  "recordPublication": {
+    "path": "publication/anchors/study-vscode-01-prereg-v3.json",
+    "note": "The public Git commit containing the completed record supplies its timestamp and integrity anchor."
+  },
+  "notes": [
+    "Gate A1 was published as an immutable GitHub prerelease before any external execution.",
+    "All six local asset SHA-256 values matched the corresponding GitHub release API digests.",
+    "The release attestation URL was exposed by the immutable GitHub release UI.",
+    "GitHub-generated source-code ZIP and tarball archives are excluded because they are not the manually frozen study asset."
+  ]
+}
