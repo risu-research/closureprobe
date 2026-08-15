@@ -1,0 +1,99 @@
+{
+  "studyId": "closureprobe-vscode-01",
+  "generatedFrom": "study.json",
+  "purpose": "Freeze OTLP extraction and verify all carrier plumbing before the primary matrix.",
+  "includedInPrimary": false,
+  "total": 3,
+  "cells": [
+    {
+      "id": "VS01-PILOT-COMPLETE-DUAL",
+      "conditionId": "P_90E7056A96AE",
+      "commissioningPosition": 1,
+      "scenario": "complete-zero",
+      "carrier": "dual",
+      "status": "pending",
+      "excludedFromPrimary": true,
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "id": "VS01-PILOT-COMPLETE-STRUCTURED_ONLY",
+      "conditionId": "P_3A23839ECC44",
+      "commissioningPosition": 2,
+      "scenario": "complete-zero",
+      "carrier": "structured-only",
+      "status": "pending",
+      "excludedFromPrimary": true,
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "id": "VS01-PILOT-COMPLETE-TEXT_ONLY",
+      "conditionId": "P_C6CA8121679A",
+      "commissioningPosition": 3,
+      "scenario": "complete-zero",
+      "carrier": "text-only",
+      "status": "pending",
+      "excludedFromPrimary": true,
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    }
+  ]
+}

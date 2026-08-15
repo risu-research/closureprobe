@@ -1,0 +1,15 @@
+{
+  "studyId": "closureprobe-vscode-01",
+  "requiredEntryFields": [
+    "cellId",
+    "conditionId",
+    "runOrderPosition",
+    "attempt",
+    "startedAt",
+    "invalidatedAt",
+    "specimenId",
+    "reasonCode",
+    "privateArtifactHashes"
+  ],
+  "entries": []
+}

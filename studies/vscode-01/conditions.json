@@ -1,0 +1,685 @@
+{
+  "studyId": "closureprobe-vscode-01",
+  "generatedFrom": "study.json",
+  "blinding": {
+    "modelVisibleConditionIdentifier": false,
+    "semanticScenarioLabelsVisible": false,
+    "carrierLabelsVisible": false,
+    "oracleAssessmentVisible": false,
+    "primaryPromptBytesIdentical": true
+  },
+  "conditions": [
+    {
+      "phase": "primary",
+      "cellId": "VS01-COMPLETE-DUAL",
+      "conditionId": "C_7DB94F430E39",
+      "scenario": "complete-zero",
+      "carrier": "dual",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-COMPLETE-STRUCTURED_ONLY",
+      "conditionId": "C_6F48BF13F1B8",
+      "scenario": "complete-zero",
+      "carrier": "structured-only",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-COMPLETE-TEXT_ONLY",
+      "conditionId": "C_85251AE1A85C",
+      "scenario": "complete-zero",
+      "carrier": "text-only",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-PARTIAL-DUAL",
+      "conditionId": "C_8E3846E087F0",
+      "scenario": "partial-zero",
+      "carrier": "dual",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-PARTIAL-STRUCTURED_ONLY",
+      "conditionId": "C_CFF7C0D52586",
+      "scenario": "partial-zero",
+      "carrier": "structured-only",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-PARTIAL-TEXT_ONLY",
+      "conditionId": "C_F2748632CF7F",
+      "scenario": "partial-zero",
+      "carrier": "text-only",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-CONTINUED-DUAL",
+      "conditionId": "C_5C06DB98D3E7",
+      "scenario": "continued-zero",
+      "carrier": "dual",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-CONTINUED-STRUCTURED_ONLY",
+      "conditionId": "C_E32592261480",
+      "scenario": "continued-zero",
+      "carrier": "structured-only",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-CONTINUED-TEXT_ONLY",
+      "conditionId": "C_8B2B3244589B",
+      "scenario": "continued-zero",
+      "carrier": "text-only",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-SEGMENT-DUAL",
+      "conditionId": "C_2DE1A3E8E160",
+      "scenario": "segment-zero",
+      "carrier": "dual",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-SEGMENT-STRUCTURED_ONLY",
+      "conditionId": "C_CCD0174BE323",
+      "scenario": "segment-zero",
+      "carrier": "structured-only",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-SEGMENT-TEXT_ONLY",
+      "conditionId": "C_C9EBA4E82528",
+      "scenario": "segment-zero",
+      "carrier": "text-only",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-DENIED-DUAL",
+      "conditionId": "C_64167868498D",
+      "scenario": "denied-zero",
+      "carrier": "dual",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-DENIED-STRUCTURED_ONLY",
+      "conditionId": "C_4A2E90EBBA50",
+      "scenario": "denied-zero",
+      "carrier": "structured-only",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-DENIED-TEXT_ONLY",
+      "conditionId": "C_2DE11F98EFD9",
+      "scenario": "denied-zero",
+      "carrier": "text-only",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-FAILED-DUAL",
+      "conditionId": "C_82A6825B245A",
+      "scenario": "failed-zero",
+      "carrier": "dual",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-FAILED-STRUCTURED_ONLY",
+      "conditionId": "C_ADE49AABE808",
+      "scenario": "failed-zero",
+      "carrier": "structured-only",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-FAILED-TEXT_ONLY",
+      "conditionId": "C_8909E4A7962B",
+      "scenario": "failed-zero",
+      "carrier": "text-only",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-SCOPE_MISMATCH-DUAL",
+      "conditionId": "C_AF19F648E5C9",
+      "scenario": "scope-mismatch-zero",
+      "carrier": "dual",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-SCOPE_MISMATCH-STRUCTURED_ONLY",
+      "conditionId": "C_C303F55B07AC",
+      "scenario": "scope-mismatch-zero",
+      "carrier": "structured-only",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "primary",
+      "cellId": "VS01-SCOPE_MISMATCH-TEXT_ONLY",
+      "conditionId": "C_8AF703010B70",
+      "scenario": "scope-mismatch-zero",
+      "carrier": "text-only",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "commissioning",
+      "cellId": "VS01-PILOT-COMPLETE-DUAL",
+      "conditionId": "P_90E7056A96AE",
+      "scenario": "complete-zero",
+      "carrier": "dual",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "commissioning",
+      "cellId": "VS01-PILOT-COMPLETE-STRUCTURED_ONLY",
+      "conditionId": "P_3A23839ECC44",
+      "scenario": "complete-zero",
+      "carrier": "structured-only",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    },
+    {
+      "phase": "commissioning",
+      "cellId": "VS01-PILOT-COMPLETE-TEXT_ONLY",
+      "conditionId": "P_C6CA8121679A",
+      "scenario": "complete-zero",
+      "carrier": "text-only",
+      "toolName": "closureprobe_probe",
+      "arguments": {
+        "request": {
+          "q": "needle"
+        },
+        "grounding": {
+          "sourceContext": {
+            "producer": "closureprobe-controlled-probe",
+            "instance": {
+              "server": "closureprobe-v0.1.0-rc3",
+              "study": "vscode-01"
+            },
+            "authority": {
+              "principal": "controlled-study-operator"
+            }
+          },
+          "propositionScope": {
+            "tenant": "closureprobe-fixture"
+          }
+        }
+      }
+    }
+  ]
+}

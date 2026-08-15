@@ -1,0 +1,20 @@
+{
+  "github.copilot.chat.agentDebugLog.enabled": true,
+  "github.copilot.chat.agentDebugLog.fileLogging.enabled": true,
+  "extensions.autoCheckUpdates": false,
+  "extensions.autoUpdate": false,
+  "chat.mcp.discovery.enabled": false,
+  "chat.useAgentsMdFile": false,
+  "chat.useNestedAgentsMdFiles": false,
+  "chat.useClaudeMdFile": false,
+  "chat.includeApplyingInstructions": false,
+  "chat.includeReferencedInstructions": false,
+  "github.copilot.chat.codeGeneration.useInstructionFiles": false,
+  "github.copilot.chat.organizationInstructions.enabled": false,
+  "chat.useAgentSkills": false,
+  "chat.plugins.enabled": false,
+  "chat.tools.memory.enabled": false,
+  "chat.copilotMemory.enabled": false,
+  "chat.sessionSync.enabled": false,
+  "workbench.browser.enableChatTools": false
+}

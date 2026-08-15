@@ -1,0 +1,31 @@
+{
+  "studyId": "closureprobe-vscode-01",
+  "recordFormat": "closureprobe-post-publication-anchor-v1",
+  "gate": "A2-preregistration-or-B2-extraction-freeze",
+  "repositoryUrl": "https://github.com/risu-research/closureprobe",
+  "releaseId": 0,
+  "commit": "replace-with-40-character-commit",
+  "tag": "replace-with-annotated-tag",
+  "releaseUrl": "replace-with-public-release-url",
+  "publishedAt": "YYYY-MM-DDTHH:mm:ss.sssZ",
+  "immutableRelease": false,
+  "releaseAttestationUrl": "replace-with-url-or-none-exposed",
+  "assets": [
+    {
+      "name": "replace-with-asset-name",
+      "byteLength": 0,
+      "localSha256": "sha256:replace",
+      "apiDigest": "sha256:replace"
+    }
+  ],
+  "manifestSha256": "sha256:replace",
+  "externalExecutionsObservedBeforeAnchor": {
+    "commissioning": 0,
+    "primary": 0
+  },
+  "recordPublication": {
+    "path": "publication/anchors/replace.json",
+    "note": "The public Git commit containing the completed record supplies its timestamp and integrity anchor."
+  },
+  "notes": []
+}

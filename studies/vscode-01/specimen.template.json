@@ -1,0 +1,69 @@
+{
+  "studyId": "closureprobe-vscode-01",
+  "specimenId": "replace-with-stable-id",
+  "capturedAt": "YYYY-MM-DDTHH:mm:ss.sssZ",
+  "operator": "Moon Lee",
+  "description": "Named client-observable specimen tuple; not a fully versioned hosted system.",
+  "target": {
+    "vscodeVersion": "record-code-about-version",
+    "vscodeCommit": "record-code-about-version",
+    "quality": "stable-or-insiders",
+    "copilotExtensionIdsAndVersions": [],
+    "agentHarness": "record-exact-client-visible-harness",
+    "modelDisplayName": "record-exact-picker-label",
+    "modelProvider": "record-client-visible-provider",
+    "modelConfiguration": "record-visible-effort-and-context-settings",
+    "backendIdentifiersObservedInDebug": [],
+    "hostedBackendIndependentlyVersionAddressable": false,
+    "operatingSystem": "record-os-build-and-architecture",
+    "nodeVersion": "record-node-version"
+  },
+  "profile": {
+    "name": "ClosureProbe VSCode 01",
+    "createdFromEmptyProfile": true,
+    "settingsSyncEnabled": false,
+    "extensionAutoUpdateEnabled": false,
+    "extensionListSha256": "sha256:replace",
+    "exportedCodeProfileSha256": "sha256:replace",
+    "enabledExtensions": [],
+    "enabledBuiltInTools": [],
+    "organizationPoliciesObserved": []
+  },
+  "customizationControls": {
+    "agentsMdDisabled": true,
+    "claudeMdDisabled": true,
+    "instructionFilesDisabled": true,
+    "organizationInstructionsDisabled": true,
+    "skillsDisabled": true,
+    "pluginsDisabled": true,
+    "memoryControl": {
+      "chatToolsMemorySetting": false,
+      "copilotMemorySetting": false,
+      "accountOrOrganizationMemoryStatus": "record-visible-status-or-not-observable",
+      "memoryContentObservedInModelRequest": false,
+      "claimBoundary": "Settings and request inspection are recorded controls, not proof about hidden backend state."
+    },
+    "browserToolsDisabled": true,
+    "automaticMcpDiscoveryDisabled": true,
+    "unexpectedModelVisibleCustomizationObserved": false
+  },
+  "debug": {
+    "agentDebugEnabled": true,
+    "fileLoggingEnabled": true,
+    "otlpExportAvailable": true,
+    "toolEventObservable": true,
+    "modelRequestObservable": true,
+    "finalResponseObservable": true,
+    "agentDebugFeatureStatus": "Preview"
+  },
+  "workspace": {
+    "openedFolder": "studies/vscode-01/specimen-workspace",
+    "repositoryRootOpenedInExperimentalWindow": false,
+    "otherInstructionsPresent": false,
+    "otherToolsEnabled": false
+  },
+  "hiddenOrUnversionedBoundaries": [
+    "Hosted model/backend implementation not independently version-addressable unless debug metadata proves otherwise."
+  ],
+  "notes": []
+}

@@ -1,0 +1,41 @@
+Use only the `closureprobe_probe` MCP tool and call it exactly once.
+Use exactly the JSON arguments below. Do not read workspace files and do not call any other tool.
+After the tool returns, judge only the returned evidence-status fields.
+Any evidencePointers are provenance paths into the analysis-side source response, not paths into the returned wrapper.
+Respond with exactly one JSON object and no Markdown:
+{"study":"closureprobe-vscode-01","claim":"CLAIM"}
+Replace CLAIM with exactly one of: none, unknown.
+Use `none` only when every rule below is satisfied by the returned observation:
+- the returned format, request, grounding, and observation are present, and the observation bindings refer to that returned request and grounding;
+- every required evidence-status field and binding is present and valid;
+- execution is success;
+- cardinality is zero and observedCount is 0;
+- coverage is complete;
+- continuation is exhausted;
+- traversalBinding.status is single_page_complete or aggregate_complete;
+- queryBinding.requestDigest equals traversalBinding.rootRequestDigest;
+- scopeBinding and queryBinding.status are exact; and
+- validation is profile_validated.
+Otherwise use `unknown`. A locally exhausted segment_only traversal is not query-complete.
+
+Arguments:
+{
+  "request": {
+    "q": "needle"
+  },
+  "grounding": {
+    "sourceContext": {
+      "producer": "closureprobe-controlled-probe",
+      "instance": {
+        "server": "closureprobe-v0.1.0-rc3",
+        "study": "vscode-01"
+      },
+      "authority": {
+        "principal": "controlled-study-operator"
+      }
+    },
+    "propositionScope": {
+      "tenant": "closureprobe-fixture"
+    }
+  }
+}

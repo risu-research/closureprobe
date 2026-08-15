@@ -1,0 +1,64 @@
+{
+  "format": "closureprobe-rc3-carrier-preflight-v1",
+  "studyId": "closureprobe-vscode-01",
+  "instrument": {
+    "tag": "v0.1.0-rc3",
+    "commit": "12fae2c0cb0909a43f487323fb00e7372b1f3377",
+    "packageVersion": "0.1.0-rc3",
+    "originalServerSha256": "sha256:c64c11dbf73fa6fa0db4b1e378a701a88fcc8bf74a3311d47ae46c2562834144",
+    "mcpServerSdkVersion": "2.0.0",
+    "mcpClientSdkVersion": "2.0.0"
+  },
+  "controlledInput": {
+    "scenario": "complete-zero",
+    "requestSha256": "sha256:43fdd5413aa751754f95eb1c3553861d23bc832bc157eb117b7460d7efebaf2c",
+    "groundingSha256": "sha256:e4d96f9a9096d53af341d6830ed8ad943b9431e78b91adba65b2976de8e98312"
+  },
+  "protocolRule": {
+    "version": "2026-07-28",
+    "url": "https://modelcontextprotocol.io/specification/2026-07-28/server/tools",
+    "summary": "A server declaring outputSchema must provide conforming structuredContent."
+  },
+  "calls": [
+    {
+      "carrier": "dual",
+      "outputSchemaDeclared": true,
+      "isError": false,
+      "structuredContentPresent": true,
+      "contentTypes": [
+        "text"
+      ],
+      "expectedPayloadSha256": "sha256:cba3d40cf26657b8af0029efb258b9df3882bc76a6c394234239035ad0293c51",
+      "resultSha256": "sha256:26d28e96213db409c25bfec38d9f3db6a3104990b964b1e0212ea419f38d59f4",
+      "intendedPayloadObserved": true
+    },
+    {
+      "carrier": "structured-only",
+      "outputSchemaDeclared": true,
+      "isError": false,
+      "structuredContentPresent": true,
+      "contentTypes": [],
+      "expectedPayloadSha256": "sha256:cba3d40cf26657b8af0029efb258b9df3882bc76a6c394234239035ad0293c51",
+      "resultSha256": "sha256:503b615b2abbddb267289a6683f58111fd36cf92f2585aa279b7bfd4b9679bf7",
+      "intendedPayloadObserved": true
+    },
+    {
+      "carrier": "text-only",
+      "outputSchemaDeclared": true,
+      "isError": true,
+      "structuredContentPresent": false,
+      "contentTypes": [
+        "text"
+      ],
+      "expectedPayloadSha256": "sha256:cba3d40cf26657b8af0029efb258b9df3882bc76a6c394234239035ad0293c51",
+      "resultSha256": "sha256:7c013b808d539e7108e735d69653abd0f0dfea7b287964647ac76c94da0ab17c",
+      "intendedPayloadObserved": false,
+      "errorText": "Output validation error: Tool closureprobe_probe has an output schema but no structured content was provided"
+    }
+  ],
+  "finding": {
+    "code": "rc3_text_only_output_schema_conflict",
+    "observed": true,
+    "scope": "ClosureProbe rc3 MCP server preflight; not a VS Code client result."
+  }
+}

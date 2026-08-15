@@ -6,7 +6,7 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 const excludedDirectories = new Set([".git", ".npm-cache", "dist", "node_modules"]);
 const excludedFiles = new Set(["MANIFEST.sha256", "package-lock.json"]);
 const requiredFiles = [
-  "README.md", "PROFILE.md", "CLAIMS.md", "LIMITATIONS.md", "SECURITY.md", "CHANGELOG.md",
+  "README.md", "PROFILE.md", "CLAIMS.md", "LIMITATIONS.md", "ERRATA.md", "SECURITY.md", "CHANGELOG.md",
   "INTEROPERABILITY.md", "POSITIONING.md", "ROADMAP.md", "CITATION.cff", "LICENSE",
   "corpus/v0.3/cases.json",
 ];

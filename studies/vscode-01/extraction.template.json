@@ -1,0 +1,65 @@
+{
+  "studyId": "closureprobe-vscode-01",
+  "status": "uncommissioned",
+  "frozenAt": "YYYY-MM-DDTHH:mm:ss.sssZ",
+  "specimenId": "replace-with-specimen-id",
+  "preregistrationPublicAnchorUrl": "replace-with-gate-A-release-url",
+  "preregistrationPostPublicationRecordUrl": "replace-with-gate-A2-record-url",
+  "selectionRuleFrozenBeforePrimary": true,
+  "commissioningArtifacts": [
+    {
+      "cellId": "VS01-PILOT-COMPLETE-DUAL",
+      "conditionId": "P_90E7056A96AE",
+      "otlpSha256": "sha256:replace",
+      "wireSha256": "sha256:replace"
+    },
+    {
+      "cellId": "VS01-PILOT-COMPLETE-STRUCTURED_ONLY",
+      "conditionId": "P_3A23839ECC44",
+      "otlpSha256": "sha256:replace",
+      "wireSha256": "sha256:replace"
+    },
+    {
+      "cellId": "VS01-PILOT-COMPLETE-TEXT_ONLY",
+      "conditionId": "P_C6CA8121679A",
+      "otlpSha256": "sha256:replace",
+      "wireSha256": "sha256:replace"
+    }
+  ],
+  "roles": {
+    "clientPayload": {
+      "debugEventType": "record-exact-Agent-Debug-event-type",
+      "attribute": "record-exact-attribute-name",
+      "pointerRule": "record-a-rule-that-does-not-depend-on-the-payload-value",
+      "roleEvidence": "explain-why-this-is-the-client-tool-event"
+    },
+    "modelPayload": {
+      "debugEventType": "record-exact-LLM-request-event-type",
+      "attribute": "record-exact-attribute-name",
+      "pointerRule": "record-a-rule-that-does-not-depend-on-the-payload-value",
+      "roleEvidence": "explain-why-this-is-model-visible"
+    },
+    "claim": {
+      "debugEventType": "record-exact-final-response-event-type",
+      "attribute": "record-exact-attribute-name",
+      "pointerRule": "record-a-rule-that-does-not-depend-on-the-claim-value",
+      "roleEvidence": "explain-why-this-is-the-explicit-final-response"
+    }
+  },
+  "selectorProhibitions": [
+    "No selection by favorable or unfavorable field value.",
+    "No selection by final claim value.",
+    "No substitute event chosen merely to avoid P3_unobservable."
+  ],
+  "contaminationAudit": {
+    "semanticConditionMapVisibleToModel": false,
+    "opaqueConditionIdentifierVisibleToModel": false,
+    "oracleAssessmentVisibleToModel": false,
+    "memoryContentOrToolVisibleToModel": false,
+    "unexpectedCustomInstructionVisible": false,
+    "additionalToolVisible": false
+  },
+  "hiddenBoundaries": [],
+  "amendmentsRequired": false,
+  "notes": []
+}

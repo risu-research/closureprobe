@@ -1,0 +1,39 @@
+{
+  "studyId": "closureprobe-vscode-01",
+  "cellId": "VS01-COMPLETE-DUAL",
+  "specimenId": "replace-with-specimen-id",
+  "run": {
+    "orderPosition": 13,
+    "attempt": 1,
+    "startedAt": "YYYY-MM-DDTHH:mm:ss.sssZ",
+    "endedAt": "YYYY-MM-DDTHH:mm:ss.sssZ"
+  },
+  "wireTranscript": "captures/raw/replace.ndjson",
+  "otlpExport": "captures/otlp-private/replace.json",
+  "otlpSha256": "sha256:replace-with-inspect-otlp-source-hash",
+  "clientPayload": {
+    "digest": "sha256:replace-with-client-tool-event-candidate",
+    "pointer": "/replace-with-inspector-pointer",
+    "encoding": "native-or-json-string"
+  },
+  "modelPayload": {
+    "digest": "sha256:replace-with-model-request-candidate",
+    "pointer": "/replace-with-inspector-pointer",
+    "encoding": "native-or-json-string"
+  },
+  "claim": {
+    "digest": "sha256:replace-with-final-response-candidate",
+    "pointer": "/replace-with-inspector-pointer",
+    "encoding": "native-or-json-string"
+  },
+  "observableBoundaries": [
+    "mcp_wire",
+    "client_tool_event",
+    "model_visible_request",
+    "final_response"
+  ],
+  "hiddenBoundaries": [],
+  "manualNormalization": [
+    "Record the exact Agent Debug labels that establish each selected pointer's boundary role."
+  ]
+}

@@ -74,6 +74,10 @@ Run the controlled MCP probe:
 node dist/src/mcp-server.js
 ```
 
+The frozen rc3 probe has a bounded known issue in `text-only` mode when combined
+with its declared `outputSchema`. See [ERRATA.md](ERRATA.md); the corpus and
+oracle are unaffected.
+
 The Drive example remains unlicensed because its current page contains a
 `nextPageToken`. A validated multi-page bundle counts every page, so an earlier
 hit cannot disappear behind an empty final page.
@@ -107,6 +111,7 @@ src/                   library, CLI, reports, source profiles, and MCP probe
 tests/                 deterministic and independent-client tests
 examples/              runnable assessment grounding and trace
 evidence/              reproducible corpus results
+studies/               preregistered external boundary measurements
 ```
 
 ## Claim boundary
@@ -119,7 +124,8 @@ context negative-evidence chain.
 Read [PROFILE.md](PROFILE.md), [CLAIMS.md](CLAIMS.md), and
 [LIMITATIONS.md](LIMITATIONS.md) before citing a result. See
 [POSITIONING.md](POSITIONING.md) for the research wedge and
-[INTEROPERABILITY.md](INTEROPERABILITY.md) for real-client experiments.
+[INTEROPERABILITY.md](INTEROPERABILITY.md) for real-client experiments, and
+[ERRATA.md](ERRATA.md) for frozen-release corrections.
 
 ## Release lineage
 

@@ -1,0 +1,84 @@
+{
+  "studyId": "closureprobe-vscode-01",
+  "preregistrationVersion": 3,
+  "status": "final_public_time_anchor_candidate",
+  "preregisteredAt": "2026-08-15",
+  "instrument": {
+    "tag": "v0.1.0-rc3",
+    "commit": "12fae2c0cb0909a43f487323fb00e7372b1f3377",
+    "toolVersion": "0.1.0-rc3",
+    "profileVersion": "0.3.0",
+    "runtimeTreeSha256": "sha256:b957577d97e570614eb470e28cceb941cdbe398d3a12dd5a261414c3a349e9b9",
+    "studyAdapterSha256": "sha256:50a059b56510bac220462c74d3dd611662e44354bcc58e03d76debf81da68fe1"
+  },
+  "target": {
+    "product": "Visual Studio Code",
+    "minimumVersionForDebugExport": "1.112",
+    "harness": "GitHub Copilot Chat",
+    "specimenLanguage": "named client-observable specimen tuple",
+    "hostedBackendIndependentlyVersionAddressable": false
+  },
+  "design": {
+    "scenarios": [
+      "complete-zero",
+      "partial-zero",
+      "continued-zero",
+      "segment-zero",
+      "denied-zero",
+      "failed-zero",
+      "scope-mismatch-zero"
+    ],
+    "carriers": ["dual", "structured-only", "text-only"],
+    "primaryRepetitions": 1,
+    "escalationRepetitions": 5,
+    "freshChatPerCell": true,
+    "blinding": {
+      "seedMaterial": "closureprobe-vscode-01|12fae2c0cb0909a43f487323fb00e7372b1f3377|mcp-2026-07-28",
+      "opaqueConditionIds": true,
+      "semanticScenarioVisibleToModel": false,
+      "conditionIdentifierVisibleToModel": false,
+      "carrierLabelVisibleToModel": false,
+      "oracleAssessmentVisibleToModel": false,
+      "promptBytesIdenticalAcrossConditions": true,
+      "identicalToolName": "closureprobe_probe",
+      "identicalArguments": true
+    },
+    "runOrder": {
+      "method": "sha256-scored scenario blocks with rotated carrier order",
+      "pairedCarrierBlocks": true,
+      "generatedArtifact": "run-order.json"
+    },
+    "invalidRunPolicy": {
+      "maxAttemptsPerCell": 2,
+      "secondInvalidStatus": "invalid_exhausted",
+      "thirdAttemptPermitted": false,
+      "continueAfterInvalidExhausted": true
+    },
+    "commissioning": {
+      "scenario": "complete-zero",
+      "carriers": ["dual", "structured-only", "text-only"],
+      "includedInPrimary": false,
+      "purpose": "Freeze OTLP extraction and verify all carrier plumbing before the primary matrix."
+    },
+    "endpoints": [
+      "P_client_wire_to_client",
+      "P_model_client_to_model",
+      "P_cumulative_wire_to_model",
+      "C_claim_integrity"
+    ]
+  },
+  "grounding": {
+    "sourceContext": {
+      "producer": "closureprobe-controlled-probe",
+      "instance": { "server": "closureprobe-v0.1.0-rc3", "study": "vscode-01" },
+      "authority": { "principal": "controlled-study-operator" }
+    },
+    "propositionScope": { "tenant": "closureprobe-fixture" }
+  },
+  "request": { "q": "needle" },
+  "proposition": {
+    "subject": { "collection": "controlled-fixture-items" },
+    "predicate": { "relation": "contains-no-matches", "query": { "q": "needle" } },
+    "scope": { "tenant": "closureprobe-fixture" }
+  }
+}

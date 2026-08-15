@@ -1,0 +1,28 @@
+{
+  "servers": {
+    "closureprobeStudy": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/../bin/stdio-tap.mjs",
+        "--capture-dir",
+        "${workspaceFolder}/../captures/raw",
+        "--study-condition-env",
+        "CLOSUREPROBE_STUDY_CONDITION",
+        "--artifact",
+        "${workspaceFolder}/../bin/study-mcp-server.mjs",
+        "--expected-sha256",
+        "50a059b56510bac220462c74d3dd611662e44354bcc58e03d76debf81da68fe1",
+        "--study-manifest",
+        "${workspaceFolder}/../MANIFEST.sha256",
+        "--",
+        "node",
+        "${workspaceFolder}/../bin/study-mcp-server.mjs",
+        "--condition-env",
+        "CLOSUREPROBE_STUDY_CONDITION"
+      ],
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.study-condition.local.env"
+    }
+  }
+}
