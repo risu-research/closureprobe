@@ -1,0 +1,81 @@
+{
+  "studyId": "closureprobe-vscode-01",
+  "recordFormat": "closureprobe-post-publication-anchor-v1",
+  "gate": "A2-preregistration",
+  "repositoryUrl": "https://github.com/risu-research/closureprobe",
+  "releaseId": 371348154,
+  "commit": "7aae902a387a651d94a010bf8ec469491828b34d",
+  "tag": "study-vscode-01-prereg-v4-corr1",
+  "releaseUrl": "https://github.com/risu-research/closureprobe/releases/tag/study-vscode-01-prereg-v4-corr1",
+  "publishedAt": "2026-08-16T14:37:30Z",
+  "immutableRelease": true,
+  "releaseAttestationUrl": "https://github.com/risu-research/closureprobe/attestations/41003369/download",
+  "assets": [
+    {
+      "name": "AMENDMENT-01.md",
+      "byteLength": 2743,
+      "localSha256": "sha256:ab99349fdf4e247b530e13b654d753987a7a4f16b0c7922f8e483063a48ac99e",
+      "apiDigest": "sha256:ab99349fdf4e247b530e13b654d753987a7a4f16b0c7922f8e483063a48ac99e"
+    },
+    {
+      "name": "AMENDMENT-02.md",
+      "byteLength": 3295,
+      "localSha256": "sha256:1c93bce386ce42bba5d003c838b751ba4e6242aac55a14a377db2f1d99d86988",
+      "apiDigest": "sha256:1c93bce386ce42bba5d003c838b751ba4e6242aac55a14a377db2f1d99d86988"
+    },
+    {
+      "name": "AMENDMENT-03.md",
+      "byteLength": 5064,
+      "localSha256": "sha256:573d415c8bf64019e9fa0193122a189f00ca783f800e70766a5277007e0b4038",
+      "apiDigest": "sha256:573d415c8bf64019e9fa0193122a189f00ca783f800e70766a5277007e0b4038"
+    },
+    {
+      "name": "AMENDMENT-04.md",
+      "byteLength": 6994,
+      "localSha256": "sha256:1f622e3809ca85b3d48aeb369e4330c04e007f49e7be23f1b21ef5055298e43a",
+      "apiDigest": "sha256:1f622e3809ca85b3d48aeb369e4330c04e007f49e7be23f1b21ef5055298e43a"
+    },
+    {
+      "name": "AMENDMENT-05.md",
+      "byteLength": 2391,
+      "localSha256": "sha256:abc5da92e599b20f45b6f0765f67d06f4750eaa40465424144724f742e01457c",
+      "apiDigest": "sha256:abc5da92e599b20f45b6f0765f67d06f4750eaa40465424144724f742e01457c"
+    },
+    {
+      "name": "closureprobe-study-vscode-01-prereg-v4-corr1.zip",
+      "byteLength": 116178,
+      "localSha256": "sha256:610e1428f2a8539020c30bc13c93367c45b6ebd99a06967ea5b304d141294e37",
+      "apiDigest": "sha256:610e1428f2a8539020c30bc13c93367c45b6ebd99a06967ea5b304d141294e37"
+    },
+    {
+      "name": "MANIFEST.sha256",
+      "byteLength": 6385,
+      "localSha256": "sha256:f5025fad01b25793b5ebf520f7ff4e82ed027fce30a1605ceac5348596440af4",
+      "apiDigest": "sha256:f5025fad01b25793b5ebf520f7ff4e82ed027fce30a1605ceac5348596440af4"
+    },
+    {
+      "name": "PREREGISTRATION.md",
+      "byteLength": 15889,
+      "localSha256": "sha256:e337513e87cdba9ad4e371c65a39aa7294f94f27932f6975fa796cdfadc24376",
+      "apiDigest": "sha256:e337513e87cdba9ad4e371c65a39aa7294f94f27932f6975fa796cdfadc24376"
+    }
+  ],
+  "manifestSha256": "sha256:f5025fad01b25793b5ebf520f7ff4e82ed027fce30a1605ceac5348596440af4",
+  "externalExecutionsObservedBeforeAnchor": {
+    "preV4CommissioningDiagnostics": 3,
+    "v4Commissioning": 0,
+    "primary": 0
+  },
+  "recordPublication": {
+    "path": "publication/anchors/study-vscode-01-prereg-v4-corr1.json",
+    "note": "The public Git commit containing the completed record supplies its timestamp and integrity anchor."
+  },
+  "notes": [
+    "Correction Gate A1 was published as an immutable GitHub prerelease after three excluded pre-v4 commissioning diagnostics and before any v4 commissioning or primary execution.",
+    "The original immutable v4 release and original v4 A2 anchor remain unchanged as historical provenance.",
+    "Correction 1 changes only the stale executable preregistration-version guard from 3 to 4; the Version 4 experimental design remains unchanged.",
+    "All eight frozen local asset SHA-256 values matched the corresponding GitHub release API digests.",
+    "The release attestation URL was copied from the immutable GitHub release UI; its contents were not independently verified for this record.",
+    "GitHub-generated source-code ZIP and tarball archives are excluded from the manually frozen study asset set."
+  ]
+}
