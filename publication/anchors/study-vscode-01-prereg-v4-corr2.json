@@ -1,0 +1,88 @@
+{
+  "studyId": "closureprobe-vscode-01",
+  "recordFormat": "closureprobe-post-publication-anchor-v1",
+  "gate": "A2-preregistration",
+  "repositoryUrl": "https://github.com/risu-research/closureprobe",
+  "releaseId": 371409963,
+  "commit": "3ceeb05d36fd88e2dd5e5e316eeaa299c3bbc46d",
+  "tag": "study-vscode-01-prereg-v4-corr2",
+  "releaseUrl": "https://github.com/risu-research/closureprobe/releases/tag/study-vscode-01-prereg-v4-corr2",
+  "publishedAt": "2026-08-16T19:12:57Z",
+  "immutableRelease": true,
+  "releaseAttestationUrl": "https://github.com/risu-research/closureprobe/attestations/41022626/download",
+  "assets": [
+    {
+      "name": "AMENDMENT-01.md",
+      "byteLength": 2743,
+      "localSha256": "sha256:ab99349fdf4e247b530e13b654d753987a7a4f16b0c7922f8e483063a48ac99e",
+      "apiDigest": "sha256:ab99349fdf4e247b530e13b654d753987a7a4f16b0c7922f8e483063a48ac99e"
+    },
+    {
+      "name": "AMENDMENT-02.md",
+      "byteLength": 3295,
+      "localSha256": "sha256:1c93bce386ce42bba5d003c838b751ba4e6242aac55a14a377db2f1d99d86988",
+      "apiDigest": "sha256:1c93bce386ce42bba5d003c838b751ba4e6242aac55a14a377db2f1d99d86988"
+    },
+    {
+      "name": "AMENDMENT-03.md",
+      "byteLength": 5064,
+      "localSha256": "sha256:573d415c8bf64019e9fa0193122a189f00ca783f800e70766a5277007e0b4038",
+      "apiDigest": "sha256:573d415c8bf64019e9fa0193122a189f00ca783f800e70766a5277007e0b4038"
+    },
+    {
+      "name": "AMENDMENT-04.md",
+      "byteLength": 6994,
+      "localSha256": "sha256:1f622e3809ca85b3d48aeb369e4330c04e007f49e7be23f1b21ef5055298e43a",
+      "apiDigest": "sha256:1f622e3809ca85b3d48aeb369e4330c04e007f49e7be23f1b21ef5055298e43a"
+    },
+    {
+      "name": "AMENDMENT-05.md",
+      "byteLength": 2391,
+      "localSha256": "sha256:abc5da92e599b20f45b6f0765f67d06f4750eaa40465424144724f742e01457c",
+      "apiDigest": "sha256:abc5da92e599b20f45b6f0765f67d06f4750eaa40465424144724f742e01457c"
+    },
+    {
+      "name": "AMENDMENT-06.md",
+      "byteLength": 1964,
+      "localSha256": "sha256:c21746f7338cd7d40f5aaf879202a782f1715a36fd26fefb8948a96f47507e52",
+      "apiDigest": "sha256:c21746f7338cd7d40f5aaf879202a782f1715a36fd26fefb8948a96f47507e52"
+    },
+    {
+      "name": "closureprobe-study-vscode-01-prereg-v4-corr2.zip",
+      "byteLength": 117888,
+      "localSha256": "sha256:24f7e82490e0820a83a0bf0b42fb96f5ca1c94766fd71691d03caa40dcb8b955",
+      "apiDigest": "sha256:24f7e82490e0820a83a0bf0b42fb96f5ca1c94766fd71691d03caa40dcb8b955"
+    },
+    {
+      "name": "MANIFEST.sha256",
+      "byteLength": 6467,
+      "localSha256": "sha256:a6ac1f885d39083d8f1971df1df7c0f8c5da93d19424662a3618a8b258f2e55e",
+      "apiDigest": "sha256:a6ac1f885d39083d8f1971df1df7c0f8c5da93d19424662a3618a8b258f2e55e"
+    },
+    {
+      "name": "PREREGISTRATION.md",
+      "byteLength": 16967,
+      "localSha256": "sha256:b3e6dcc3926ae614c5f4a85c5042ce9c4506f4c017599d2c80aa1a4e3ee2ae99",
+      "apiDigest": "sha256:b3e6dcc3926ae614c5f4a85c5042ce9c4506f4c017599d2c80aa1a4e3ee2ae99"
+    }
+  ],
+  "manifestSha256": "sha256:a6ac1f885d39083d8f1971df1df7c0f8c5da93d19424662a3618a8b258f2e55e",
+  "externalExecutionsObservedBeforeAnchor": {
+    "preV4CommissioningDiagnostics": 3,
+    "v4Commissioning": 0,
+    "primary": 0
+  },
+  "recordPublication": {
+    "path": "publication/anchors/study-vscode-01-prereg-v4-corr2.json",
+    "note": "The public Git commit containing the completed record supplies its timestamp and integrity anchor."
+  },
+  "notes": [
+    "Correction 2 Gate A1 was published as an immutable GitHub prerelease before any v4 commissioning or primary execution.",
+    "Historical v4 and v4 Correction 1 releases and anchors remain unchanged as provenance.",
+    "Correction 2 changes only the named VS Code 1.133.0 MCP-discovery setting representation and the directly corresponding verification assertion; the Version 4 experimental design is unchanged.",
+    "The ordinary candidate launch byte-stability check passed before release and produced no raw study capture, commissioning observation, or primary observation.",
+    "All nine frozen local asset SHA-256 values matched the corresponding GitHub release API digests.",
+    "The release attestation URL was copied from the immutable GitHub release UI; its contents were not independently verified for this record.",
+    "GitHub-generated source-code ZIP, source-code tarball, and generated release attestation are excluded from the manually frozen nine-asset study set."
+  ]
+}
