@@ -1,0 +1,74 @@
+{
+    "studyId":  "closureprobe-vscode-01",
+    "recordFormat":  "closureprobe-post-publication-anchor-v1",
+    "gate":  "A2-preregistration",
+    "repositoryUrl":  "https://github.com/risu-research/closureprobe",
+    "releaseId":  371224860,
+    "commit":  "68d4d41b846e4b2979ca26582479b4eb4942c6b9",
+    "tag":  "study-vscode-01-prereg-v4",
+    "releaseUrl":  "https://github.com/risu-research/closureprobe/releases/tag/study-vscode-01-prereg-v4",
+    "publishedAt":  "2026-08-16T03:54:23Z",
+    "immutableRelease":  true,
+    "releaseAttestationUrl":  "https://github.com/risu-research/closureprobe/attestations/40966570/download",
+    "assets":  [
+                   {
+                       "name":  "AMENDMENT-01.md",
+                       "byteLength":  2743,
+                       "localSha256":  "sha256:ab99349fdf4e247b530e13b654d753987a7a4f16b0c7922f8e483063a48ac99e",
+                       "apiDigest":  "sha256:ab99349fdf4e247b530e13b654d753987a7a4f16b0c7922f8e483063a48ac99e"
+                   },
+                   {
+                       "name":  "AMENDMENT-02.md",
+                       "byteLength":  3295,
+                       "localSha256":  "sha256:1c93bce386ce42bba5d003c838b751ba4e6242aac55a14a377db2f1d99d86988",
+                       "apiDigest":  "sha256:1c93bce386ce42bba5d003c838b751ba4e6242aac55a14a377db2f1d99d86988"
+                   },
+                   {
+                       "name":  "AMENDMENT-03.md",
+                       "byteLength":  5064,
+                       "localSha256":  "sha256:573d415c8bf64019e9fa0193122a189f00ca783f800e70766a5277007e0b4038",
+                       "apiDigest":  "sha256:573d415c8bf64019e9fa0193122a189f00ca783f800e70766a5277007e0b4038"
+                   },
+                   {
+                       "name":  "AMENDMENT-04.md",
+                       "byteLength":  6994,
+                       "localSha256":  "sha256:1f622e3809ca85b3d48aeb369e4330c04e007f49e7be23f1b21ef5055298e43a",
+                       "apiDigest":  "sha256:1f622e3809ca85b3d48aeb369e4330c04e007f49e7be23f1b21ef5055298e43a"
+                   },
+                   {
+                       "name":  "closureprobe-study-vscode-01-prereg-v4.zip",
+                       "byteLength":  114557,
+                       "localSha256":  "sha256:d6b1605ecfba71b91cdb0ed9861113dcf4734a47b6cd8110cb6ba73caf6b5249",
+                       "apiDigest":  "sha256:d6b1605ecfba71b91cdb0ed9861113dcf4734a47b6cd8110cb6ba73caf6b5249"
+                   },
+                   {
+                       "name":  "MANIFEST.sha256",
+                       "byteLength":  6303,
+                       "localSha256":  "sha256:4c327f0a789aa4591f74b5fac6d5cc6f2db4893e402b59102068f02b94ed279e",
+                       "apiDigest":  "sha256:4c327f0a789aa4591f74b5fac6d5cc6f2db4893e402b59102068f02b94ed279e"
+                   },
+                   {
+                       "name":  "PREREGISTRATION.md",
+                       "byteLength":  15309,
+                       "localSha256":  "sha256:a3577dbb2f5ce95e7b48e62610c9b7c8a00f00cbc85f257016a0d1e98dbb83b9",
+                       "apiDigest":  "sha256:a3577dbb2f5ce95e7b48e62610c9b7c8a00f00cbc85f257016a0d1e98dbb83b9"
+                   }
+               ],
+    "manifestSha256":  "sha256:4c327f0a789aa4591f74b5fac6d5cc6f2db4893e402b59102068f02b94ed279e",
+    "externalExecutionsObservedBeforeAnchor":  {
+                                                   "preV4CommissioningDiagnostics":  3,
+                                                   "v4Commissioning":  0,
+                                                   "primary":  0
+                                               },
+    "recordPublication":  {
+                              "path":  "publication/anchors/study-vscode-01-prereg-v4.json",
+                              "note":  "The public Git commit containing the completed record supplies its timestamp and integrity anchor."
+                          },
+    "notes":  [
+                  "Gate A1 was published as an immutable GitHub prerelease after three excluded v3 commissioning diagnostics and before any v4 commissioning or primary execution.",
+                  "The three v3 commissioning executions are retained only as pre-v4 measurement diagnostics and are not reused as v4 commissioning evidence.",
+                  "All seven local asset SHA-256 values matched the corresponding GitHub release API digests.",
+                  "The release attestation URL was copied from the immutable GitHub release UI.",
+                  "GitHub-generated source-code ZIP and tarball archives are excluded because they are not the manually frozen study asset."
+              ]
+}
