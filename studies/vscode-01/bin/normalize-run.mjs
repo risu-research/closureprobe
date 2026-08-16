@@ -12,7 +12,7 @@ import {
   sha256Digest,
   validateTrace,
 } from "../../../dist/src/index.js";
-import { inspectOtlp } from "./inspect-otlp.mjs";
+import { resolveAgentDebugEvidence } from "./resolve-agent-debug-evidence.mjs";
 import { validateInvalidRunsLedger } from "./invalid-runs.mjs";
 import { createStudyStimulus } from "./study-stimulus.mjs";
 import { verifyWireTranscript } from "./verify-wire.mjs";
@@ -441,7 +441,6 @@ if (Date.parse(selection.run.endedAt) < Date.parse(selection.run.startedAt)) {
 }
 
 const wirePath = absoluteFrom(selectionPath, requireString(selection.wireTranscript, "wireTranscript"));
-const otlpPath = absoluteFrom(selectionPath, requireString(selection.otlpExport, "otlpExport"));
 const wire = verifyWireTranscript(wirePath);
 if (wire.calls.length !== 1) throw new Error("Selected wire transcript must contain exactly one tool call");
 const wireCall = wire.calls[0];
@@ -457,10 +456,15 @@ if (wireCall.argumentsDigest !== sha256Digest(cell.arguments)) {
   throw new Error("Wire arguments differ from the preregistered matrix cell");
 }
 
-const inspection = inspectOtlp(otlpPath, { includeValues: true });
-if (inspection.sourceSha256 !== selection.otlpSha256) {
-  throw new Error("OTLP export digest does not match the selection record");
-}
+const {
+  inspection,
+  sealVerification,
+  auxiliaryArtifacts,
+} = resolveAgentDebugEvidence(
+  selectionPath,
+  selection,
+  { includeValues: true },
+);
 const clientPayload = selectedCandidateOrUnobservable(
   inspection.candidates,
   "probe_payload",
@@ -691,7 +695,16 @@ const result = {
   },
   sourceArtifacts: {
     wireTranscriptSha256: wire.transcriptSha256,
-    otlpExportSha256: inspection.sourceSha256,
+    agentDebugSealReceiptSha256: sealVerification.receiptSha256,
+    agentDebugMainSha256: sealVerification.mainArtifact.sha256,
+    agentDebugAuxiliaryArtifacts: auxiliaryArtifacts.map(
+      ({ role, sealedFile, sha256, bytes }) => ({
+        role,
+        sealedFile,
+        sha256,
+        bytes,
+      }),
+    ),
     rootEvidenceResponseSha256: sha256Digest(evidenceResponse),
     evidencePointerBase: "analysis-side rootEvidence.response",
     modelVisibleRootEvidenceResponse: false,

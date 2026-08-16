@@ -1,6 +1,6 @@
 # External Boundary Study 01 — Results
 
-Status: **external execution pending**
+Status: **primary execution pending**
 
 Commissioning runs are excluded. This ledger reports a preregistered structural
 case series, not product-wide rates or safety claims.
@@ -31,5 +31,5 @@ Cells invalid_exhausted after two invalid attempts: **0**
 | 20 | VS01-SEGMENT-DUAL | segment-zero | dual | pending | — | — | — | — | — | — | — | — | — |
 | 21 | VS01-SEGMENT-TEXT_ONLY | segment-zero | text-only | pending | — | — | — | — | — | — | — | — | — |
 
-No external VS Code/Copilot observation is claimed yet.
+No primary VS Code/Copilot result is claimed yet; pre-primary v3 commissioning diagnostics are excluded and are not reused as v4 commissioning evidence.
 A cell marked `invalid_exhausted` receives no third attempt; its affected preregistered contrasts remain incomplete while the matrix continues.

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -11,7 +11,8 @@ import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 
 import { canonicalizeJson } from "../../../dist/src/index.js";
-import { inspectOtlp } from "../bin/inspect-otlp.mjs";
+import { inspectAgentDebug } from "../bin/inspect-agent-debug.mjs";
+import { verifyAgentDebugSeal } from "../bin/verify-agent-debug-seal.mjs";
 import { validateInvalidRunsLedger } from "../bin/invalid-runs.mjs";
 import { createStudyStimulus } from "../bin/study-stimulus.mjs";
 import { verifyWireTranscript } from "../bin/verify-wire.mjs";
@@ -410,9 +411,66 @@ test("normalization localizes wire-to-client and client-to-model separately", as
     none: { study: study.studyId, claim: "none" },
     unknown: { study: study.studyId, claim: "unknown" },
   };
-  const otlpName = "synthetic-otlp.json";
-  const otlpPath = resolve(directory, otlpName);
-  writeFileSync(otlpPath, `${JSON.stringify({
+  function sealSyntheticAgentDebug(label, document) {
+    const sourceDirectory = resolve(
+      directory,
+      `${label}-agent-debug-source`,
+    );
+    const sealedDirectory = resolve(
+      directory,
+      `${label}-agent-debug-sealed`,
+    );
+
+    mkdirSync(sourceDirectory, { recursive: true });
+
+    writeFileSync(
+      resolve(sourceDirectory, "main.jsonl"),
+      `${JSON.stringify(document)}\n`,
+      "utf8",
+    );
+
+    const sealed = spawnSync(
+      process.execPath,
+      [
+        resolve(studyRoot, "bin/seal-agent-debug.mjs"),
+        "--session-dir",
+        sourceDirectory,
+        "--out-dir",
+        sealedDirectory,
+      ],
+      { cwd: repositoryRoot, encoding: "utf8" },
+    );
+
+    assert.equal(sealed.status, 0, sealed.stderr);
+
+    const receiptPath = resolve(
+      sealedDirectory,
+      "seal-receipt.json",
+    );
+
+    const verification =
+      verifyAgentDebugSeal(receiptPath);
+
+    const mainPath = resolve(
+      sealedDirectory,
+      verification.mainArtifact.sealedFile,
+    );
+
+    return {
+      selectionEvidence: {
+        agentDebugSealReceipt:
+          `${label}-agent-debug-sealed/seal-receipt.json`,
+        agentDebugSealReceiptSha256:
+          verification.receiptSha256,
+      },
+      inspection: inspectAgentDebug(mainPath),
+    };
+  }
+
+  const syntheticAgentDebug =
+    sealSyntheticAgentDebug(
+      "synthetic",
+{
     exactClient: { structuredContent: payload },
     exactModel: { toolPayload: JSON.stringify(payload) },
     modelLoss: { toolPayload: JSON.stringify(modelLoss) },
@@ -427,8 +485,10 @@ test("normalization localizes wire-to-client and client-to-model separately", as
     proseModel: "The tool returned no matches, but the evidence guards are unavailable.",
     noneResponse: JSON.stringify(claims.none),
     unknownResponse: JSON.stringify(claims.unknown),
-  })}\n`, "utf8");
-  const inspection = inspectOtlp(otlpPath);
+  }
+    );
+
+  const inspection = syntheticAgentDebug.inspection;
   assert.equal(
     JSON.stringify(inspection).includes("The tool returned no matches"),
     false,
@@ -469,8 +529,7 @@ test("normalization localizes wire-to-client and client-to-model separately", as
       endedAt: "2026-08-15T20:00:10.000Z",
     },
     wireTranscript: transcriptName,
-    otlpExport: otlpName,
-    otlpSha256: inspection.sourceSha256,
+    ...syntheticAgentDebug.selectionEvidence,
     clientPayload: exactClient,
     modelPayload: exactModel,
     claim: noneClaim,
@@ -632,14 +691,18 @@ test("normalization localizes wire-to-client and client-to-model separately", as
       `Sure!\n\n\`\`\`json\n${JSON.stringify(claims.none)}\n\`\`\``,
     ],
   ]) {
-    const invalidOtlpName = `synthetic-invalid-${label}-otlp.json`;
-    const invalidOtlpPath = resolve(directory, invalidOtlpName);
-    writeFileSync(invalidOtlpPath, `${JSON.stringify({
+    const invalidAgentDebug =
+      sealSyntheticAgentDebug(
+        `synthetic-invalid-${label}`,
+{
       exactClient: { structuredContent: payload },
       exactModel: { toolPayload: JSON.stringify(payload) },
       finalResponse,
-    })}\n`, "utf8");
-    const invalidInspection = inspectOtlp(invalidOtlpPath);
+    }
+      );
+
+    const invalidInspection =
+      invalidAgentDebug.inspection;
     assert.equal(
       invalidInspection.candidates.some(({ kind }) => kind === "study_claim"),
       false,
@@ -657,8 +720,7 @@ test("normalization localizes wire-to-client and client-to-model separately", as
       };
     };
     const invalidResponse = normalize(`invalid-response-${label}`, {
-      otlpExport: invalidOtlpName,
-      otlpSha256: invalidInspection.sourceSha256,
+      ...invalidAgentDebug.selectionEvidence,
       clientPayload: invalidCandidate("exactClient"),
       modelPayload: invalidCandidate("exactModel"),
       claim: {

@@ -1,6 +1,6 @@
 {
   "studyId": "closureprobe-vscode-01",
-  "preregistrationVersion": 3,
+  "preregistrationVersion": 4,
   "status": "final_public_time_anchor_candidate",
   "preregisteredAt": "2026-08-15",
   "instrument": {
@@ -58,7 +58,7 @@
       "scenario": "complete-zero",
       "carriers": ["dual", "structured-only", "text-only"],
       "includedInPrimary": false,
-      "purpose": "Freeze OTLP extraction and verify all carrier plumbing before the primary matrix."
+      "purpose": "Freeze sealed Agent Debug role extraction and verify all representation-path plumbing before the primary matrix."
     },
     "endpoints": [
       "P_client_wire_to_client",

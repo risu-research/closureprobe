@@ -50,7 +50,10 @@
   "debug": {
     "agentDebugEnabled": true,
     "fileLoggingEnabled": true,
-    "otlpExportAvailable": true,
+    "sessionLocalAgentDebugMainJsonlAvailable": true,
+    "sealedSnapshotRequired": true,
+    "ordinaryAgentDebugExportUsedAsStudyEvidence": false,
+    "sealReceiptVerificationRequired": true,
     "toolEventObservable": true,
     "modelRequestObservable": true,
     "finalResponseObservable": true,

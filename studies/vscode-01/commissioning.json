@@ -1,7 +1,7 @@
 {
   "studyId": "closureprobe-vscode-01",
   "generatedFrom": "study.json",
-  "purpose": "Freeze OTLP extraction and verify all carrier plumbing before the primary matrix.",
+  "purpose": "Freeze sealed Agent Debug role extraction and verify all representation-path plumbing before the primary matrix.",
   "includedInPrimary": false,
   "total": 3,
   "cells": [

@@ -72,24 +72,30 @@ For each:
 2. paste the prompt verbatim;
 3. permit exactly one read-only call;
 4. verify the final response is exactly the required two-key JSON;
-5. export only that Agent Debug session to `captures/otlp-private/`;
-6. identify the single new timestamped transcript in `captures/raw/`;
-7. verify its condition, arguments, wire bytes, and stimulus:
+5. after the explicit final response and before any further interaction in that
+   chat, identify its session-local Agent Debug directory;
+6. immediately seal that session directory with `seal-agent-debug.mjs`, writing
+   the bundle under `captures/agent-debug-private/<commissioning-id>/`;
+7. if a session-local sidecar is actually needed for a preregistered
+   contamination control, name it explicitly with `--sidecar`; sidecars are
+   auxiliary contamination evidence only and never substitute for `main.jsonl`;
+8. verify `seal-receipt.json` with `verify-agent-debug-seal.mjs`;
+9. identify and verify the single corresponding raw stdio transcript with
+   `verify-wire.mjs`;
+10. inspect only the receipt-bound sealed `main.jsonl` with
+    `inspect-agent-debug.mjs`, and run `privacy-audit.mjs` on every sealed
+    artifact actually used as evidence.
 
-   ```bash
-   node studies/vscode-01/bin/verify-wire.mjs studies/vscode-01/captures/raw/<capture>.ndjson
-   ```
-
-8. inspect controlled candidates and audit privacy:
-
-   ```bash
-   node studies/vscode-01/bin/inspect-otlp.mjs studies/vscode-01/captures/otlp-private/<export>.json
-   node studies/vscode-01/bin/privacy-audit.mjs studies/vscode-01/captures/otlp-private/<export>.json
-   ```
+The seal is valid only when the source-before, sealed-copy, and source-after
+SHA-256 and byte-length values agree. A sealing or later seal-verification
+failure is an instrumentation invalidity under the fixed invalid-run policy.
 
 Also inspect the model-visible request for blinding contamination. Any semantic
 or opaque condition identifier, condition map, oracle assessment, custom
 instruction, memory, unrelated context, or additional tool invalidates the run.
+
+The ordinary Agent Debug export is not a v4 study evidence artifact. Extraction
+and normalization use only the receipt-bound sealed session-local `main.jsonl`.
 
 ## 5. Freeze extraction and satisfy Gate B
 
@@ -116,22 +122,33 @@ For each run:
 3. record UTC start time;
 4. start a fresh chat and paste the assigned prompt verbatim;
 5. permit exactly one call and record UTC end time;
-6. export only that session;
-7. map it to the single new wire transcript;
-8. verify wire and inspect OTLP using the frozen extraction rule; and
+6. after the explicit final response and before any further interaction in that
+   chat, immediately seal the session-local Agent Debug directory using the
+   frozen Section 4 acquisition procedure;
+7. verify the seal receipt and map that sealed bundle to the single new wire
+   transcript;
+8. verify wire and inspect only the receipt-bound sealed `main.jsonl` using the
+   frozen extraction rule; and
 9. record any invalid attempt in `invalid-runs.json` before the one permitted
    rerun. If attempt 2 is also invalid, record it as `invalid_exhausted`, do not
    make a third attempt, continue to the next run-order position, and leave the
    affected contrasts incomplete.
 
-Never retry inside a chat, clarify the prompt, change model, reorder runs, or
-unblind a prompt in the experimental window.
+Never retry inside a chat, clarify the prompt, change model, reorder runs,
+unblind a prompt, or use a later mutable version of a session-local debug file
+in the experimental window.
 
 ## 7. Bind and normalize a primary result
 
 Copy `selection.template.json` to `selection.<cell>.local.json`. Fill the exact
-run-order position, attempt, UTC timestamps, OTLP hash, and selector pointer,
-encoding, and digest for client payload, model payload, and claim.
+run-order position, attempt, UTC timestamps, wire transcript, Agent Debug
+`seal-receipt.json` path and receipt SHA-256, and selector pointer, encoding,
+and digest for client payload, model payload, and claim.
+
+The receipt is the single Agent Debug evidence root. Do not supply `main.jsonl`
+or its SHA-256 as a second routing field. The normalizer verifies the receipt
+and derives the eligible sealed primary artifact and any bound auxiliary
+artifacts from it.
 
 If a client event or model request is genuinely unavailable under the frozen
 rule, replace that selector with:
@@ -174,6 +191,8 @@ Apply the comparison-level rules in `PREREGISTRATION.md`. Do not repeat only the
 cell that supports a preferred interpretation. Keep every repetition in a fresh
 chat with paired ordering and timestamps.
 
-Raw OTLP can contain full prompts, system instructions, context, paths, account
-data, and credentials. Keep it private, publish its hash, and disclose only the
-smallest manually reviewed extract necessary to verify the selected roles.
+Sealed Agent Debug captures can contain full prompts, system instructions,
+context, paths, account data, and credentials. Keep their contents private,
+publish only the required hashes and privacy-reviewed role evidence, and
+disclose only the smallest manually reviewed extract necessary to verify the
+selected roles.

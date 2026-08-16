@@ -9,6 +9,7 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 const excludedDirectories = new Set([
   "captures/raw",
   "captures/otlp-private",
+  "captures/agent-debug-private",
   "evidence/public/results",
 ]);
 const excludedFiles = new Set([

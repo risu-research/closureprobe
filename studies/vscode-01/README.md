@@ -1,6 +1,6 @@
 # ClosureProbe External Boundary Study 01
 
-Status: **preregistration v3 final candidate; public time anchor and external execution pending**
+Status: **preregistration v4 instrumentation-revision candidate; new public Gate A and v4 commissioning required before primary execution**
 
 This study treats one named, client-observable VS Code/Copilot/model
 configuration as a specimen. It measures whether ClosureProbe negative-evidence
@@ -12,10 +12,12 @@ The hosted backend is not assumed to be independently version-addressable.
 
 ## Why this is not a demo
 
-A byte-preserving stdio tap records the actual JSON-RPC stream. VS Code's Agent
-Debug export supplies candidate client events, model requests, and responses.
-The analysis binds exact artifact hashes and selectors into a normalized rc3
-trace.
+A byte-preserving stdio tap records the actual JSON-RPC stream. An immediately
+sealed session-local Agent Debug `main.jsonl` snapshot supplies candidate client
+events, model requests, and responses. A verified `seal-receipt.json` is the
+single Agent Debug evidence root; the analysis derives the sealed primary
+artifact from that receipt and binds exact hashes and selectors into a
+normalized rc3 trace.
 
 Loss of the wrapper itself does not disappear into “unobservable”: the local
 inspector can bind an arbitrary selected JSON value by pointer/type/digest while
@@ -63,6 +65,14 @@ The semantic source response remains analysis-side. Its frozen rc3
 reconstruction produces the observation, and `evidencePointers` resolve against
 that source response rather than the projected wrapper.
 
+Pre-primary v3 commissioning exposed an instrumentation defect in the
+prescribed debug-export contract: that artifact did not expose the final
+response required for C, while the session-local debug log did. A live
+session-local log was also observed to change after an earlier snapshot.
+`AMENDMENT-04.md` therefore changes only the acquisition and provenance
+contract. The v3 commissioning executions remain excluded and are not reused
+as v4 commissioning evidence.
+
 ## Frozen design
 
 - ClosureProbe tag: `v0.1.0-rc3`
@@ -79,11 +89,12 @@ Read these in order:
 2. `AMENDMENT-01.md`
 3. `AMENDMENT-02.md`
 4. `AMENDMENT-03.md`
-5. `PUBLICATION.md`
-6. `RUNBOOK.md`
-7. `SOURCES.md`
+5. `AMENDMENT-04.md`
+6. `PUBLICATION.md`
+7. `RUNBOOK.md`
+8. `SOURCES.md`
 
-`RESULTS.md` is generated and currently claims no external measurement.
+`RESULTS.md` is generated and currently claims no primary result.
 
 ## Local verification
 
@@ -105,13 +116,16 @@ The primary matrix must not begin until both public anchors required by
 
 ## Evidence handling
 
-Raw wire and OTLP captures are ignored by Git. Public results bind their private
-source hashes, frozen role selectors, minimal privacy-reviewed extracts, named
-specimen metadata, exact timestamps, and hidden-boundary statements. Full
-system prompts, unrelated context, tokens, account identifiers, and user paths
-are not publication requirements.
+Raw wire captures and sealed Agent Debug capture contents are ignored by Git.
+Public results bind their private source hashes, verified seal-receipt root,
+frozen role selectors, minimal privacy-reviewed extracts, named specimen
+metadata, exact timestamps, and hidden-boundary statements. Full system
+prompts, unrelated context, tokens, account identifiers, and user paths are
+not publication requirements.
 
 ## Current boundary
 
-This environment does not contain a working signed-in VS Code/Copilot specimen.
-No external commissioning or primary result is represented in this repository.
+A signed-in VS Code/Copilot specimen was used for pre-primary v3 commissioning
+diagnostics. Those executions are excluded, are not treated as v4
+commissioning, and are not primary results. No primary result is represented
+in this repository.

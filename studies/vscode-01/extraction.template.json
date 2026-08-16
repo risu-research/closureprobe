@@ -6,23 +6,29 @@
   "preregistrationPublicAnchorUrl": "replace-with-gate-A-release-url",
   "preregistrationPostPublicationRecordUrl": "replace-with-gate-A2-record-url",
   "selectionRuleFrozenBeforePrimary": true,
+  "artifactContract": {
+    "evidenceRoot": "verified seal-receipt.json",
+    "primaryArtifact": "main.jsonl",
+    "auxiliaryArtifacts": "contamination-only",
+    "stabilityRule": "source-before, sealed-copy, and source-after hashes and byte lengths must match"
+  },
   "commissioningArtifacts": [
     {
       "cellId": "VS01-PILOT-COMPLETE-DUAL",
       "conditionId": "P_90E7056A96AE",
-      "otlpSha256": "sha256:replace",
+      "agentDebugSealReceiptSha256": "sha256:replace",
       "wireSha256": "sha256:replace"
     },
     {
       "cellId": "VS01-PILOT-COMPLETE-STRUCTURED_ONLY",
       "conditionId": "P_3A23839ECC44",
-      "otlpSha256": "sha256:replace",
+      "agentDebugSealReceiptSha256": "sha256:replace",
       "wireSha256": "sha256:replace"
     },
     {
       "cellId": "VS01-PILOT-COMPLETE-TEXT_ONLY",
       "conditionId": "P_C6CA8121679A",
-      "otlpSha256": "sha256:replace",
+      "agentDebugSealReceiptSha256": "sha256:replace",
       "wireSha256": "sha256:replace"
     }
   ],

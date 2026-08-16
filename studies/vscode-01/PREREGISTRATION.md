@@ -1,9 +1,11 @@
 # Preregistration
 
-Version: 3
+Version: 4
 Initial record: 2026-08-15
-Final hardening record: 2026-08-15
-External executions observed: **none**
+v3 public preregistration: 2026-08-15
+v4 instrumentation revision: 2026-08-15
+Primary executions observed: **none**
+Pre-primary v3 commissioning executions: **recorded, excluded, and not reused as v4 commissioning evidence**
 
 ## Research question
 
@@ -21,16 +23,19 @@ lists the remainder as a hidden boundary.
 ## Unit of observation
 
 One primary unit is one fresh chat, one forced call to `closureprobe_probe`, one
-blinded condition, one exported Agent Debug session, and one corresponding
-stdio transcript. The target is the recorded tuple, not “VS Code,” “Copilot,”
-or a model family in general.
+blinded condition, one immediately sealed session-local Agent Debug
+`main.jsonl` snapshot, and one corresponding stdio transcript. Any session-local
+sidecar actually used to establish a preregistered contamination control is
+sealed in the same bundle and is auxiliary evidence only. The verified
+`seal-receipt.json` is the single Agent Debug evidence root. The target is the
+recorded tuple, not “VS Code,” “Copilot,” or a model family in general.
 
 ## Public-time-anchor gate
 
 Before commissioning, the exact source commit, annotated preregistration tag,
 study manifest, and source ZIP digest must be published at a durable public URL.
 No commissioning result may be retained if its start timestamp precedes that
-anchor. The intended tag is `study-vscode-01-prereg-v3`.
+anchor. The intended tag is `study-vscode-01-prereg-v4`.
 
 After commissioning, the extraction rule, exact specimen tuple, commissioning
 artifact hashes, and remaining hidden boundaries must receive a second public
@@ -111,8 +116,9 @@ Representation path therefore remains coupled to output-schema presence.
 
 Run `complete-zero` once through each representation path using the three
 generated `commissioning-prompts/` files. These runs are excluded from every
-primary contrast. Their only purposes are to verify wire capture, identify the
-narrowest stable OTLP role selectors, and freeze the extraction procedure.
+primary contrast. Their only purposes are to verify wire and sealed Agent Debug
+capture, identify the narrowest stable structural role selectors in the sealed
+session-local artifact, and freeze the extraction procedure.
 
 Do not tune prompts, endpoints, carrier handling, or claim rules from
 commissioning outcomes. If any condition map or stimulus code changes, repeat
@@ -272,7 +278,7 @@ trace may be published only as one observed trace.
 - No model, profile, extension, settings, or tool changes mid-matrix.
 - No counting tool-selection failure as semantic laundering.
 - No localizing a cumulative endpoint difference across a hidden boundary.
-- No treating OTLP, a client event, or screenshot as raw wire bytes.
+- No treating an Agent Debug artifact, a client event, or screenshot as raw wire bytes.
 - No public raw-debug release before automated and manual privacy review.
 - No result-dependent pointer selection or condition unblinding before role
   selectors are frozen.
@@ -281,9 +287,14 @@ trace may be published only as one observed trace.
 
 A run is invalid when the tool is not called exactly once, arguments differ,
 the wrong opaque condition is active, the server restarts mid-call, the wire result
-is missing, the selected model/profile changes, the export does not correspond
+is missing, the selected model/profile changes, the sealed Agent Debug bundle does not correspond
 to that chat, run order is violated, timestamps are missing, or blinding is
-breached. A selector marked unobservable must agree with the disjoint
+breached. Acquisition is also invalid if the session-local `main.jsonl`, or any
+sidecar actually used for a preregistered contamination control, cannot satisfy
+the source-before = sealed-copy = source-after SHA-256 and byte-length invariant,
+or if later seal verification fails.
+
+A selector marked unobservable must agree with the disjoint
 observable/hidden-boundary lists. Record an invalid attempt in
 `invalid-runs.json` before a single rerun; never overwrite its private artifacts.
 If that one rerun is also invalid, record the second attempt and classify the
@@ -291,10 +302,19 @@ cell as `invalid_exhausted`. No third attempt is permitted. Continue to the next
 preregistered run-order position and report every affected contrast as
 incomplete.
 
-No preregistration v4 is permitted merely for theoretical polish. A new
-pre-execution version is allowed only if commissioning demonstrates that the
-measurement machinery cannot operate as preregistered; it requires a new public
-Gate A and repetition of all commissioning.
+Version 4 exists because pre-primary v3 commissioning demonstrated that the
+prescribed Agent Debug export did not expose the final response required for C,
+while the session-local debug log did, and a live session-local log was observed
+to change after an earlier snapshot had been taken. No primary execution had
+occurred. Version 4 changes the evidence-acquisition and provenance contract,
+not the scenarios, conditions, prompts, run order, request, grounding, semantic
+endpoints, response contract, or scoring rules. The v3 commissioning executions
+remain excluded and are not reused as v4 commissioning evidence.
+
+A future preregistration version is permitted only if new commissioning again
+demonstrates that the frozen measurement machinery cannot operate as
+preregistered. It requires a new public Gate A and repetition of all
+commissioning.
 
 ## Publication language
 

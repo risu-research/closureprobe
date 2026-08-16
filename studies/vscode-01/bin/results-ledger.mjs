@@ -80,7 +80,7 @@ const lines = [
   "# External Boundary Study 01 — Results",
   "",
   `Status: **${observed === 0 && exhausted === 0 && invalidRunSummary.attemptCount === 0
-    ? "external execution pending"
+    ? "primary execution pending"
     : `${observed}/${rows.length} primary cells observed; ${exhausted} invalid_exhausted`}**`,
   "",
   "Commissioning runs are excluded. This ledger reports a preregistered structural",
@@ -95,7 +95,7 @@ const lines = [
   ),
   "",
   observed === 0
-    ? "No external VS Code/Copilot observation is claimed yet."
+    ? "No primary VS Code/Copilot result is claimed yet; pre-primary v3 commissioning diagnostics are excluded and are not reused as v4 commissioning evidence."
     : "Interpret every row only with the frozen specimen tuple and its public result artifact.",
   "A cell marked `invalid_exhausted` receives no third attempt; its affected preregistered contrasts remain incomplete while the matrix continues.",
 ];
