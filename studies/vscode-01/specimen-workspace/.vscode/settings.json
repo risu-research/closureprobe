@@ -3,7 +3,12 @@
   "github.copilot.chat.agentDebugLog.fileLogging.enabled": true,
   "extensions.autoCheckUpdates": false,
   "extensions.autoUpdate": false,
-  "chat.mcp.discovery.enabled": false,
+  "chat.mcp.discovery.enabled": {
+    "claude-desktop": false,
+    "windsurf": false,
+    "cursor-global": false,
+    "cursor-workspace": false
+  },
   "chat.useAgentsMdFile": false,
   "chat.useNestedAgentsMdFiles": false,
   "chat.useClaudeMdFile": false,

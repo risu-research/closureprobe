@@ -296,7 +296,6 @@ test("the primary design is blinded, identical-input, paired, and time-balanced"
     "utf8",
   ));
   for (const setting of [
-    "chat.mcp.discovery.enabled",
     "chat.useAgentsMdFile",
     "chat.useClaudeMdFile",
     "chat.includeApplyingInstructions",
@@ -308,6 +307,16 @@ test("the primary design is blinded, identical-input, paired, and time-balanced"
   ]) {
     assert.equal(workspaceSettings[setting], false, `${setting} is not isolated`);
   }
+  assert.deepStrictEqual(
+    workspaceSettings["chat.mcp.discovery.enabled"],
+    {
+      "claude-desktop": false,
+      windsurf: false,
+      "cursor-global": false,
+      "cursor-workspace": false,
+    },
+    "chat.mcp.discovery.enabled is not isolated",
+  );
 });
 
 test("the analysis-side condition activator accepts only frozen opaque IDs", (context) => {
