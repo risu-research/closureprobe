@@ -3,24 +3,27 @@
 Local commits and hashes protect integrity but do not independently establish
 when a design existed. This study therefore has two mandatory public gates.
 
-The immutable v3 preregistration release remains historical provenance and is
-never moved, replaced, or relabeled. Version 4 receives a new commit, annotated
-tag, immutable release, and post-publication anchor before any v4 commissioning.
+The immutable v3 preregistration release and the original immutable v4
+preregistration release/A2 anchor remain historical provenance and are never
+moved, replaced, or relabeled. Before any v4 commissioning, frozen Step 0 found
+a stale prerequisite-version guard in the v4 executable bundle. Version 4
+Correction 1 therefore receives a new commit, annotated correction tag,
+immutable release, and post-publication anchor before commissioning.
 
 ## Gate A1: publish the preregistration release
 
 Create a draft release and attach all frozen assets before publishing it:
 
 1. the exact Git commit;
-2. annotated tag `study-vscode-01-prereg-v4`;
+2. annotated tag `study-vscode-01-prereg-v4-corr1`;
 3. the manually generated study source asset named
-   `closureprobe-study-vscode-01-prereg-v4.zip`, uploaded directly to the draft
+   `closureprobe-study-vscode-01-prereg-v4-corr1.zip`, uploaded directly to the draft
    release rather than relying on GitHub's automatic “Source code” links;
 4. the ZIP SHA-256 recorded verbatim in the release body and post-release
    anchor record;
 5. `MANIFEST.sha256` and its SHA-256;
-6. the preregistration and all four pre-primary amendments, including `AMENDMENT-04.md`; and
-7. a release body stating `Primary executions observed: none. Pre-primary v3 commissioning executions: recorded and excluded; v4 instrumentation revision was triggered by them.`
+6. the preregistration and all five pre-primary amendments, including `AMENDMENT-05.md`; and
+7. a release body stating `Primary executions observed: none. V4 commissioning executions observed: none. Pre-primary v3 commissioning executions: recorded and excluded. Correction 1 fixes only the stale preregistration-version guard; the Version 4 experimental design is unchanged.`
 
 Enable immutable releases if available. Publish only after every asset is
 attached. Never move or replace the preregistration tag.
@@ -29,8 +32,8 @@ After publication, verify the manually uploaded local ZIP against the release
 attestation:
 
 ```bash
-gh release verify-asset study-vscode-01-prereg-v4 \
-  ./closureprobe-study-vscode-01-prereg-v4.zip \
+gh release verify-asset study-vscode-01-prereg-v4-corr1 \
+  ./closureprobe-study-vscode-01-prereg-v4-corr1.zip \
   --repo risu-research/closureprobe
 ```
 
@@ -40,7 +43,7 @@ archives and are not substitutes for this named, locally hashed study asset.
 Suggested release title:
 
 ```text
-ClosureProbe External Boundary Study 01 — Preregistration v4
+ClosureProbe External Boundary Study 01 — Preregistration v4 Correction 1
 ```
 
 ## Gate A2: publish the post-release anchor record

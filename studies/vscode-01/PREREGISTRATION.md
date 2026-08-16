@@ -4,7 +4,9 @@ Version: 4
 Initial record: 2026-08-15
 v3 public preregistration: 2026-08-15
 v4 instrumentation revision: 2026-08-15
+v4 correction 1: 2026-08-16
 Primary executions observed: **none**
+v4 commissioning executions observed: **none**
 Pre-primary v3 commissioning executions: **recorded, excluded, and not reused as v4 commissioning evidence**
 
 ## Research question
@@ -35,7 +37,7 @@ recorded tuple, not “VS Code,” “Copilot,” or a model family in general.
 Before commissioning, the exact source commit, annotated preregistration tag,
 study manifest, and source ZIP digest must be published at a durable public URL.
 No commissioning result may be retained if its start timestamp precedes that
-anchor. The intended tag is `study-vscode-01-prereg-v4`.
+anchor. The intended correction tag is `study-vscode-01-prereg-v4-corr1`.
 
 After commissioning, the extraction rule, exact specimen tuple, commissioning
 artifact hashes, and remaining hidden boundaries must receive a second public
@@ -311,6 +313,13 @@ not the scenarios, conditions, prompts, run order, request, grounding, semantic
 endpoints, response contract, or scoring rules. The v3 commissioning executions
 remain excluded and are not reused as v4 commissioning evidence.
 
+Before any v4 commissioning, frozen Step 0 exposed a clerical inconsistency in
+the executable prerequisite guard: `study.json` recorded Version 4 while
+`check-prerequisites.mjs` still required Version 3. Correction 1 changes only
+that stale guard from `3` to `4`. Because executable study code changed after
+the original v4 Gate A, Correction 1 receives a new public Gate A1/A2 before
+commissioning. The experimental design and Version 4 designation are unchanged.
+See `AMENDMENT-05.md`.
 A future preregistration version is permitted only if new commissioning again
 demonstrates that the frozen measurement machinery cannot operate as
 preregistered. It requires a new public Gate A and repetition of all

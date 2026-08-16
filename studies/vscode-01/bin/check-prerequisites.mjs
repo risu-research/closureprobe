@@ -35,8 +35,8 @@ const expectedRuntime = study.instrument.runtimeTreeSha256.replace("sha256:", ""
 const expectedAdapter = study.instrument.studyAdapterSha256.replace("sha256:", "");
 
 const failures = [];
-if (study.preregistrationVersion !== 3) {
-  failures.push(`preregistration version ${study.preregistrationVersion} != 3`);
+if (study.preregistrationVersion !== 4) {
+  failures.push(`preregistration version ${study.preregistrationVersion} != 4`);
 }
 if (packageMetadata.version !== study.instrument.toolVersion) {
   failures.push(`package version ${packageMetadata.version} != ${study.instrument.toolVersion}`);
