@@ -1,7 +1,7 @@
 {
   "studyId": "closureprobe-vscode-01",
-  "preregistrationVersion": 5,
-  "status": "preregistration_v5_pre_gate_a",
+  "preregistrationVersion": 6,
+  "status": "preregistration_v6_pre_gate_a",
   "preregisteredAt": "2026-08-15",
   "instrument": {
     "tag": "v0.1.0-rc3",
@@ -61,6 +61,7 @@
       "model": "MAI-Code-1.1-Flash",
       "modelConfiguration": "Thinking Effort: Medium",
       "backgroundTodoAgentEnabled": false,
+      "localIndexEnabled": false,
       "toolAllowlist": ["closureprobeStudy/*"],
       "modelFacingToolName": "mcp_closureprobeStudy_closureprobe_probe",
       "subagents": []

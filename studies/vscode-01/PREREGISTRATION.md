@@ -1,16 +1,18 @@
 # Preregistration
 
-Version: 5
+Version: 6
 Initial record: 2026-08-15
 v3 public preregistration: 2026-08-15
 v4 instrumentation revision: 2026-08-15
 v4 correction 1: 2026-08-16
 v4 correction 2: 2026-08-16
 v5 harness-isolation and acquisition revision: 2026-08-16
+v6 final instrumentation revision: 2026-08-16
 Primary executions observed: **none**
 v4 commissioning executions observed: **one invalid and excluded**
-v5 commissioning executions observed: **none**
-Pre-primary v3 commissioning executions: **recorded, excluded, and not reused as v4 or v5 commissioning evidence**
+v5 commissioning executions observed: **one invalid and excluded**
+v6 commissioning executions observed: **none**
+Pre-primary v3 commissioning executions: **recorded, excluded, and not reused as v4, v5, or v6 commissioning evidence**
 
 ## Research question
 
@@ -30,7 +32,7 @@ lists the remainder as a hidden boundary.
 One primary unit is one fresh chat in the exact dedicated study agent, one
 forced call to `closureprobe_probe`, one blinded condition, one immediately
 sealed session-local Agent Debug `main.jsonl` snapshot, every request-referenced
-system-prompt or tool-definition sidecar required by the Version 5 isolation
+system-prompt or tool-definition sidecar required by the Version 6 isolation
 audit, and one corresponding stdio transcript. Sidecars are auxiliary
 harness-isolation evidence only. The verified `seal-receipt.json` is the single
 Agent Debug evidence root. The target is the recorded tuple, not “VS Code,”
@@ -41,7 +43,7 @@ Agent Debug evidence root. The target is the recorded tuple, not “VS Code,”
 Before commissioning, the exact source commit, annotated preregistration tag,
 study manifest, and source ZIP digest must be published at a durable public URL.
 No commissioning result may be retained if its start timestamp precedes that
-anchor. The intended Version 5 tag is `study-vscode-01-prereg-v5`.
+anchor. The intended Version 6 tag is `study-vscode-01-prereg-v6`.
 
 After commissioning, the extraction rule, exact specimen tuple, commissioning
 artifact hashes, and remaining hidden boundaries must receive a second public
@@ -115,6 +117,7 @@ Every commissioning and primary attempt uses only:
 - visible model configuration `Thinking Effort: Medium`;
 - explicit workspace setting
   `github.copilot.chat.agent.backgroundTodoAgent.enabled=false`;
+- explicit workspace setting `github.copilot.chat.localIndex.enabled=false`;
 - custom-agent tool allowlist `closureprobeStudy/*`; and
 - `agents: []`.
 
@@ -133,7 +136,7 @@ independent; and contains no scenario, carrier, opaque condition, mapping,
 oracle, source-response, active-environment, memory-derived, unrelated
 workspace/user-instruction, or non-predeclared executable-tool content.
 
-Across all three Version 5 commissioning paths, the first model request's model,
+Across all three Version 6 commissioning paths, the first model request's model,
 full referenced system-prompt content hash, input-message byte and structure
 hashes, user-request hash, and tool-name-surface hash must be exactly equal under
 `bin/compare-harness-envelopes.mjs`. Exact equality is necessary but not
@@ -163,14 +166,15 @@ Representation path therefore remains coupled to output-schema presence.
 
 ## Commissioning before the primary run
 
-After Version 5 Gate A1/A2, run `complete-zero` once through each representation
+After Version 6 Gate A1/A2, run `complete-zero` once through each representation
 path using the three generated `commissioning-prompts/` files. These runs are
 excluded from every
 primary contrast. Their only purposes are to verify wire and sealed Agent Debug
 capture, verify the dedicated-agent/request-side isolation controls, compare the
 narrow harness envelope across paths, identify the narrowest stable structural
 role selectors in the sealed session-local artifact, and freeze the extraction
-procedure. Version 3 and Version 4 commissioning evidence is not reused.
+procedure. Version 3, Version 4, and Version 5 commissioning evidence is not
+reused. Each Version 6 commissioning cell starts fresh at attempt 1.
 
 Do not tune prompts, endpoints, carrier handling, or claim rules from
 commissioning outcomes. If any condition map or stimulus code changes, repeat
@@ -340,9 +344,10 @@ trace may be published only as one observed trace.
 A run is invalid when the tool is not called exactly once, arguments differ,
 the wrong opaque condition is active, the server restarts mid-call, the wire
 result is missing, the exact profile/custom-agent/model/Thinking Effort changes,
-BackgroundTodoAgent is not explicitly disabled, a housekeeping/additional tool
-or subagent appears, the sealed Agent Debug bundle does not correspond to that
-chat, position is violated, timestamps are missing, or blinding is breached.
+BackgroundTodoAgent or the local session index is not explicitly disabled, a
+housekeeping/additional tool or subagent appears, the sealed Agent Debug bundle
+does not correspond to that chat, position is violated, timestamps are missing,
+or blinding is breached.
 Acquisition is also invalid if the session-local `main.jsonl`, or any
 `attrs.systemPromptFile`/`attrs.toolsFile` sidecar referenced by a model request,
 cannot satisfy the source-before = sealed-copy = source-after SHA-256 and
@@ -354,7 +359,7 @@ boundary lists. Record an invalid attempt in `invalid-runs.json` before a single
 rerun; `phase` is exactly `commissioning` or `primary`, and phase-generic
 `position` resolves only against `commissioning.json` or only against
 `matrix.json`/`run-order.json`, respectively. Never overwrite private artifacts.
-Every Version 5 attempt uses
+Every Version 6 attempt uses
 `captures/agent-debug-private/<phase>/<cell-id>/attempt-<1-or-2>/`. If the one
 rerun is also invalid, record attempt 2 and classify the cell as
 `invalid_exhausted`. No third attempt is permitted. Continue to the next frozen
@@ -406,10 +411,24 @@ sidecar acquisition, provenance, and phase/attempt bookkeeping. It requires a
 new Gate A and repetition of all three commissioning paths. See
 `AMENDMENT-07.md`.
 
-A future preregistration version after Version 5 is permitted only if new commissioning again
-demonstrates that the frozen measurement machinery cannot operate as
-preregistered. It requires a new public Gate A and repetition of all
-commissioning.
+After public Version 5 Gate A1/A2, exactly one Version 5 commissioning attempt
+was executed for `VS01-PILOT-COMPLETE-DUAL`, attempt 1. Agent Debug sealing
+succeeded, but request isolation observed `session_store_sql` as the main tool
+call and the raw transcript contained zero verified `closureprobe_probe` calls.
+The attempt is invalid, excluded, and unscored. Version 5 wire verification
+incorrectly accepted the zero-call transcript. Version 6 adds only explicit
+`github.copilot.chat.localIndex.enabled=false` and exact-one-call wire
+enforcement. Its privacy-safe public record is
+`evidence/public/v5-invalid-commissioning-attempt.json`; private evidence is not
+published or reused. See `AMENDMENT-08.md`.
+
+Version 6 is the final instrumentation revision. No Version 7 may be created
+merely to suppress another observed client-generated hidden tool, context
+injector, session subsystem, or other measurement-machine behavior. If all
+valid Version 6 commissioning attempts cannot be completed within the frozen
+maximum-two-attempt policy because such behavior persists or newly appears, the
+study closes as instrumentation-limited. This rule is independent of semantic
+outcomes.
 
 ## Publication language
 

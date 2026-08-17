@@ -20,15 +20,17 @@ Before commissioning and before every experimental attempt:
 5. verify the visible model configuration is exactly `Thinking Effort: Medium`;
 6. verify workspace settings explicitly set
    `github.copilot.chat.agent.backgroundTodoAgent.enabled` to `false`;
-7. verify workspace settings disable AGENTS.md, CLAUDE.md, instruction files,
+7. verify workspace settings explicitly set
+   `github.copilot.chat.localIndex.enabled` to `false`;
+8. verify workspace settings disable AGENTS.md, CLAUDE.md, instruction files,
    organization instructions, skills, plugins, memory, browser tools, session
    sync, and automatic MCP discovery;
-8. confirm no chat context or file attachment is present;
-9. stop the fixed MCP server, activate the assigned opaque condition, and
+9. confirm no chat context or file attachment is present;
+10. stop the fixed MCP server, activate the assigned opaque condition, and
    restart only that server;
-10. confirm the custom-agent tool surface leaves only `closureprobe_probe`
+11. confirm the custom-agent tool surface leaves only `closureprobe_probe`
     enabled; and
-11. inspect the receipt-bound model request, system-prompt sidecar, and
+12. inspect the receipt-bound model request, system-prompt sidecar, and
     tool-definition sidecar for unexpected customization or capability.
 
 The two memory settings in the workspace are current documented VS Code
@@ -57,7 +59,7 @@ is invalid even if the profile checklist appeared clean.
 
 Fixed client-generated Copilot Agent prompt assembly is reviewed only under the
 narrow harness-envelope rule in `PREREGISTRATION.md`. Exact hashes and structure
-must agree across all three Version 5 commissioning paths, and manual review
+must agree across all three Version 6 commissioning paths, and manual review
 must confirm that the content is neutral and contains no prohibited category.
 Equality alone does not whitelist the content.
 

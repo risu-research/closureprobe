@@ -1,0 +1,35 @@
+{
+  "format": "closureprobe-invalid-attempt-public-record-v1",
+  "studyId": "closureprobe-vscode-01",
+  "preregistrationVersion": 5,
+  "phase": "commissioning",
+  "cellId": "VS01-PILOT-COMPLETE-DUAL",
+  "conditionId": "P_90E7056A96AE",
+  "attempt": 1,
+  "classification": "invalid_excluded",
+  "includedInPrimary": false,
+  "semanticOutcomeScored": false,
+  "primaryExecutionsObserved": 0,
+  "agentDebug": {
+    "sealStatus": "succeeded",
+    "sealFormat": "closureprobe-agent-debug-seal-v2",
+    "artifactCount": 3,
+    "sealReceiptSha256": "sha256:c4669c200947a4a82e9601f76cc657661d2b5eb1767959bb76d974c1c8cbadbb",
+    "sealedMainSha256": "sha256:3a554543de2a957ecf6c39d720c029ad80ba087707d52177a4e2e0526ce868cf",
+    "sealedSystemPromptSidecarSha256": "sha256:61fdcd11dd80c4d972c1c2b476a8b2e757b6734e86188a1baf13b0cadd3a8303",
+    "sealedToolDefinitionsSidecarSha256": "sha256:cecb33268fbd19c41ab9572d0371d0bc7a64980ffb193c4945df0e8ece8243c3",
+    "requestIsolationStatus": "failed",
+    "observedUnexpectedMainToolCall": "session_store_sql",
+    "rawArtifactPublic": false
+  },
+  "wire": {
+    "intendedToolCallsObserved": 0,
+    "version5VerifierDisposition": "incorrectly_accepted_zero_call_transcript",
+    "version6Correction": "require exactly one verified closureprobe_probe tools/call"
+  },
+  "reasonCodes": [
+    "unexpected_session_store_tool_call",
+    "intended_closureprobe_tool_call_absent"
+  ],
+  "note": "No timestamp or raw private evidence content is asserted in this public record. The attempt is excluded and is not reused as Version 6 commissioning evidence. Version 6 explicitly disables the local session index without claiming causation beyond the observed evidence."
+}

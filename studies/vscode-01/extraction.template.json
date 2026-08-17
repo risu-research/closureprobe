@@ -26,16 +26,16 @@
       "firstRequest.userRequestSha256",
       "toolDefinitionSidecars[].toolNamesSha256"
     ],
-    "automatedComparisonSha256": "sha256:replace-after-three-v5-commissioning-attempts",
+    "automatedComparisonSha256": "sha256:replace-after-three-v6-commissioning-attempts",
     "frozenComparisonValues": {
       "model": "MAI-Code-1.1-Flash",
       "firstRequest": {
-        "systemPromptContentSha256": "sha256:replace-after-three-v5-commissioning-attempts",
-        "inputMessagesSha256": "sha256:replace-after-three-v5-commissioning-attempts",
-        "inputMessagesStructureSha256": "sha256:replace-after-three-v5-commissioning-attempts",
-        "userRequestSha256": "sha256:replace-after-three-v5-commissioning-attempts"
+        "systemPromptContentSha256": "sha256:replace-after-three-v6-commissioning-attempts",
+        "inputMessagesSha256": "sha256:replace-after-three-v6-commissioning-attempts",
+        "inputMessagesStructureSha256": "sha256:replace-after-three-v6-commissioning-attempts",
+        "userRequestSha256": "sha256:replace-after-three-v6-commissioning-attempts"
       },
-      "toolNamesSha256": "sha256:replace-after-three-v5-commissioning-attempts"
+      "toolNamesSha256": "sha256:replace-after-three-v6-commissioning-attempts"
     },
     "manualContentReview": {
       "completed": false,

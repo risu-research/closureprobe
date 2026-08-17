@@ -170,6 +170,12 @@ export function verifyWireTranscript(path) {
     });
   }
 
+  if (calls.length !== 1) {
+    throw new Error(
+      `Expected exactly one closureprobe_probe tools/call, observed ${calls.length}`,
+    );
+  }
+
   return {
     format: "closureprobe-wire-verification-v3",
     transcript: absolute,

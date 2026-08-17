@@ -1,6 +1,6 @@
 # ClosureProbe External Boundary Study 01
 
-Status: **preregistration v5 pre-Gate-A candidate; new public Gate A and all three v5 commissioning paths required before primary execution**
+Status: **preregistration v6 pre-Gate-A candidate; new public Gate A and all three v6 commissioning paths required before primary execution**
 
 This study treats one named, client-observable VS Code/Copilot/model
 configuration as a specimen. It measures whether ClosureProbe negative-evidence
@@ -96,6 +96,14 @@ B. Primary normalization recomputes the request audit from the receipt-bound
 sealed evidence and fails unless the attempt matches that exact completed
 harness freeze; no operator-authored audit file is trusted.
 
+After public Version 5 Gate A1/A2, the first real Version 5 commissioning
+attempt was sealed but invalid: Agent Debug request isolation observed
+`session_store_sql`, and the raw transcript contained zero verified intended
+calls. The claim is unscored. `AMENDMENT-08.md` creates the final Version 6
+instrumentation revision, adding only explicit local-index disablement and
+exact-one-call wire verification. All three commissioning paths restart from
+attempt 1; no Version 5 commissioning evidence is reused.
+
 ## Frozen design
 
 - ClosureProbe tag: `v0.1.0-rc3`
@@ -116,9 +124,10 @@ Read these in order:
 6. `AMENDMENT-05.md`
 7. `AMENDMENT-06.md`
 8. `AMENDMENT-07.md`
-9. `PUBLICATION.md`
-10. `RUNBOOK.md`
-11. `SOURCES.md`
+9. `AMENDMENT-08.md`
+10. `PUBLICATION.md`
+11. `RUNBOOK.md`
+12. `SOURCES.md`
 
 `RESULTS.md` is generated and currently claims no primary result.
 
@@ -152,7 +161,10 @@ not publication requirements.
 
 ## Current boundary
 
-A signed-in VS Code/Copilot specimen was used for pre-primary diagnostics and
-one invalid Version 4 commissioning attempt. All are excluded and none is a
-primary result. No Version 5 commissioning or primary result is represented in
-this repository.
+A signed-in VS Code/Copilot specimen was used for pre-primary diagnostics, one
+invalid Version 4 commissioning attempt, and one invalid Version 5 commissioning
+attempt. All are excluded and none is a primary result. No Version 6
+commissioning or primary result is represented in this repository. Version 6
+is the final instrumentation revision; an inability to complete its frozen
+commissioning policy closes the study as instrumentation-limited rather than
+creating Version 7 to suppress further client-generated measurement behavior.

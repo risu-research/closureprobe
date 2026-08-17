@@ -97,7 +97,7 @@ const lines = [
   ),
   "",
   observed === 0
-    ? "No primary VS Code/Copilot result is claimed yet; prior commissioning diagnostics and the invalid v4 commissioning attempt are excluded and are not reused as v5 commissioning evidence."
+    ? "No primary VS Code/Copilot result is claimed yet; prior commissioning diagnostics and the invalid Version 4 and Version 5 commissioning attempts are excluded and are not reused as Version 6 commissioning evidence."
     : "Interpret every row only with the frozen specimen tuple and its public result artifact.",
   "A cell marked `invalid_exhausted` receives no third attempt; its affected preregistered contrasts remain incomplete while the matrix continues.",
 ];

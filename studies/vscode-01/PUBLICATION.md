@@ -3,34 +3,38 @@
 Local commits and hashes protect integrity but do not independently establish
 when a design existed. This study therefore has two mandatory public gates.
 
-The immutable v3 and v4 preregistration/correction releases and their A2 anchor
-records remain historical provenance and are never moved, replaced, or
-relabeled. One post-Correction-2 Version 4 commissioning attempt is retained as
-invalid and excluded. Its privacy-safe public hashes are recorded in
-`evidence/public/v4-invalid-commissioning-attempt.json`; private raw debug is not
-published or reused.
+The immutable v3, v4, and v5 preregistration/correction releases and their A2
+anchor records remain historical provenance and are never moved, replaced, or
+relabeled. The single invalid Version 4 commissioning attempt and the single
+invalid Version 5 commissioning attempt are excluded and recorded only through
+their privacy-safe public records. Private raw debug is not published or reused.
 
-Version 5 changes only harness isolation, request-sidecar acquisition,
-provenance, and invalid-attempt bookkeeping. It receives a new source commit,
-annotated tag, immutable Gate A1 release, and separate Gate A2 record before
-all three commissioning paths are repeated. No Version 5 public anchor exists
-at preregistration-candidate time.
+Version 6 changes only the explicit local-index isolation control and exact-one-
+call wire enforcement. It receives a new source commit, annotated tag, immutable
+Gate A1 release, and separate Gate A2 record before all three commissioning
+paths restart from attempt 1. No Version 6 public anchor exists at
+preregistration-candidate time.
 
 ## Gate A1: publish the preregistration release
 
 Create a draft release and attach all frozen assets before publishing it:
 
 1. the exact Git commit;
-2. annotated tag `study-vscode-01-prereg-v5`;
+2. annotated tag `study-vscode-01-prereg-v6`;
 3. the manually generated study source asset named
-   `closureprobe-study-vscode-01-prereg-v5.zip`, uploaded directly to the draft
+   `closureprobe-study-vscode-01-prereg-v6.zip`, uploaded directly to the draft
    release rather than relying on GitHub's automatic “Source code” links;
 4. the ZIP SHA-256 recorded verbatim in the release body and post-release
    anchor record;
 5. `MANIFEST.sha256` and its SHA-256;
-6. the preregistration and Amendments 01 through 07, including `AMENDMENT-07.md`;
-7. the privacy-safe Version 4 invalid-attempt record; and
-8. a release body stating `Primary executions observed: none. Version 4 commissioning executions observed: one invalid and excluded. Version 5 commissioning executions observed: none. Version 5 changes only harness isolation, request-sidecar acquisition, provenance, and invalid-attempt bookkeeping; study semantics, prompts, conditions, matrix, run order, and endpoints are unchanged.`
+6. the preregistration and Amendments 01 through 08, including `AMENDMENT-08.md`;
+7. the privacy-safe Version 4 and Version 5 invalid-attempt records; and
+8. a release body stating `Primary executions observed: none. Version 4 commissioning executions observed: one invalid and excluded. Version 5 commissioning executions observed: one invalid and excluded. Version 6 commissioning executions observed: none. Version 6 adds only explicit local-index isolation and exact-one-call wire enforcement; study semantics, prompts, conditions, matrix, run order, normalization, and endpoints are unchanged.`
+
+The manually frozen local asset set is exactly 13 files: Amendments 01 through
+08, the named Version 6 source ZIP, `MANIFEST.sha256`, `PREREGISTRATION.md`, and
+the two privacy-safe invalid-attempt records. GitHub-generated source archives
+and attestations are not counted in that set.
 
 Enable immutable releases if available. Publish only after every asset is
 attached. Never move or replace the preregistration tag.
@@ -39,8 +43,8 @@ After publication, verify the manually uploaded local ZIP against the release
 attestation:
 
 ```bash
-gh release verify-asset study-vscode-01-prereg-v5 \
-  ./closureprobe-study-vscode-01-prereg-v5.zip \
+gh release verify-asset study-vscode-01-prereg-v6 \
+  ./closureprobe-study-vscode-01-prereg-v6.zip \
   --repo risu-research/closureprobe
 ```
 
@@ -50,7 +54,7 @@ archives and are not substitutes for this named, locally hashed study asset.
 Suggested release title:
 
 ```text
-ClosureProbe External Boundary Study 01 — Preregistration v5
+ClosureProbe External Boundary Study 01 — Preregistration v6
 ```
 
 ## Gate A2: publish the post-release anchor record
@@ -62,7 +66,7 @@ and publish that record in a separate public Git commit. The completed record is
 not an asset inside the release whose publication it records.
 
 The record commit must expose the completed JSON at a durable URL and identify
-the Version 5 Gate A1 tag target exactly. Version 5 requires this new
+the Version 6 Gate A1 tag target exactly. Version 6 requires this new
 post-publication A2 anchor before commissioning. Commissioning may begin only
 after both A1 and A2 are public and independently readable. The instrument
 itself must still be run from the immutable A1 tag, not from the later
@@ -70,7 +74,7 @@ metadata-record commit.
 
 ## Gate B1/B2: after commissioning, before primary execution
 
-The three excluded Version 5 commissioning runs determine only the extraction
+The three excluded Version 6 commissioning runs determine only the extraction
 and harness-envelope freeze. Then:
 
 1. complete and privacy-review `extraction-freeze.json` from

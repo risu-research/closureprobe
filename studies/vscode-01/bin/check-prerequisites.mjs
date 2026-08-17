@@ -51,16 +51,19 @@ const expectedRuntime = study.instrument.runtimeTreeSha256.replace("sha256:", ""
 const expectedAdapter = study.instrument.studyAdapterSha256.replace("sha256:", "");
 
 const failures = [];
-if (study.preregistrationVersion !== 5) {
-  failures.push(`preregistration version ${study.preregistrationVersion} != 5`);
+if (study.preregistrationVersion !== 6) {
+  failures.push(`preregistration version ${study.preregistrationVersion} != 6`);
 }
-if (study.status !== "preregistration_v5_pre_gate_a") {
+if (study.status !== "preregistration_v6_pre_gate_a") {
   failures.push(`study status ${study.status} is not the frozen pre-Gate-A status`);
 }
 if (
   workspaceSettings["github.copilot.chat.agent.backgroundTodoAgent.enabled"] !== false
 ) {
   failures.push("BackgroundTodoAgent is not explicitly disabled in workspace settings");
+}
+if (workspaceSettings["github.copilot.chat.localIndex.enabled"] !== false) {
+  failures.push("Copilot local session index is not explicitly disabled in workspace settings");
 }
 if (customAgent !== expectedCustomAgent) {
   failures.push("dedicated study custom agent differs from the frozen frontmatter-only file");
@@ -72,10 +75,11 @@ if (
   isolation?.model !== "MAI-Code-1.1-Flash" ||
   isolation?.modelConfiguration !== "Thinking Effort: Medium" ||
   isolation?.backgroundTodoAgentEnabled !== false ||
+  isolation?.localIndexEnabled !== false ||
   JSON.stringify(isolation?.toolAllowlist) !== JSON.stringify(["closureprobeStudy/*"]) ||
   JSON.stringify(isolation?.subagents) !== JSON.stringify([])
 ) {
-  failures.push("study harness-isolation contract differs from the frozen Version 5 controls");
+  failures.push("study harness-isolation contract differs from the frozen Version 6 controls");
 }
 if (packageMetadata.version !== study.instrument.toolVersion) {
   failures.push(`package version ${packageMetadata.version} != ${study.instrument.toolVersion}`);

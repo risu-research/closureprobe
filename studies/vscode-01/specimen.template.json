@@ -33,6 +33,7 @@
     "dedicatedStudyAgentSelected": true,
     "dedicatedStudyAgentFile": "specimen-workspace/.github/agents/closureprobe-study.agent.md",
     "backgroundTodoAgentExplicitlyDisabled": true,
+    "localSessionIndexExplicitlyDisabled": true,
     "mainRequestToolAllowlist": ["closureprobeStudy/*"],
     "subagentsAllowed": false,
     "agentsMdDisabled": true,

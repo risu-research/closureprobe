@@ -76,6 +76,26 @@ async function callCondition(condition, captureDirectory) {
   }
 }
 
+async function captureCallCount(condition, captureDirectory, count) {
+  mkdirSync(captureDirectory, { recursive: true });
+  const client = new Client({ name: "closureprobe-study-call-count-test", version: "2.0.0" });
+  await client.connect(transportFor(condition, captureDirectory));
+  try {
+    await client.listTools();
+    for (let index = 0; index < count; index += 1) {
+      await client.callTool({
+        name: "closureprobe_probe",
+        arguments: condition.arguments,
+      });
+    }
+  } finally {
+    await client.close();
+  }
+  const transcripts = readdirSync(captureDirectory).filter((name) => name.endsWith(".ndjson"));
+  assert.equal(transcripts.length, 1);
+  return resolve(captureDirectory, transcripts[0]);
+}
+
 test("the tap preserves and verifies all three blinded carrier shapes", async (context) => {
   const directory = mkdtempSync(join(tmpdir(), "closureprobe-study-tap-"));
   context.after(() => rmSync(directory, { recursive: true, force: true }));
@@ -161,6 +181,27 @@ test("the tap refuses an unfrozen adapter hash", () => {
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
+});
+
+test("wire verification requires exactly one closureprobe_probe tools/call", async (context) => {
+  const root = mkdtempSync(join(tmpdir(), "closureprobe-wire-call-count-"));
+  context.after(() => rmSync(root, { recursive: true, force: true }));
+  const condition = findCondition("complete-zero", "dual", "commissioning");
+
+  const oneCall = await captureCallCount(condition, resolve(root, "one"), 1);
+  assert.equal(verifyWireTranscript(oneCall).calls.length, 1);
+
+  const zeroCalls = await captureCallCount(condition, resolve(root, "zero"), 0);
+  assert.throws(
+    () => verifyWireTranscript(zeroCalls),
+    /Expected exactly one closureprobe_probe tools\/call, observed 0/,
+  );
+
+  const twoCalls = await captureCallCount(condition, resolve(root, "two"), 2);
+  assert.throws(
+    () => verifyWireTranscript(twoCalls),
+    /Expected exactly one closureprobe_probe tools\/call, observed 2/,
+  );
 });
 
 test("the tap refuses a study manifest mismatch before spawning the server", () => {
@@ -302,15 +343,23 @@ test("the primary design is blinded, identical-input, paired, and time-balanced"
     "utf8",
   ));
   for (const setting of [
+    "extensions.autoCheckUpdates",
+    "extensions.autoUpdate",
     "chat.useAgentsMdFile",
+    "chat.useNestedAgentsMdFiles",
     "chat.useClaudeMdFile",
     "chat.includeApplyingInstructions",
+    "chat.includeReferencedInstructions",
+    "github.copilot.chat.codeGeneration.useInstructionFiles",
     "github.copilot.chat.organizationInstructions.enabled",
     "chat.useAgentSkills",
     "chat.plugins.enabled",
     "chat.tools.memory.enabled",
+    "chat.copilotMemory.enabled",
+    "chat.sessionSync.enabled",
     "workbench.browser.enableChatTools",
     "github.copilot.chat.agent.backgroundTodoAgent.enabled",
+    "github.copilot.chat.localIndex.enabled",
   ]) {
     assert.equal(workspaceSettings[setting], false, `${setting} is not isolated`);
   }
@@ -325,8 +374,8 @@ test("the primary design is blinded, identical-input, paired, and time-balanced"
     "chat.mcp.discovery.enabled is not isolated",
   );
 
-  assert.equal(study.preregistrationVersion, 5);
-  assert.equal(study.status, "preregistration_v5_pre_gate_a");
+  assert.equal(study.preregistrationVersion, 6);
+  assert.equal(study.status, "preregistration_v6_pre_gate_a");
   assert.deepEqual(study.design.harnessIsolation, {
     profileName: "ClosureProbe VSCode 01",
     customAgentName: "ClosureProbe Study",
@@ -334,6 +383,7 @@ test("the primary design is blinded, identical-input, paired, and time-balanced"
     model: "MAI-Code-1.1-Flash",
     modelConfiguration: "Thinking Effort: Medium",
     backgroundTodoAgentEnabled: false,
+    localIndexEnabled: false,
     toolAllowlist: ["closureprobeStudy/*"],
     modelFacingToolName: "mcp_closureprobeStudy_closureprobe_probe",
     subagents: [],
@@ -353,6 +403,84 @@ test("the primary design is blinded, identical-input, paired, and time-balanced"
       "",
     ].join("\n"),
   );
+});
+
+test("the final Version 6 instrumentation revision is frozen without semantic drift", () => {
+  const digest = (relativePath) => createHash("sha256")
+    .update(readFileSync(resolve(studyRoot, relativePath)))
+    .digest("hex");
+  const frozenFiles = {
+    "conditions.json": "79ea923b12522bbc4ffc991a45d98d478ddbcba71216ae4e2e7347708b74c039",
+    "commissioning.json": "1dc9fe35f1b0c7245623a5a43c63a67a8a1bb29fe88be13cc39c97a037b48ce7",
+    "matrix.json": "c8791d68163a2bf524dee0a4daac1b04c39e7b8116a8aaf02d975cf0a66ed4c2",
+    "run-order.json": "0e854444869b471d446ba6e36e3197b1beb34181ab3e5226b165caa8ec46786b",
+    "specimen-workspace/.vscode/mcp.json": "118b50068e5e06ea7e90307258368f3288de5cbe3b3ce6aeece0a177fff54a8c",
+    "bin/study-mcp-server.mjs": "50a059b56510bac220462c74d3dd611662e44354bcc58e03d76debf81da68fe1",
+    "bin/study-stimulus.mjs": "24ae54ef0a607480e52f149a4ec202e257d1ab526c6c7525c63be517a2be8d05",
+    "bin/stdio-tap.mjs": "5b2c903e1e76f6ee2745bbab4b9bbebd16ea9dba4694e2bc410545c058ac4422",
+    "bin/normalize-run.mjs": "baf7be03cdd549aa84613a13a0193a9bd55dfc2d2c0575acd67572a878af44a8",
+    "bin/audit-agent-debug-request.mjs": "a7bf4c2ee66b05c057159f47e611e6f907442a080e0c1e8ae070683b4eaa9f84",
+    "bin/compare-harness-envelopes.mjs": "7087b1f0c041d4b99e60a28033c01357b6fdf66c1a77a1059394f09c98b7360a",
+    "specimen-workspace/.github/agents/closureprobe-study.agent.md": "4fe6494efa8c436979f8384e521f1b96a37eb2713bada441e7ed6d0b74e02092",
+  };
+  for (const [relativePath, expected] of Object.entries(frozenFiles)) {
+    assert.equal(digest(relativePath), expected, `${relativePath} changed from the Version 5 base`);
+  }
+  const promptFiles = [
+    ...readdirSync(resolve(studyRoot, "prompts")).map((name) => `prompts/${name}`),
+    ...readdirSync(resolve(studyRoot, "commissioning-prompts"))
+      .map((name) => `commissioning-prompts/${name}`),
+  ];
+  assert.equal(promptFiles.length, 24);
+  assert.ok(promptFiles.every((path) =>
+    digest(path) === "4adc1d14c6e2ceb4d9750937cd024d0e52ae8168d865747f4dadb74f13d9c129"
+  ));
+
+  const record = JSON.parse(readFileSync(
+    resolve(studyRoot, "evidence/public/v5-invalid-commissioning-attempt.json"),
+    "utf8",
+  ));
+  assert.deepEqual({
+    version: record.preregistrationVersion,
+    phase: record.phase,
+    cellId: record.cellId,
+    conditionId: record.conditionId,
+    attempt: record.attempt,
+    classification: record.classification,
+    scored: record.semanticOutcomeScored,
+    primaryExecutions: record.primaryExecutionsObserved,
+    intendedCalls: record.wire.intendedToolCallsObserved,
+    reasons: record.reasonCodes,
+  }, {
+    version: 5,
+    phase: "commissioning",
+    cellId: "VS01-PILOT-COMPLETE-DUAL",
+    conditionId: "P_90E7056A96AE",
+    attempt: 1,
+    classification: "invalid_excluded",
+    scored: false,
+    primaryExecutions: 0,
+    intendedCalls: 0,
+    reasons: [
+      "unexpected_session_store_tool_call",
+      "intended_closureprobe_tool_call_absent",
+    ],
+  });
+  assert.equal(record.agentDebug.observedUnexpectedMainToolCall, "session_store_sql");
+  assert.equal(record.agentDebug.rawArtifactPublic, false);
+
+  const amendment = readFileSync(resolve(studyRoot, "AMENDMENT-08.md"), "utf8");
+  assert.match(amendment, /Version 6 is the final instrumentation revision/);
+  assert.match(amendment, /study closes\s+as instrumentation-limited/);
+  assert.match(amendment, /all three commissioning cells restart from attempt 1/);
+  assert.match(amendment, /No Version 5 commissioning evidence is reused/);
+
+  const publication = readFileSync(resolve(studyRoot, "PUBLICATION.md"), "utf8");
+  assert.match(publication, /study-vscode-01-prereg-v6/);
+  assert.match(publication, /closureprobe-study-vscode-01-prereg-v6\.zip/);
+  assert.match(publication, /exactly 13 files/);
+  assert.match(publication, /Amendments 01 through 08/);
+  assert.match(publication, /Version 4 and Version 5 invalid-attempt records/);
 });
 
 test("the analysis-side condition activator accepts only frozen opaque IDs", (context) => {

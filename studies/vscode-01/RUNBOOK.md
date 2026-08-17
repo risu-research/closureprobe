@@ -36,7 +36,8 @@ model, setting, profile hash, and hidden backend boundary.
 For every attempt select the tracked custom agent `ClosureProbe Study`, model
 `MAI-Code-1.1-Flash`, and visible `Thinking Effort: Medium`. Verify the custom
 agent is frontmatter-only, restricts tools to `closureprobeStudy/*`, sets
-`agents: []`, and the workspace explicitly disables BackgroundTodoAgent.
+`agents: []`, and the workspace explicitly disables BackgroundTodoAgent and
+the local session index.
 
 Open only `studies/vscode-01/specimen-workspace`. Do not open the repository
 root in the experimental window. Do not attach prompt files; copy their plain
@@ -126,10 +127,10 @@ assessment, active environment value, custom instruction, memory-derived user
 content, unrelated context, housekeeping/additional tool, or additional
 capability invalidates the run.
 
-The ordinary Agent Debug export is not a v5 study evidence artifact. Extraction
+The ordinary Agent Debug export is not a Version 6 study evidence artifact. Extraction
 and normalization use only the receipt-bound sealed session-local `main.jsonl`.
 
-After all three valid Version 5 commissioning attempts, compare their request
+After all three valid Version 6 commissioning attempts, compare their request
 audits:
 
 ```bash
@@ -165,7 +166,8 @@ bytes; filenames are external operator bookkeeping only.
 For each run:
 
 1. confirm the exact profile, dedicated agent, model, Thinking Effort, explicit
-   BackgroundTodoAgent false setting, and no-subagent/one-tool configuration;
+   BackgroundTodoAgent and local-index false settings, and
+   no-subagent/one-tool configuration;
 2. stop the fixed server, activate the assigned opaque condition, restart it,
    and enable only `closureprobe_probe`;
 3. confirm the same settings and extensions;
@@ -256,3 +258,10 @@ context, paths, account data, and credentials. Keep their contents private,
 publish only the required hashes and privacy-reviewed role evidence, and
 disclose only the smallest manually reviewed extract necessary to verify the
 selected roles.
+
+Version 6 is the final instrumentation revision. If all required commissioning
+attempts cannot be completed within the frozen maximum-two-attempt policy
+because another unsuppressed client-generated measurement subsystem persists or
+appears, stop and close the study as instrumentation-limited. Do not create a
+Version 7 to suppress it, and do not alter this stopping rule based on any
+visible semantic claim.
