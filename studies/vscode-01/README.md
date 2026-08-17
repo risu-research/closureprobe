@@ -1,6 +1,6 @@
 # ClosureProbe External Boundary Study 01
 
-Status: **preregistration v6 pre-Gate-A candidate; new public Gate A and all three v6 commissioning paths required before primary execution**
+Status: **terminal — instrumentation-limited after Version 6 commissioning cell 1 exhausted both permitted attempts; no primary execution**
 
 This study treats one named, client-observable VS Code/Copilot/model
 configuration as a specimen. It measures whether ClosureProbe negative-evidence
@@ -21,7 +21,7 @@ normalized rc3 trace. Version 5 also resolves and seals every numbered
 `systemPromptFile` and `toolsFile` referenced by a model-request record. Those
 sidecars are auxiliary isolation evidence and never replace `main.jsonl`.
 
-Loss of the wrapper itself does not disappear into “unobservable”: the local
+Loss of the wrapper itself does not disappear into â€œunobservableâ€: the local
 inspector can bind an arbitrary selected JSON value by pointer/type/digest while
 withholding its contents from ordinary inspector output. Observable prose or an
 empty object is therefore P2; P3 is reserved for a boundary that cannot be
@@ -29,9 +29,9 @@ inspected.
 
 The experiment reports four independent endpoints:
 
-- `P_client`: wire → client event;
-- `P_model`: client event → model-visible request;
-- `P_cumulative`: wire → model-visible request; and
+- `P_client`: wire â†’ client event;
+- `P_model`: client event â†’ model-visible request;
+- `P_cumulative`: wire â†’ model-visible request; and
 - `C`: explicit claim versus the model-visible negative license.
 
 It also reports first observable normative change, first guard-signal loss, and
@@ -46,8 +46,8 @@ cumulative endpoint differences that cross one remain explicitly unlocalized.
 not an estimate of spontaneous model behavior in ordinary, unprompted use.
 The model can answer only `none` or `unknown`; formatting failures are
 analysis-side `response_error`. Any analysis repair of a missing or invalid
-model-visible normative field—or loss/change of the returned format, request,
-or grounding—is recorded and forces `none` to fail closed.
+model-visible normative fieldâ€”or loss/change of the returned format, request,
+or groundingâ€”is recorded and forces `none` to fail closed.
 
 ## Anti-leakage design
 
@@ -104,12 +104,29 @@ instrumentation revision, adding only explicit local-index disablement and
 exact-one-call wire verification. All three commissioning paths restart from
 attempt 1; no Version 5 commissioning evidence is reused.
 
+## Terminal result
+
+Version 6 Gate A1 and A2 were public before execution. The first required
+commissioning cell, `VS01-PILOT-COMPLETE-DUAL`, exhausted both permitted
+attempts. In each attempt the receipt-bound request-isolation audit observed
+unexpected `session_store_sql` activity and the instrumented MCP wire contained
+zero verified `closureprobe_probe` calls. Both attempts are invalid, excluded,
+and unscored.
+
+Under the preregistered final-instrumentation stopping rule in
+`AMENDMENT-08.md`, the study therefore terminates as **instrumentation-limited**
+before Gate B and before any primary execution. Commissioning positions 2 and 3
+and the 21-cell primary matrix were not opened. This is a measurement limitation
+for the named specimen, not evidence that ClosureProbe semantics were preserved
+or lost. See `TERMINAL-REPORT.md` and
+`evidence/public/v6-terminal-record.json`.
+
 ## Frozen design
 
 - ClosureProbe tag: `v0.1.0-rc3`
 - ClosureProbe commit: `12fae2c0cb0909a43f487323fb00e7372b1f3377`
 - profile: `0.3.0`
-- matrix: seven scenarios × three representation paths = 21 cells
+- matrix: seven scenarios Ã— three representation paths = 21 cells
 - commissioning: three excluded `complete-zero` runs
 - order: seven paired scenario blocks with rotated carrier position
 - escalation: comparison-level paired replication, not isolated cell repeats
@@ -128,6 +145,7 @@ Read these in order:
 10. `PUBLICATION.md`
 11. `RUNBOOK.md`
 12. `SOURCES.md`
+13. `TERMINAL-REPORT.md`
 
 `RESULTS.md` is generated and currently claims no primary result.
 
@@ -162,9 +180,14 @@ not publication requirements.
 ## Current boundary
 
 A signed-in VS Code/Copilot specimen was used for pre-primary diagnostics, one
-invalid Version 4 commissioning attempt, and one invalid Version 5 commissioning
-attempt. All are excluded and none is a primary result. No Version 6
-commissioning or primary result is represented in this repository. Version 6
-is the final instrumentation revision; an inability to complete its frozen
-commissioning policy closes the study as instrumentation-limited rather than
-creating Version 7 to suppress further client-generated measurement behavior.
+invalid Version 4 commissioning attempt, one invalid Version 5 commissioning
+attempt, and two permitted Version 6 attempts for the first required
+commissioning cell. The two Version 6 attempts are retained as invalid and
+excluded: each showed unexpected `session_store_sql` activity in the
+receipt-bound request audit and zero verified intended MCP calls on the wire.
+
+That Version 6 cell is `invalid_exhausted`. The study therefore terminates as
+instrumentation-limited under the preregistered stopping rule. Gate B was not
+reached, commissioning positions 2 and 3 were not opened, and primary
+executions observed remain zero. No semantic outcome from an invalid attempt is
+scored, and no Version 7 is created.

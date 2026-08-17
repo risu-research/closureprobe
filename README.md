@@ -22,7 +22,7 @@ holds:
 2. the exact root request, declared source instance, authority context, and
    proposition scope are canonically bound;
 3. the evidence unit is a complete root response or a validated root-to-final
-   traversal—not merely a final continuation page;
+   traversalâ€”not merely a final continuation page;
 4. execution succeeded, cardinality is zero, coverage is complete,
    continuation is exhausted, scope is exact, and every required producer
    signal validates; and
@@ -113,6 +113,19 @@ examples/              runnable assessment grounding and trace
 evidence/              reproducible corpus results
 studies/               preregistered external boundary measurements
 ```
+
+## External boundary study
+
+External Boundary Study 01 reached its preregistered stopping rule before
+primary execution. In both permitted attempts for the first Version 6
+commissioning cell, the receipt-bound request audit observed unexpected
+`session_store_sql` activity while the instrumented MCP wire contained zero
+verified intended `closureprobe_probe` calls. The cell is
+`invalid_exhausted`, and the study terminates as **instrumentation-limited**
+without scoring a semantic outcome or creating Version 7.
+
+See [the terminal report](studies/vscode-01/TERMINAL-REPORT.md) and the
+[privacy-safe terminal record](studies/vscode-01/evidence/public/v6-terminal-record.json).
 
 ## Claim boundary
 

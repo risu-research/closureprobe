@@ -1,16 +1,49 @@
 {
-  "studyId": "closureprobe-vscode-01",
-  "requiredEntryFields": [
-    "phase",
-    "cellId",
-    "conditionId",
-    "position",
-    "attempt",
-    "startedAt",
-    "invalidatedAt",
-    "specimenId",
-    "reasonCode",
-    "privateArtifactHashes"
-  ],
-  "entries": []
+    "studyId":  "closureprobe-vscode-01",
+    "requiredEntryFields":  [
+                                "phase",
+                                "cellId",
+                                "conditionId",
+                                "position",
+                                "attempt",
+                                "startedAt",
+                                "invalidatedAt",
+                                "specimenId",
+                                "reasonCode",
+                                "privateArtifactHashes"
+                            ],
+    "entries":  [
+                    {
+                        "phase":  "commissioning",
+                        "cellId":  "VS01-PILOT-COMPLETE-DUAL",
+                        "conditionId":  "P_90E7056A96AE",
+                        "position":  1,
+                        "attempt":  1,
+                        "startedAt":  "2026-08-17T03:19:50.303Z",
+                        "invalidatedAt":  "2026-08-17T03:25:34.1341319Z",
+                        "specimenId":  "closureprobe-vscode-01-v6-windows-specimen",
+                        "reasonCode":  "unexpected_session_store_tool_call_and_zero_intended_wire_calls",
+                        "privateArtifactHashes":  {
+                                                      "sealReceiptSha256":  "sha256:1e22bad0b4c34a52fb96c53b69b6b94a3684850451a959fe6b8e99be88cdbe8b",
+                                                      "sealedMainSha256":  "sha256:01a83ddf59a82f597ac8d177d12a4bde58ed287b016c98b4bfdb1c69d5f02652",
+                                                      "rawWireTranscriptSha256":  "sha256:9a04d1d3ca310dbd09517789a437d0ce7f511d1bf6cb2c21cfb3cc1ef106e897"
+                                                  }
+                    },
+                    {
+                        "phase":  "commissioning",
+                        "cellId":  "VS01-PILOT-COMPLETE-DUAL",
+                        "conditionId":  "P_90E7056A96AE",
+                        "position":  1,
+                        "attempt":  2,
+                        "startedAt":  "2026-08-17T03:32:37.878Z",
+                        "invalidatedAt":  "2026-08-17T03:39:10.8909482Z",
+                        "specimenId":  "closureprobe-vscode-01-v6-windows-specimen",
+                        "reasonCode":  "unexpected_session_store_tool_call_and_zero_intended_wire_calls",
+                        "privateArtifactHashes":  {
+                                                      "sealReceiptSha256":  "sha256:04332ef71866704cd45560d69533befe5f1f6ff7a95a40b337bac0a3988332ef",
+                                                      "sealedMainSha256":  "sha256:61465204083391d12c7e0c8fa08db82d630e236e1cc4bc27883fa8593928bcbe",
+                                                      "rawWireTranscriptSha256":  "sha256:935cacf58b97102bc274cc26317fa1660b8220b6a41306e8a2f518f23ae6deef"
+                                                  }
+                    }
+                ]
 }
