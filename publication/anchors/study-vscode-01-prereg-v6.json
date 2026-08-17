@@ -1,0 +1,114 @@
+{
+  "studyId": "closureprobe-vscode-01",
+  "recordFormat": "closureprobe-post-publication-anchor-v1",
+  "gate": "A2-preregistration",
+  "repositoryUrl": "https://github.com/risu-research/closureprobe",
+  "releaseId": 371507089,
+  "commit": "165473b5d6817a28eb845e1f6cb35c1b0ce38249",
+  "tag": "study-vscode-01-prereg-v6",
+  "releaseUrl": "https://github.com/risu-research/closureprobe/releases/tag/study-vscode-01-prereg-v6",
+  "publishedAt": "2026-08-17T03:12:24Z",
+  "immutableRelease": true,
+  "releaseAttestationUrl": "https://github.com/risu-research/closureprobe/attestations/41057789/download",
+  "assets": [
+    {
+      "name": "AMENDMENT-01.md",
+      "byteLength": 2743,
+      "localSha256": "sha256:ab99349fdf4e247b530e13b654d753987a7a4f16b0c7922f8e483063a48ac99e",
+      "apiDigest": "sha256:ab99349fdf4e247b530e13b654d753987a7a4f16b0c7922f8e483063a48ac99e"
+    },
+    {
+      "name": "AMENDMENT-02.md",
+      "byteLength": 3295,
+      "localSha256": "sha256:1c93bce386ce42bba5d003c838b751ba4e6242aac55a14a377db2f1d99d86988",
+      "apiDigest": "sha256:1c93bce386ce42bba5d003c838b751ba4e6242aac55a14a377db2f1d99d86988"
+    },
+    {
+      "name": "AMENDMENT-03.md",
+      "byteLength": 5064,
+      "localSha256": "sha256:573d415c8bf64019e9fa0193122a189f00ca783f800e70766a5277007e0b4038",
+      "apiDigest": "sha256:573d415c8bf64019e9fa0193122a189f00ca783f800e70766a5277007e0b4038"
+    },
+    {
+      "name": "AMENDMENT-04.md",
+      "byteLength": 6994,
+      "localSha256": "sha256:1f622e3809ca85b3d48aeb369e4330c04e007f49e7be23f1b21ef5055298e43a",
+      "apiDigest": "sha256:1f622e3809ca85b3d48aeb369e4330c04e007f49e7be23f1b21ef5055298e43a"
+    },
+    {
+      "name": "AMENDMENT-05.md",
+      "byteLength": 2391,
+      "localSha256": "sha256:abc5da92e599b20f45b6f0765f67d06f4750eaa40465424144724f742e01457c",
+      "apiDigest": "sha256:abc5da92e599b20f45b6f0765f67d06f4750eaa40465424144724f742e01457c"
+    },
+    {
+      "name": "AMENDMENT-06.md",
+      "byteLength": 1964,
+      "localSha256": "sha256:c21746f7338cd7d40f5aaf879202a782f1715a36fd26fefb8948a96f47507e52",
+      "apiDigest": "sha256:c21746f7338cd7d40f5aaf879202a782f1715a36fd26fefb8948a96f47507e52"
+    },
+    {
+      "name": "AMENDMENT-07.md",
+      "byteLength": 6829,
+      "localSha256": "sha256:9eaac4c0796163d560840629d4c965bbdfb1d4f5a4b71e89a859311749436a47",
+      "apiDigest": "sha256:9eaac4c0796163d560840629d4c965bbdfb1d4f5a4b71e89a859311749436a47"
+    },
+    {
+      "name": "AMENDMENT-08.md",
+      "byteLength": 3216,
+      "localSha256": "sha256:2fc28874c2bdec4b05eec61c7797efe66e1728d55a035b4026095c91d484768f",
+      "apiDigest": "sha256:2fc28874c2bdec4b05eec61c7797efe66e1728d55a035b4026095c91d484768f"
+    },
+    {
+      "name": "closureprobe-study-vscode-01-prereg-v6.zip",
+      "byteLength": 151186,
+      "localSha256": "sha256:4e456388c0003a09c95b5a936a660d290663c1d918b0f1c8a3951e0f6013b89a",
+      "apiDigest": "sha256:4e456388c0003a09c95b5a936a660d290663c1d918b0f1c8a3951e0f6013b89a"
+    },
+    {
+      "name": "MANIFEST.sha256",
+      "byteLength": 7497,
+      "localSha256": "sha256:7a94fde81690a31b9f27a32e7aec15d7cd662fb42f425e34d456a1bb71fb3050",
+      "apiDigest": "sha256:7a94fde81690a31b9f27a32e7aec15d7cd662fb42f425e34d456a1bb71fb3050"
+    },
+    {
+      "name": "PREREGISTRATION.md",
+      "byteLength": 22169,
+      "localSha256": "sha256:2abc9befceecaa96d70592762f822d1d3cb7277165b95ba281bfdcf46b14b16f",
+      "apiDigest": "sha256:2abc9befceecaa96d70592762f822d1d3cb7277165b95ba281bfdcf46b14b16f"
+    },
+    {
+      "name": "v4-invalid-commissioning-attempt.json",
+      "byteLength": 1305,
+      "localSha256": "sha256:f8b1a89a678b91bae2415a159d30c9e8b16bb3acd7c500e4025a3d750d75d044",
+      "apiDigest": "sha256:f8b1a89a678b91bae2415a159d30c9e8b16bb3acd7c500e4025a3d750d75d044"
+    },
+    {
+      "name": "v5-invalid-commissioning-attempt.json",
+      "byteLength": 1697,
+      "localSha256": "sha256:80e5921d5d1f506cc92c7ee2e2cfd50a817128638fdb833d19aa5d3e2be9b4e6",
+      "apiDigest": "sha256:80e5921d5d1f506cc92c7ee2e2cfd50a817128638fdb833d19aa5d3e2be9b4e6"
+    }
+  ],
+  "manifestSha256": "sha256:7a94fde81690a31b9f27a32e7aec15d7cd662fb42f425e34d456a1bb71fb3050",
+  "externalExecutionsObservedBeforeAnchor": {
+    "preV4CommissioningDiagnostics": 3,
+    "v4CommissioningInvalidExcluded": 1,
+    "v5CommissioningInvalidExcluded": 1,
+    "v6Commissioning": 0,
+    "primary": 0
+  },
+  "recordPublication": {
+    "path": "publication/anchors/study-vscode-01-prereg-v6.json",
+    "note": "The public Git commit containing the completed record supplies its timestamp and integrity anchor."
+  },
+  "notes": [
+    "Version 6 Gate A1 was published as an immutable GitHub prerelease before any Version 6 commissioning or primary execution.",
+    "The single Version 4 and single Version 5 commissioning attempts remain invalid and excluded; their privacy-safe public records are attached to Gate A1 and their private raw Agent Debug evidence is not published or reused.",
+    "Version 6 changes only explicit local-index isolation and exact-one-call wire enforcement; study semantics, prompts, conditions, matrix, run order, normalization, and endpoints are unchanged.",
+    "All thirteen manually frozen local asset SHA-256 values matched the corresponding GitHub release API digests.",
+    "The release attestation URL was copied from the immutable GitHub release UI; its contents were not independently verified for this record.",
+    "GitHub-generated source-code ZIP, source-code tarball, and generated release attestation are excluded from the manually frozen thirteen-asset study set.",
+    "Version 6 is the final instrumentation revision; if commissioning cannot complete validly under the frozen two-attempt policy because an unsuppressed client-generated measurement subsystem persists or appears, the study closes as instrumentation-limited rather than creating Version 7."
+  ]
+}
