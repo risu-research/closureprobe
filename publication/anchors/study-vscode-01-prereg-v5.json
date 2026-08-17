@@ -1,0 +1,101 @@
+{
+  "studyId": "closureprobe-vscode-01",
+  "recordFormat": "closureprobe-post-publication-anchor-v1",
+  "gate": "A2-preregistration",
+  "repositoryUrl": "https://github.com/risu-research/closureprobe",
+  "releaseId": 371491682,
+  "commit": "0feb333a21b3392afea2908f5955ff6d3c17951f",
+  "tag": "study-vscode-01-prereg-v5",
+  "releaseUrl": "https://github.com/risu-research/closureprobe/releases/tag/study-vscode-01-prereg-v5",
+  "publishedAt": "2026-08-17T02:04:29Z",
+  "immutableRelease": true,
+  "releaseAttestationUrl": "https://github.com/risu-research/closureprobe/attestations/41051437/download",
+  "assets": [
+    {
+      "name": "AMENDMENT-01.md",
+      "byteLength": 2743,
+      "localSha256": "sha256:ab99349fdf4e247b530e13b654d753987a7a4f16b0c7922f8e483063a48ac99e",
+      "apiDigest": "sha256:ab99349fdf4e247b530e13b654d753987a7a4f16b0c7922f8e483063a48ac99e"
+    },
+    {
+      "name": "AMENDMENT-02.md",
+      "byteLength": 3295,
+      "localSha256": "sha256:1c93bce386ce42bba5d003c838b751ba4e6242aac55a14a377db2f1d99d86988",
+      "apiDigest": "sha256:1c93bce386ce42bba5d003c838b751ba4e6242aac55a14a377db2f1d99d86988"
+    },
+    {
+      "name": "AMENDMENT-03.md",
+      "byteLength": 5064,
+      "localSha256": "sha256:573d415c8bf64019e9fa0193122a189f00ca783f800e70766a5277007e0b4038",
+      "apiDigest": "sha256:573d415c8bf64019e9fa0193122a189f00ca783f800e70766a5277007e0b4038"
+    },
+    {
+      "name": "AMENDMENT-04.md",
+      "byteLength": 6994,
+      "localSha256": "sha256:1f622e3809ca85b3d48aeb369e4330c04e007f49e7be23f1b21ef5055298e43a",
+      "apiDigest": "sha256:1f622e3809ca85b3d48aeb369e4330c04e007f49e7be23f1b21ef5055298e43a"
+    },
+    {
+      "name": "AMENDMENT-05.md",
+      "byteLength": 2391,
+      "localSha256": "sha256:abc5da92e599b20f45b6f0765f67d06f4750eaa40465424144724f742e01457c",
+      "apiDigest": "sha256:abc5da92e599b20f45b6f0765f67d06f4750eaa40465424144724f742e01457c"
+    },
+    {
+      "name": "AMENDMENT-06.md",
+      "byteLength": 1964,
+      "localSha256": "sha256:c21746f7338cd7d40f5aaf879202a782f1715a36fd26fefb8948a96f47507e52",
+      "apiDigest": "sha256:c21746f7338cd7d40f5aaf879202a782f1715a36fd26fefb8948a96f47507e52"
+    },
+    {
+      "name": "AMENDMENT-07.md",
+      "byteLength": 6829,
+      "localSha256": "sha256:9eaac4c0796163d560840629d4c965bbdfb1d4f5a4b71e89a859311749436a47",
+      "apiDigest": "sha256:9eaac4c0796163d560840629d4c965bbdfb1d4f5a4b71e89a859311749436a47"
+    },
+    {
+      "name": "closureprobe-study-vscode-01-prereg-v5.zip",
+      "byteLength": 145452,
+      "localSha256": "sha256:74b3e5336eecd3b591b40bd4e0488205e892a872ead0cf84b1624a1acf109115",
+      "apiDigest": "sha256:74b3e5336eecd3b591b40bd4e0488205e892a872ead0cf84b1624a1acf109115"
+    },
+    {
+      "name": "MANIFEST.sha256",
+      "byteLength": 7295,
+      "localSha256": "sha256:20cc977f1bf5c4afde79f2cc7b455e2959015cce268bdaad3d02fc612578c35c",
+      "apiDigest": "sha256:20cc977f1bf5c4afde79f2cc7b455e2959015cce268bdaad3d02fc612578c35c"
+    },
+    {
+      "name": "PREREGISTRATION.md",
+      "byteLength": 20940,
+      "localSha256": "sha256:352d81a796892c68435516a0353fbd229ff27c5ff2fd5ceb386cfef0b7adc773",
+      "apiDigest": "sha256:352d81a796892c68435516a0353fbd229ff27c5ff2fd5ceb386cfef0b7adc773"
+    },
+    {
+      "name": "v4-invalid-commissioning-attempt.json",
+      "byteLength": 1305,
+      "localSha256": "sha256:f8b1a89a678b91bae2415a159d30c9e8b16bb3acd7c500e4025a3d750d75d044",
+      "apiDigest": "sha256:f8b1a89a678b91bae2415a159d30c9e8b16bb3acd7c500e4025a3d750d75d044"
+    }
+  ],
+  "manifestSha256": "sha256:20cc977f1bf5c4afde79f2cc7b455e2959015cce268bdaad3d02fc612578c35c",
+  "externalExecutionsObservedBeforeAnchor": {
+    "preV4CommissioningDiagnostics": 3,
+    "v4CommissioningInvalidExcluded": 1,
+    "v5Commissioning": 0,
+    "primary": 0
+  },
+  "recordPublication": {
+    "path": "publication/anchors/study-vscode-01-prereg-v5.json",
+    "note": "The public Git commit containing the completed record supplies its timestamp and integrity anchor."
+  },
+  "notes": [
+    "Version 5 Gate A1 was published as an immutable GitHub prerelease before any Version 5 commissioning or primary execution.",
+    "The single Version 4 commissioning attempt remains invalid and excluded; its privacy-safe public record is attached to Gate A1 and its private raw Agent Debug evidence is not published or reused.",
+    "Version 5 changes only harness isolation, request-sidecar acquisition, provenance, and invalid-attempt bookkeeping; study semantics, prompts, conditions, matrix, run order, and endpoints are unchanged.",
+    "The ordinary Version 5 zero-call Windows acceptance check passed before release and produced no model-request Agent Debug trace, raw study capture, commissioning observation, or primary observation.",
+    "All eleven manually frozen local asset SHA-256 values matched the corresponding GitHub release API digests.",
+    "The release attestation URL was copied from the immutable GitHub release UI; its contents were not independently verified for this record.",
+    "GitHub-generated source-code ZIP, source-code tarball, and generated release attestation are excluded from the manually frozen eleven-asset study set."
+  ]
+}
