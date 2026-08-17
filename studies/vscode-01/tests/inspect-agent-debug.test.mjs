@@ -65,7 +65,7 @@ test("neutral Agent Debug inspector preserves frozen JSONL candidate extraction"
 
   assert.equal(
     inspection.format,
-    "closureprobe-agent-debug-inspection-v4",
+    "closureprobe-agent-debug-inspection-v5",
   );
   assert.equal(
     inspection.parserCompatibility,

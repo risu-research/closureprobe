@@ -14,6 +14,8 @@ import {
 } from "node:path";
 import { pathToFileURL } from "node:url";
 
+import { resolveAgentDebugRequestSidecars } from "./resolve-agent-debug-sidecars.mjs";
+
 function digestBytes(bytes) {
   return {
     bytes: bytes.byteLength,
@@ -150,7 +152,10 @@ export function verifyAgentDebugSeal(receiptPath) {
 
   requireObject(receipt, "receipt");
 
-  if (receipt.format !== "closureprobe-agent-debug-seal-v1") {
+  if (
+    receipt.format !== "closureprobe-agent-debug-seal-v1" &&
+    receipt.format !== "closureprobe-agent-debug-seal-v2"
+  ) {
     throw new Error("Unexpected Agent Debug seal receipt format");
   }
 
@@ -180,6 +185,10 @@ export function verifyAgentDebugSeal(receiptPath) {
     const role = requireString(
       artifact.role,
       `artifacts[${index}].role`,
+    );
+    const sourceFile = requirePlainFilename(
+      artifact.sourceFile,
+      `artifacts[${index}].sourceFile`,
     );
     const sealedFile = requirePlainFilename(
       artifact.sealedFile,
@@ -223,6 +232,7 @@ export function verifyAgentDebugSeal(receiptPath) {
 
     verifiedArtifacts.push({
       role,
+      sourceFile,
       sealedFile,
       sha256: sealed.sha256,
       bytes: sealed.bytes,
@@ -239,6 +249,38 @@ export function verifyAgentDebugSeal(receiptPath) {
 
   if (mainArtifacts[0].sealedFile !== "main.jsonl") {
     throw new Error("Agent Debug main artifact must be sealed as main.jsonl");
+  }
+  if (mainArtifacts[0].sourceFile !== "main.jsonl") {
+    throw new Error("Agent Debug main artifact source must be main.jsonl");
+  }
+
+  let requestSidecarResolution = null;
+  if (receipt.format === "closureprobe-agent-debug-seal-v2") {
+    const sealedMainPath = resolve(directory, mainArtifacts[0].sealedFile);
+    const recomputed = resolveAgentDebugRequestSidecars(sealedMainPath);
+    if (JSON.stringify(receipt.requestSidecarResolution) !== JSON.stringify(recomputed)) {
+      throw new Error("Agent Debug request-sidecar resolution differs from sealed main.jsonl");
+    }
+    const requiredRoles = new Set(recomputed.requiredSidecars.map(
+      ({ role, sourceFile }) => `request-sidecar:${role}:${sourceFile}`,
+    ));
+    const boundRequestRoles = new Set(verifiedArtifacts
+      .filter(({ role }) => role.startsWith("request-sidecar:"))
+      .map(({ role }) => role));
+    if (
+      requiredRoles.size !== boundRequestRoles.size ||
+      [...requiredRoles].some((role) => !boundRequestRoles.has(role))
+    ) {
+      throw new Error("Agent Debug request-sidecar artifacts do not match resolved references");
+    }
+    for (const { role, sourceFile } of recomputed.requiredSidecars) {
+      const expectedRole = `request-sidecar:${role}:${sourceFile}`;
+      const artifact = verifiedArtifacts.find((candidate) => candidate.role === expectedRole);
+      if (artifact?.sourceFile !== sourceFile) {
+        throw new Error("Agent Debug request-sidecar source filename differs from its reference");
+      }
+    }
+    requestSidecarResolution = recomputed;
   }
 
   const expectedNames = new Set([
@@ -260,12 +302,15 @@ export function verifyAgentDebugSeal(receiptPath) {
   const receiptDigest = digestBytes(receiptBytes);
 
   return {
-    format: "closureprobe-agent-debug-seal-verification-v1",
+    format: receipt.format === "closureprobe-agent-debug-seal-v2"
+      ? "closureprobe-agent-debug-seal-verification-v2"
+      : "closureprobe-agent-debug-seal-verification-v1",
     receiptSha256: receiptDigest.sha256,
     receiptBytes: receiptDigest.bytes,
     artifactCount: verifiedArtifacts.length,
     mainArtifact: mainArtifacts[0],
     artifacts: verifiedArtifacts,
+    requestSidecarResolution,
     invariant:
       "receipt-bound sealed copies match source-before, sealed-copy, and source-after SHA-256 values",
   };

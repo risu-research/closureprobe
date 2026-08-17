@@ -3,6 +3,7 @@ import {
   existsSync,
   mkdtempSync,
   mkdirSync,
+  readFileSync,
   readdirSync,
   rmSync,
   writeFileSync,
@@ -61,7 +62,7 @@ test("seals main.jsonl and an explicit contamination sidecar", (context) => {
   assert.equal(result.status, 0, result.stderr);
 
   const summary = JSON.parse(result.stdout);
-  assert.equal(summary.format, "closureprobe-agent-debug-seal-v1");
+  assert.equal(summary.format, "closureprobe-agent-debug-seal-v2");
   assert.equal(summary.status, "sealed");
   assert.equal(summary.artifactCount, 2);
   assert.deepEqual(
@@ -73,6 +74,100 @@ test("seals main.jsonl and an explicit contamination sidecar", (context) => {
   assert.equal(existsSync(resolve(out, "sidecar-tools_0.json")), true);
   assert.equal(existsSync(resolve(out, "seal-receipt.json")), true);
   assert.deepEqual(temporarySealResidue(root), []);
+});
+
+test("automatically seals only sidecars referenced by llm_request records", (context) => {
+  const { root, session, out } = fixture();
+  context.after(() => rmSync(root, { recursive: true, force: true }));
+
+  writeFileSync(
+    resolve(session, "main.jsonl"),
+    [
+      JSON.stringify({
+        type: "llm_request",
+        attrs: {
+          systemPromptFile: "system_prompt_0.json",
+          toolsFile: "tools_0.json",
+        },
+      }),
+      JSON.stringify({
+        type: "agent_response",
+        attrs: {
+          response: "outcome-side references are ineligible",
+          toolsFile: "tools_99.json",
+        },
+      }),
+      JSON.stringify({
+        type: "llm_request",
+        attrs: {
+          systemPromptFile: "system_prompt_0.json",
+          toolsFile: "tools_0.json",
+        },
+      }),
+    ].join("\n") + "\n",
+    "utf8",
+  );
+  writeFileSync(
+    resolve(session, "system_prompt_0.json"),
+    `${JSON.stringify({ content: "fixed harness" })}\n`,
+    "utf8",
+  );
+  writeFileSync(resolve(session, "tools_99.json"), "{}\n", "utf8");
+
+  const result = run(["--session-dir", session, "--out-dir", out]);
+  assert.equal(result.status, 0, result.stderr);
+  const summary = JSON.parse(result.stdout);
+  assert.deepEqual(
+    summary.artifacts.map(({ role }) => role),
+    [
+      "main",
+      "request-sidecar:system-prompt:system_prompt_0.json",
+      "request-sidecar:tool-definitions:tools_0.json",
+    ],
+  );
+  assert.equal(existsSync(resolve(out, "sidecar-system_prompt_0.json")), true);
+  assert.equal(existsSync(resolve(out, "sidecar-tools_0.json")), true);
+  assert.equal(existsSync(resolve(out, "sidecar-tools_99.json")), false);
+  const receipt = JSON.parse(readFileSync(resolve(out, "seal-receipt.json"), "utf8"));
+  assert.equal(receipt.requestSidecarResolution.requestCount, 2);
+  assert.deepEqual(
+    receipt.requestSidecarResolution.requiredSidecars.map(({ sourceFile }) => sourceFile),
+    ["system_prompt_0.json", "tools_0.json"],
+  );
+});
+
+test("refuses a missing request-referenced sidecar", (context) => {
+  const { root, session, out } = fixture();
+  context.after(() => rmSync(root, { recursive: true, force: true }));
+  writeFileSync(
+    resolve(session, "main.jsonl"),
+    `${JSON.stringify({
+      type: "llm_request",
+      attrs: { toolsFile: "tools_1.json" },
+    })}\n`,
+    "utf8",
+  );
+  const result = run(["--session-dir", session, "--out-dir", out]);
+  assert.equal(result.status, 2);
+  assert.match(result.stderr, /artifact missing: tools_1\.json/i);
+  assert.equal(existsSync(out), false);
+});
+
+test("refuses a traversing llm_request sidecar reference", (context) => {
+  const { root, session, out } = fixture();
+  context.after(() => rmSync(root, { recursive: true, force: true }));
+  writeFileSync(
+    resolve(session, "main.jsonl"),
+    `${JSON.stringify({
+      type: "llm_request",
+      attrs: { toolsFile: "../tools_0.json" },
+    })}\n`,
+    "utf8",
+  );
+  const result = run(["--session-dir", session, "--out-dir", out]);
+  assert.equal(result.status, 2);
+  assert.match(result.stderr, /not a supported plain sidecar filename/i);
+  assert.equal(existsSync(out), false);
 });
 
 test("refuses to overwrite an existing sealed evidence directory", (context) => {

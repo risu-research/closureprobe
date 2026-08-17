@@ -1,0 +1,29 @@
+{
+  "format": "closureprobe-invalid-attempt-public-record-v1",
+  "studyId": "closureprobe-vscode-01",
+  "preregistrationVersion": 4,
+  "phase": "commissioning",
+  "cellId": "VS01-PILOT-COMPLETE-DUAL",
+  "conditionId": "P_90E7056A96AE",
+  "attempt": 1,
+  "classification": "invalid_excluded",
+  "includedInPrimary": false,
+  "semanticOutcomeScored": false,
+  "primaryExecutionsObserved": 0,
+  "wire": {
+    "status": "verified",
+    "transcriptSha256": "sha256:ff7953637b0bb2481c6338428ea47864e10506e887065b0e9e5116383b042e44"
+  },
+  "agentDebug": {
+    "sealReceiptSha256": "sha256:38a948ced90da7bc6985355073e9455bf72e2b388ebee9fc627712e76097ffac",
+    "sealedMainSha256": "sha256:b18ec35f5cf0accef2e3e960277a881b0d66573e952d7f8907d3158b62d1f8d9",
+    "rawArtifactPublic": false,
+    "rawArtifactPublicationReason": "privacy audit detected home paths"
+  },
+  "reasonCodes": [
+    "unexpected_background_todo_tool_call",
+    "unrelated_copilot_agent_context_model_visible"
+  ],
+  "bookkeepingFinding": "Version 4 had no non-overwriting commissioning attempt-2 destination and its invalid-run validator resolved only primary cells.",
+  "note": "No timestamp is asserted in this public record. Private raw Agent Debug contents are retained but not published or reused as Version 5 commissioning evidence."
+}

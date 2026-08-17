@@ -1,7 +1,8 @@
 const requiredEntryFields = [
+  "phase",
   "cellId",
   "conditionId",
-  "runOrderPosition",
+  "position",
   "attempt",
   "startedAt",
   "invalidatedAt",
@@ -22,7 +23,17 @@ function requireNonemptyString(value, name) {
   }
 }
 
-export function validateInvalidRunsLedger(ledger, study, matrix, runOrder) {
+function attemptKey(phase, cellId) {
+  return `${phase}:${cellId}`;
+}
+
+export function validateInvalidRunsLedger(
+  ledger,
+  study,
+  matrix,
+  runOrder,
+  commissioning,
+) {
   if (
     ledger === null ||
     typeof ledger !== "object" ||
@@ -48,7 +59,18 @@ export function validateInvalidRunsLedger(ledger, study, matrix, runOrder) {
     throw new Error("study invalid-run policy is missing or unsupported");
   }
 
+  if (
+    commissioning === null ||
+    typeof commissioning !== "object" ||
+    Array.isArray(commissioning) ||
+    commissioning.studyId !== study.studyId ||
+    !Array.isArray(commissioning.cells)
+  ) {
+    throw new Error("commissioning.json does not match the study");
+  }
+
   const attemptsByCell = new Map();
+  const attemptCountByPhase = { commissioning: 0, primary: 0 };
   for (const [index, entry] of ledger.entries.entries()) {
     if (entry === null || typeof entry !== "object" || Array.isArray(entry)) {
       throw new Error(`invalid-runs entry ${index + 1} must be an object`);
@@ -58,15 +80,23 @@ export function validateInvalidRunsLedger(ledger, study, matrix, runOrder) {
         throw new Error(`invalid-runs entry ${index + 1} is missing ${field}`);
       }
     }
-    const cell = matrix.cells.find(({ id }) => id === entry.cellId);
-    const order = runOrder.entries.find(({ cellId }) => cell?.id === cellId);
-    if (cell === undefined || order === undefined) {
-      throw new Error(`invalid-runs entry ${index + 1} references an unknown cell`);
+    if (!Object.hasOwn(attemptCountByPhase, entry.phase)) {
+      throw new Error(
+        `invalid-runs entry ${index + 1}.phase must be commissioning or primary`,
+      );
     }
-    if (
-      entry.conditionId !== cell.conditionId ||
-      entry.runOrderPosition !== order.position
-    ) {
+    const primaryCell = matrix.cells.find(({ id }) => id === entry.cellId);
+    const commissioningCell = commissioning.cells.find(({ id }) => id === entry.cellId);
+    const cell = entry.phase === "primary" ? primaryCell : commissioningCell;
+    const position = entry.phase === "primary"
+      ? runOrder.entries.find(({ cellId }) => primaryCell?.id === cellId)?.position
+      : commissioningCell?.commissioningPosition;
+    if (cell === undefined || position === undefined) {
+      throw new Error(
+        `invalid-runs entry ${index + 1} references a cell outside its declared phase`,
+      );
+    }
+    if (entry.conditionId !== cell.conditionId || entry.position !== position) {
       throw new Error(`invalid-runs entry ${index + 1} contradicts the frozen cell mapping`);
     }
     if (!Number.isSafeInteger(entry.attempt) || entry.attempt < 1 || entry.attempt > 2) {
@@ -86,26 +116,36 @@ export function validateInvalidRunsLedger(ledger, study, matrix, runOrder) {
     ) {
       throw new Error(`invalid-runs entry ${index + 1}.privateArtifactHashes must be an object`);
     }
-    const attempts = attemptsByCell.get(cell.id) ?? new Set();
+    const key = attemptKey(entry.phase, cell.id);
+    const attempts = attemptsByCell.get(key) ?? new Set();
     if (attempts.has(entry.attempt)) {
-      throw new Error(`invalid-runs contains duplicate attempt ${entry.attempt} for ${cell.id}`);
+      throw new Error(
+        `invalid-runs contains duplicate attempt ${entry.attempt} for ${entry.phase} ${cell.id}`,
+      );
     }
     attempts.add(entry.attempt);
-    attemptsByCell.set(cell.id, attempts);
+    attemptsByCell.set(key, attempts);
+    attemptCountByPhase[entry.phase] += 1;
   }
 
-  for (const [cellId, attempts] of attemptsByCell) {
+  for (const [key, attempts] of attemptsByCell) {
     if (attempts.has(2) && !attempts.has(1)) {
-      throw new Error(`invalid-runs attempt 2 for ${cellId} has no retained attempt 1`);
+      throw new Error(`invalid-runs attempt 2 for ${key} has no retained attempt 1`);
     }
   }
+
+  const invalidExhaustedCellIds = (phase) => [...attemptsByCell]
+    .filter(([key, attempts]) =>
+      key.startsWith(`${phase}:`) && attempts.has(1) && attempts.has(2)
+    )
+    .map(([key]) => key.slice(phase.length + 1))
+    .sort();
 
   return {
     attemptCount: ledger.entries.length,
+    attemptCountByPhase,
     attemptsByCell,
-    invalidExhaustedCellIds: [...attemptsByCell]
-      .filter(([, attempts]) => attempts.has(1) && attempts.has(2))
-      .map(([cellId]) => cellId)
-      .sort(),
+    invalidExhaustedCommissioningCellIds: invalidExhaustedCellIds("commissioning"),
+    invalidExhaustedPrimaryCellIds: invalidExhaustedCellIds("primary"),
   };
 }

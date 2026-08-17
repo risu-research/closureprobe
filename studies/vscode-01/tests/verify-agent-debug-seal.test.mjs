@@ -3,6 +3,7 @@ import {
   appendFileSync,
   mkdtempSync,
   mkdirSync,
+  readFileSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
@@ -68,7 +69,7 @@ test("verifies a closed three-hash Agent Debug bundle", (context) => {
 
   assert.equal(
     verification.format,
-    "closureprobe-agent-debug-seal-verification-v1",
+    "closureprobe-agent-debug-seal-verification-v2",
   );
   assert.equal(verification.artifactCount, 2);
   assert.equal(verification.mainArtifact.role, "main");
@@ -130,5 +131,19 @@ test("rejects files added to the sealed bundle after sealing", (context) => {
   assert.throws(
     () => verifyAgentDebugSeal(fixture.receipt),
     /contains unbound files or directories/i,
+  );
+});
+
+test("rejects receipt-side request-sidecar resolution drift", (context) => {
+  const fixture = sealedFixture();
+  context.after(() =>
+    rmSync(fixture.root, { recursive: true, force: true }),
+  );
+  const receipt = JSON.parse(readFileSync(fixture.receipt, "utf8"));
+  receipt.requestSidecarResolution.selectionRule = "claim-dependent selector";
+  writeFileSync(fixture.receipt, `${JSON.stringify(receipt, null, 2)}\n`, "utf8");
+  assert.throws(
+    () => verifyAgentDebugSeal(fixture.receipt),
+    /resolution differs from sealed main\.jsonl/i,
   );
 });

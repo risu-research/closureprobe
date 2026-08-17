@@ -1,6 +1,6 @@
 # ClosureProbe External Boundary Study 01
 
-Status: **preregistration v4 instrumentation-revision candidate; new public Gate A and v4 commissioning required before primary execution**
+Status: **preregistration v5 pre-Gate-A candidate; new public Gate A and all three v5 commissioning paths required before primary execution**
 
 This study treats one named, client-observable VS Code/Copilot/model
 configuration as a specimen. It measures whether ClosureProbe negative-evidence
@@ -17,7 +17,9 @@ sealed session-local Agent Debug `main.jsonl` snapshot supplies candidate client
 events, model requests, and responses. A verified `seal-receipt.json` is the
 single Agent Debug evidence root; the analysis derives the sealed primary
 artifact from that receipt and binds exact hashes and selectors into a
-normalized rc3 trace.
+normalized rc3 trace. Version 5 also resolves and seals every numbered
+`systemPromptFile` and `toolsFile` referenced by a model-request record. Those
+sidecars are auxiliary isolation evidence and never replace `main.jsonl`.
 
 Loss of the wrapper itself does not disappear into “unobservable”: the local
 inspector can bind an arbitrary selected JSON value by pointer/type/digest while
@@ -73,6 +75,27 @@ session-local log was also observed to change after an earlier snapshot.
 contract. The v3 commissioning executions remain excluded and are not reused
 as v4 commissioning evidence.
 
+One subsequent Version 4 commissioning attempt had a correct wire but invalid
+harness isolation: suppressible BackgroundTodoAgent housekeeping added
+`manage_todo_list`, and unrelated fixed Copilot Agent context was model-visible.
+The attempt is excluded and unscored. Version 4 also lacked an automatically
+sealed request-sidecar contract and an executable commissioning attempt-2 path.
+`AMENDMENT-07.md` creates Version 5 solely to repair those measurement,
+isolation, provenance, and bookkeeping defects.
+
+Version 5 explicitly disables BackgroundTodoAgent and uses the tracked,
+frontmatter-only `ClosureProbe Study` agent with model
+`MAI-Code-1.1-Flash`, visible `Thinking Effort: Medium`, only
+`closureprobeStudy/*`, and no subagents. Fixed client-generated Agent prompt
+assembly is a narrow harness envelope, not a general system-instruction
+whitelist: its hashes must match across all commissioning paths and its content
+must still pass manual contamination review.
+
+Those privacy-safe hashes and structure digests are frozen explicitly at Gate
+B. Primary normalization recomputes the request audit from the receipt-bound
+sealed evidence and fails unless the attempt matches that exact completed
+harness freeze; no operator-authored audit file is trusted.
+
 ## Frozen design
 
 - ClosureProbe tag: `v0.1.0-rc3`
@@ -90,9 +113,12 @@ Read these in order:
 3. `AMENDMENT-02.md`
 4. `AMENDMENT-03.md`
 5. `AMENDMENT-04.md`
-6. `PUBLICATION.md`
-7. `RUNBOOK.md`
-8. `SOURCES.md`
+6. `AMENDMENT-05.md`
+7. `AMENDMENT-06.md`
+8. `AMENDMENT-07.md`
+9. `PUBLICATION.md`
+10. `RUNBOOK.md`
+11. `SOURCES.md`
 
 `RESULTS.md` is generated and currently claims no primary result.
 
@@ -118,14 +144,15 @@ The primary matrix must not begin until both public anchors required by
 
 Raw wire captures and sealed Agent Debug capture contents are ignored by Git.
 Public results bind their private source hashes, verified seal-receipt root,
-frozen role selectors, minimal privacy-reviewed extracts, named specimen
-metadata, exact timestamps, and hidden-boundary statements. Full system
+frozen role selectors, privacy-safe request-isolation and harness-comparison
+records, minimal privacy-reviewed extracts, named specimen metadata, exact
+timestamps, and hidden-boundary statements. Full system
 prompts, unrelated context, tokens, account identifiers, and user paths are
 not publication requirements.
 
 ## Current boundary
 
-A signed-in VS Code/Copilot specimen was used for pre-primary v3 commissioning
-diagnostics. Those executions are excluded, are not treated as v4
-commissioning, and are not primary results. No primary result is represented
-in this repository.
+A signed-in VS Code/Copilot specimen was used for pre-primary diagnostics and
+one invalid Version 4 commissioning attempt. All are excluded and none is a
+primary result. No Version 5 commissioning or primary result is represented in
+this repository.

@@ -11,6 +11,22 @@ const study = JSON.parse(readFileSync(resolve(studyRoot, "study.json"), "utf8"))
 const packageMetadata = JSON.parse(readFileSync(resolve(repositoryRoot, "package.json"), "utf8"));
 const runtimeRoot = resolve(repositoryRoot, "dist/src");
 const adapter = resolve(studyRoot, "bin/study-mcp-server.mjs");
+const workspaceSettings = JSON.parse(
+  readFileSync(resolve(studyRoot, "specimen-workspace/.vscode/settings.json"), "utf8"),
+);
+const customAgent = readFileSync(
+  resolve(studyRoot, study.design.harnessIsolation.customAgentFile),
+  "utf8",
+);
+const expectedCustomAgent = [
+  "---",
+  "name: ClosureProbe Study",
+  "model: MAI-Code-1.1-Flash",
+  "tools: ['closureprobeStudy/*']",
+  "agents: []",
+  "---",
+  "",
+].join("\n");
 
 function filesUnder(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -35,8 +51,31 @@ const expectedRuntime = study.instrument.runtimeTreeSha256.replace("sha256:", ""
 const expectedAdapter = study.instrument.studyAdapterSha256.replace("sha256:", "");
 
 const failures = [];
-if (study.preregistrationVersion !== 4) {
-  failures.push(`preregistration version ${study.preregistrationVersion} != 4`);
+if (study.preregistrationVersion !== 5) {
+  failures.push(`preregistration version ${study.preregistrationVersion} != 5`);
+}
+if (study.status !== "preregistration_v5_pre_gate_a") {
+  failures.push(`study status ${study.status} is not the frozen pre-Gate-A status`);
+}
+if (
+  workspaceSettings["github.copilot.chat.agent.backgroundTodoAgent.enabled"] !== false
+) {
+  failures.push("BackgroundTodoAgent is not explicitly disabled in workspace settings");
+}
+if (customAgent !== expectedCustomAgent) {
+  failures.push("dedicated study custom agent differs from the frozen frontmatter-only file");
+}
+const isolation = study.design.harnessIsolation;
+if (
+  isolation?.profileName !== "ClosureProbe VSCode 01" ||
+  isolation?.customAgentName !== "ClosureProbe Study" ||
+  isolation?.model !== "MAI-Code-1.1-Flash" ||
+  isolation?.modelConfiguration !== "Thinking Effort: Medium" ||
+  isolation?.backgroundTodoAgentEnabled !== false ||
+  JSON.stringify(isolation?.toolAllowlist) !== JSON.stringify(["closureprobeStudy/*"]) ||
+  JSON.stringify(isolation?.subagents) !== JSON.stringify([])
+) {
+  failures.push("study harness-isolation contract differs from the frozen Version 5 controls");
 }
 if (packageMetadata.version !== study.instrument.toolVersion) {
   failures.push(`package version ${packageMetadata.version} != ${study.instrument.toolVersion}`);

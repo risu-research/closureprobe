@@ -147,7 +147,7 @@ test("rejects the legacy OTLP direct-evidence route", (context) => {
           otlpSha256: `sha256:${"0".repeat(64)}`,
         },
       ),
-    /not permitted by the v4 sealed-receipt evidence contract/i,
+    /not permitted by the v5 sealed-receipt evidence contract/i,
   );
 });
 
@@ -166,7 +166,7 @@ test("rejects a redundant direct Agent Debug artifact route", (context) => {
           agentDebugArtifact: "session/main.jsonl",
         },
       ),
-    /not permitted by the v4 sealed-receipt evidence contract/i,
+    /not permitted by the v5 sealed-receipt evidence contract/i,
   );
 });
 

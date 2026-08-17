@@ -14,6 +14,8 @@ import {
 } from "node:fs";
 import { basename, extname, resolve } from "node:path";
 
+import { resolveAgentDebugRequestSidecars } from "./resolve-agent-debug-sidecars.mjs";
+
 function sha256(path) {
   const bytes = readFileSync(path);
   return {
@@ -93,7 +95,8 @@ function main() {
   if (args.includes("--help")) {
     process.stdout.write(
       "Usage: seal-agent-debug.mjs --session-dir DIR --out-dir DIR " +
-      "[--sidecar FILENAME ...]\n",
+      "[--sidecar FILENAME ...]\n" +
+      "Referenced llm_request systemPromptFile/toolsFile sidecars are resolved automatically.\n",
     );
     return;
   }
@@ -117,8 +120,29 @@ function main() {
   }
 
   const mainName = "main.jsonl";
+  const mainSource = resolve(sessionDir, mainName);
+  if (!existsSync(mainSource) || !statSync(mainSource).isFile()) {
+    throw new Error(`Required Agent Debug artifact missing: ${mainName}`);
+  }
+
+  const requestSidecarResolution = resolveAgentDebugRequestSidecars(mainSource);
+  const automaticSidecars = requestSidecarResolution.requiredSidecars.map(
+    ({ role, sourceFile }) => ({
+      role: `request-sidecar:${role}:${sourceFile}`,
+      sourceName: sourceFile,
+    }),
+  );
+  const automaticNames = new Set(automaticSidecars.map(({ sourceName }) => sourceName));
+  const manuallyDuplicated = sidecars.find((sourceName) => automaticNames.has(sourceName));
+  if (manuallyDuplicated !== undefined) {
+    throw new Error(
+      `--sidecar ${manuallyDuplicated} is already required by an llm_request reference`,
+    );
+  }
+
   const artifactSpecs = [
     { role: "main", sourceName: mainName },
+    ...automaticSidecars,
     ...sidecars.map((sourceName) => ({
       role: `sidecar:${sourceName}`,
       sourceName,
@@ -163,16 +187,17 @@ function main() {
     }
 
     const receipt = {
-      format: "closureprobe-agent-debug-seal-v1",
+      format: "closureprobe-agent-debug-seal-v2",
       sealedAt: new Date().toISOString(),
       primaryArtifactRole: "main",
       sourceSessionDirectoryName: basename(sessionDir),
       artifactCount: artifacts.length,
       artifacts,
+      requestSidecarResolution,
       invariant:
         "source-before SHA-256 == sealed-copy SHA-256 == source-after SHA-256",
       note:
-        "Only the sealed copies are eligible for v4 extraction or contamination evidence.",
+        "Only receipt-bound sealed copies are eligible for v5 extraction, harness-isolation, or contamination evidence.",
     };
 
     writeFileSync(

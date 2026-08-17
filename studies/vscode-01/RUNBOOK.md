@@ -33,6 +33,11 @@ Follow `PROFILE-ISOLATION.md` and create an Empty Profile named
 `specimen.local.json` and record every client-observable version, extension,
 model, setting, profile hash, and hidden backend boundary.
 
+For every attempt select the tracked custom agent `ClosureProbe Study`, model
+`MAI-Code-1.1-Flash`, and visible `Thinking Effort: Medium`. Verify the custom
+agent is frontmatter-only, restricts tools to `closureprobeStudy/*`, sets
+`agents: []`, and the workspace explicitly disables BackgroundTodoAgent.
+
 Open only `studies/vscode-01/specimen-workspace`. Do not open the repository
 root in the experimental window. Do not attach prompt files; copy their plain
 text externally and paste it into chat.
@@ -68,34 +73,77 @@ files in `commissioning-prompts/` in filename order.
 
 For each:
 
-1. start a fresh chat and select the frozen model;
+1. start a fresh chat and select the exact dedicated study agent, frozen model,
+   and visible Thinking Effort;
 2. paste the prompt verbatim;
 3. permit exactly one read-only call;
 4. verify the final response is exactly the required two-key JSON;
 5. after the explicit final response and before any further interaction in that
    chat, identify its session-local Agent Debug directory;
-6. immediately seal that session directory with `seal-agent-debug.mjs`, writing
-   the bundle under `captures/agent-debug-private/<commissioning-id>/`;
-7. if a session-local sidecar is actually needed for a preregistered
-   contamination control, name it explicitly with `--sidecar`; sidecars are
-   auxiliary contamination evidence only and never substitute for `main.jsonl`;
-8. verify `seal-receipt.json` with `verify-agent-debug-seal.mjs`;
-9. identify and verify the single corresponding raw stdio transcript with
+6. obtain the unused attempt-scoped destination (attempt is `1` or `2`):
+
+   ```bash
+   node studies/vscode-01/bin/attempt-evidence-path.mjs \
+     commissioning <commissioning-id> <attempt>
+   ```
+
+7. immediately seal that session directory with `seal-agent-debug.mjs`, writing
+   to that exact destination. The sealer automatically resolves every numbered
+   `attrs.systemPromptFile` and `attrs.toolsFile` referenced by every
+   `type=llm_request` record. Do not guess or manually select those filenames;
+8. use `--sidecar` only for an additional, separately preregistered
+   contamination artifact. All sidecars are auxiliary evidence and never
+   substitute for `main.jsonl`;
+9. verify `seal-receipt.json` with `verify-agent-debug-seal.mjs`;
+10. run the request-isolation audit and retain its privacy-safe output locally:
+
+   ```bash
+   node studies/vscode-01/bin/audit-agent-debug-request.mjs \
+     <seal-receipt.json> \
+     --commissioning-cell <commissioning-id> \
+     --out <request-audit.json>
+   ```
+
+11. identify and verify the single corresponding raw stdio transcript with
    `verify-wire.mjs`;
-10. inspect only the receipt-bound sealed `main.jsonl` with
+12. inspect only the receipt-bound sealed `main.jsonl` with
     `inspect-agent-debug.mjs`, and run `privacy-audit.mjs` on every sealed
     artifact actually used as evidence.
 
 The seal is valid only when the source-before, sealed-copy, and source-after
 SHA-256 and byte-length values agree. A sealing or later seal-verification
 failure is an instrumentation invalidity under the fixed invalid-run policy.
+Record it before a rerun with `phase: "commissioning"`, the frozen
+`commissioningPosition` copied into phase-generic `position`, and the attempt's
+private artifact hashes. Attempt 2 uses a distinct destination and is the last
+permitted attempt.
 
-Also inspect the model-visible request for blinding contamination. Any semantic
-or opaque condition identifier, condition map, oracle assessment, custom
-instruction, memory, unrelated context, or additional tool invalidates the run.
+The audit requires two ordinary main tool-loop model requests/responses, exactly
+one study tool call, the exact model and frozen arguments, exactly one
+model-facing ClosureProbe tool in every referenced tool-definition sidecar, and
+no subagent. Any semantic or opaque condition identifier, condition map, oracle
+assessment, active environment value, custom instruction, memory-derived user
+content, unrelated context, housekeeping/additional tool, or additional
+capability invalidates the run.
 
-The ordinary Agent Debug export is not a v4 study evidence artifact. Extraction
+The ordinary Agent Debug export is not a v5 study evidence artifact. Extraction
 and normalization use only the receipt-bound sealed session-local `main.jsonl`.
+
+After all three valid Version 5 commissioning attempts, compare their request
+audits:
+
+```bash
+node studies/vscode-01/bin/compare-harness-envelopes.mjs \
+  <dual-audit.json> <structured-only-audit.json> <text-only-audit.json> \
+  --out <harness-envelope-comparison.json>
+```
+
+The comparison must pass exact model, first-request system-prompt, input-message
+bytes/structure, user-request, and tool-name-surface equality. Then manually
+review the fixed harness content and complete the narrow harness-envelope fields
+in `extraction.local.json`. Copy both `frozenComparisonValues` and the matching
+`comparisonSha256` from the comparison output; do not transcribe private prompt
+contents. Hash equality is not a general contamination whitelist.
 
 ## 5. Freeze extraction and satisfy Gate B
 
@@ -116,23 +164,27 @@ bytes; filenames are external operator bookkeeping only.
 
 For each run:
 
-1. stop the fixed server, activate the assigned opaque condition, restart it,
+1. confirm the exact profile, dedicated agent, model, Thinking Effort, explicit
+   BackgroundTodoAgent false setting, and no-subagent/one-tool configuration;
+2. stop the fixed server, activate the assigned opaque condition, restart it,
    and enable only `closureprobe_probe`;
-2. confirm the same profile, model label, settings, and extensions;
-3. record UTC start time;
-4. start a fresh chat and paste the assigned prompt verbatim;
-5. permit exactly one call and record UTC end time;
-6. after the explicit final response and before any further interaction in that
+3. confirm the same settings and extensions;
+4. record UTC start time;
+5. start a fresh chat and paste the assigned prompt verbatim;
+6. permit exactly one call and record UTC end time;
+7. after the explicit final response and before any further interaction in that
    chat, immediately seal the session-local Agent Debug directory using the
-   frozen Section 4 acquisition procedure;
-7. verify the seal receipt and map that sealed bundle to the single new wire
-   transcript;
-8. verify wire and inspect only the receipt-bound sealed `main.jsonl` using the
+   frozen Section 4 acquisition procedure and the phase/cell/attempt destination
+   returned by `attempt-evidence-path.mjs`;
+8. verify the seal receipt and request-isolation audit, and map that sealed
+   bundle to the single new wire transcript;
+9. verify wire and inspect only the receipt-bound sealed `main.jsonl` using the
    frozen extraction rule; and
-9. record any invalid attempt in `invalid-runs.json` before the one permitted
-   rerun. If attempt 2 is also invalid, record it as `invalid_exhausted`, do not
-   make a third attempt, continue to the next run-order position, and leave the
-   affected contrasts incomplete.
+10. record any invalid attempt in `invalid-runs.json` with `phase: "primary"`
+    and phase-generic `position` before the one permitted rerun. If attempt 2 is
+    also invalid, record it as `invalid_exhausted`, do not make a third attempt,
+    continue to the next run-order position, and leave the affected contrasts
+    incomplete.
 
 Never retry inside a chat, clarify the prompt, change model, reorder runs,
 unblind a prompt, or use a later mutable version of a session-local debug file
@@ -147,8 +199,16 @@ and digest for client payload, model payload, and claim.
 
 The receipt is the single Agent Debug evidence root. Do not supply `main.jsonl`
 or its SHA-256 as a second routing field. The normalizer verifies the receipt
-and derives the eligible sealed primary artifact and any bound auxiliary
-artifacts from it.
+and derives the eligible sealed primary artifact and every deterministically
+bound request sidecar from it. Sidecars never become payload or claim selection
+roots.
+
+The normalizer also recomputes the request-isolation audit directly from that
+receipt and compares its six privacy-safe harness values to the completed
+Gate-B freeze in `extraction.local.json`. All manual-review flags must be true,
+the values must reproduce the frozen aggregate comparison digest, and every
+primary value must match. A supplied or cached request-audit JSON has no
+authority and is not read.
 
 If a client event or model request is genuinely unavailable under the frozen
 rule, replace that selector with:

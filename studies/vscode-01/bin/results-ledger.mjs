@@ -9,6 +9,7 @@ import { validateInvalidRunsLedger } from "./invalid-runs.mjs";
 const studyRoot = fileURLToPath(new URL("../", import.meta.url));
 const matrix = JSON.parse(readFileSync(resolve(studyRoot, "matrix.json"), "utf8"));
 const runOrder = JSON.parse(readFileSync(resolve(studyRoot, "run-order.json"), "utf8"));
+const commissioning = JSON.parse(readFileSync(resolve(studyRoot, "commissioning.json"), "utf8"));
 const study = JSON.parse(readFileSync(resolve(studyRoot, "study.json"), "utf8"));
 const invalidRuns = JSON.parse(readFileSync(resolve(studyRoot, "invalid-runs.json"), "utf8"));
 const invalidRunSummary = validateInvalidRunsLedger(
@@ -16,8 +17,9 @@ const invalidRunSummary = validateInvalidRunsLedger(
   study,
   matrix,
   runOrder,
+  commissioning,
 );
-const invalidExhausted = new Set(invalidRunSummary.invalidExhaustedCellIds);
+const invalidExhausted = new Set(invalidRunSummary.invalidExhaustedPrimaryCellIds);
 const resultsRoot = resolve(studyRoot, "evidence/public/results");
 const outputPath = resolve(studyRoot, "RESULTS.md");
 
@@ -48,7 +50,7 @@ const rows = runOrder.entries.map((entry) => {
   if (result.studyId !== matrix.studyId || result.cell?.id !== cell.id) {
     throw new Error(`${cell.id}.json does not identify the expected study cell`);
   }
-  const invalidAttempts = invalidRunSummary.attemptsByCell.get(cell.id) ?? new Set();
+  const invalidAttempts = invalidRunSummary.attemptsByCell.get(`primary:${cell.id}`) ?? new Set();
   if (
     !Number.isSafeInteger(result.run?.attempt) ||
     result.run.attempt < 1 ||
@@ -79,13 +81,13 @@ const exhausted = rows.filter(({ status }) => status === "invalid_exhausted").le
 const lines = [
   "# External Boundary Study 01 — Results",
   "",
-  `Status: **${observed === 0 && exhausted === 0 && invalidRunSummary.attemptCount === 0
+  `Status: **${observed === 0 && exhausted === 0 && invalidRunSummary.attemptCountByPhase.primary === 0
     ? "primary execution pending"
     : `${observed}/${rows.length} primary cells observed; ${exhausted} invalid_exhausted`}**`,
   "",
   "Commissioning runs are excluded. This ledger reports a preregistered structural",
   "case series, not product-wide rates or safety claims.",
-  `Invalid primary attempts retained: **${invalidRunSummary.attemptCount}**`,
+  `Invalid primary attempts retained: **${invalidRunSummary.attemptCountByPhase.primary}**`,
   `Cells invalid_exhausted after two invalid attempts: **${exhausted}**`,
   "",
   "| Order | Cell | Scenario | Carrier | Status | P_client | P_model | P cumulative | C claim | C license | First change | Localization | Guard loss | Unsupported strengthening |",
@@ -95,7 +97,7 @@ const lines = [
   ),
   "",
   observed === 0
-    ? "No primary VS Code/Copilot result is claimed yet; pre-primary v3 commissioning diagnostics are excluded and are not reused as v4 commissioning evidence."
+    ? "No primary VS Code/Copilot result is claimed yet; prior commissioning diagnostics and the invalid v4 commissioning attempt are excluded and are not reused as v5 commissioning evidence."
     : "Interpret every row only with the frozen specimen tuple and its public result artifact.",
   "A cell marked `invalid_exhausted` receives no third attempt; its affected preregistered contrasts remain incomplete while the matrix continues.",
 ];

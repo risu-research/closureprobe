@@ -9,7 +9,7 @@
     "endedAt": "YYYY-MM-DDTHH:mm:ss.sssZ"
   },
   "wireTranscript": "captures/raw/replace.ndjson",
-  "agentDebugSealReceipt": "captures/agent-debug-private/replace/seal-receipt.json",
+  "agentDebugSealReceipt": "captures/agent-debug-private/primary/VS01-COMPLETE-DUAL/attempt-1/seal-receipt.json",
   "agentDebugSealReceiptSha256": "sha256:replace-with-seal-receipt-hash",
   "clientPayload": {
     "digest": "sha256:replace-with-client-tool-event-candidate",

@@ -13,6 +13,7 @@ import {
   validateTrace,
 } from "../../../dist/src/index.js";
 import { resolveAgentDebugEvidence } from "./resolve-agent-debug-evidence.mjs";
+import { verifyPrimaryHarnessEnvelope } from "./compare-harness-envelopes.mjs";
 import { validateInvalidRunsLedger } from "./invalid-runs.mjs";
 import { createStudyStimulus } from "./study-stimulus.mjs";
 import { verifyWireTranscript } from "./verify-wire.mjs";
@@ -389,7 +390,9 @@ function stageClaim(claim, proposition, sourceContext) {
 
 const selectionPathArgument = process.argv[2];
 if (selectionPathArgument === undefined) {
-  process.stderr.write("Usage: normalize-run.mjs SELECTION_JSON [--out FILE]\n");
+  process.stderr.write(
+    "Usage: normalize-run.mjs SELECTION_JSON [--extraction EXTRACTION_FREEZE_JSON] [--out FILE]\n",
+  );
   process.exit(64);
 }
 
@@ -398,12 +401,14 @@ const selection = readJson(selectionPath);
 const study = readJson(resolve(studyRoot, "study.json"));
 const matrix = readJson(resolve(studyRoot, "matrix.json"));
 const runOrder = readJson(resolve(studyRoot, "run-order.json"));
+const commissioning = readJson(resolve(studyRoot, "commissioning.json"));
 const invalidRuns = readJson(resolve(studyRoot, "invalid-runs.json"));
 const invalidRunSummary = validateInvalidRunsLedger(
   invalidRuns,
   study,
   matrix,
   runOrder,
+  commissioning,
 );
 if (selection.studyId !== study.studyId) throw new Error("selection studyId mismatch");
 const cell = matrix.cells.find(({ id }) => id === selection.cellId);
@@ -422,14 +427,15 @@ if (
 ) {
   throw new Error("selection.run does not match the preregistered order and attempt contract");
 }
-const invalidAttemptsForCell = invalidRunSummary.attemptsByCell.get(cell.id) ?? new Set();
+const invalidAttemptsForCell =
+  invalidRunSummary.attemptsByCell.get(`primary:${cell.id}`) ?? new Set();
 if (invalidAttemptsForCell.has(selection.run.attempt)) {
   throw new Error("A retained invalid attempt cannot also be normalized as a valid result");
 }
 if (selection.run.attempt === 2 && !invalidAttemptsForCell.has(1)) {
   throw new Error("Attempt 2 requires retained invalid attempt 1 in invalid-runs.json");
 }
-if (invalidRunSummary.invalidExhaustedCellIds.includes(cell.id)) {
+if (invalidRunSummary.invalidExhaustedPrimaryCellIds.includes(cell.id)) {
   throw new Error("An invalid_exhausted cell cannot produce a third or later result");
 }
 for (const field of ["startedAt", "endedAt"]) {
@@ -457,6 +463,7 @@ if (wireCall.argumentsDigest !== sha256Digest(cell.arguments)) {
 }
 
 const {
+  receiptPath,
   inspection,
   sealVerification,
   auxiliaryArtifacts,
@@ -464,6 +471,14 @@ const {
   selectionPath,
   selection,
   { includeValues: true },
+);
+const extractionIndex = process.argv.indexOf("--extraction");
+const extractionPath = extractionIndex === -1
+  ? resolve(studyRoot, "extraction.local.json")
+  : resolve(requireString(process.argv[extractionIndex + 1], "--extraction"));
+const primaryHarnessVerification = verifyPrimaryHarnessEnvelope(
+  receiptPath,
+  extractionPath,
 );
 const clientPayload = selectedCandidateOrUnobservable(
   inspection.candidates,
@@ -697,6 +712,9 @@ const result = {
     wireTranscriptSha256: wire.transcriptSha256,
     agentDebugSealReceiptSha256: sealVerification.receiptSha256,
     agentDebugMainSha256: sealVerification.mainArtifact.sha256,
+    requestIsolationAuditSha256: sha256Digest(primaryHarnessVerification.audit),
+    gateBHarnessEnvelopeComparisonSha256:
+      primaryHarnessVerification.automatedComparisonSha256,
     agentDebugAuxiliaryArtifacts: auxiliaryArtifacts.map(
       ({ role, sealedFile, sha256, bytes }) => ({
         role,

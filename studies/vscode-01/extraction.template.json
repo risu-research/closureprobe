@@ -9,26 +9,68 @@
   "artifactContract": {
     "evidenceRoot": "verified seal-receipt.json",
     "primaryArtifact": "main.jsonl",
-    "auxiliaryArtifacts": "contamination-only",
+    "auxiliaryArtifacts": "request-referenced system-prompt and tool-definition sidecars used only for harness-isolation and contamination evidence",
+    "requestSidecarSelectionRule": "all type=llm_request records in main.jsonl; only attrs.systemPromptFile and attrs.toolsFile plain numbered JSON references",
     "stabilityRule": "source-before, sealed-copy, and source-after hashes and byte lengths must match"
+  },
+  "harnessEnvelope": {
+    "category": "fixed client-generated Copilot Agent prompt assembly",
+    "operatorAuthoredStudyContentIncludedInException": false,
+    "arbitrarySystemInstructionsWhitelisted": false,
+    "automatedComparisonRequiredAcrossAllCommissioningPaths": true,
+    "exactComparisonFields": [
+      "model",
+      "firstRequest.systemPromptContentSha256",
+      "firstRequest.inputMessagesSha256",
+      "firstRequest.inputMessagesStructureSha256",
+      "firstRequest.userRequestSha256",
+      "toolDefinitionSidecars[].toolNamesSha256"
+    ],
+    "automatedComparisonSha256": "sha256:replace-after-three-v5-commissioning-attempts",
+    "frozenComparisonValues": {
+      "model": "MAI-Code-1.1-Flash",
+      "firstRequest": {
+        "systemPromptContentSha256": "sha256:replace-after-three-v5-commissioning-attempts",
+        "inputMessagesSha256": "sha256:replace-after-three-v5-commissioning-attempts",
+        "inputMessagesStructureSha256": "sha256:replace-after-three-v5-commissioning-attempts",
+        "userRequestSha256": "sha256:replace-after-three-v5-commissioning-attempts"
+      },
+      "toolNamesSha256": "sha256:replace-after-three-v5-commissioning-attempts"
+    },
+    "manualContentReview": {
+      "completed": false,
+      "fixedClientGeneratedOnly": false,
+      "conditionIndependent": false,
+      "representationPathIndependent": false,
+      "semanticOrConditionContentAbsent": false,
+      "memoryOrUnrelatedInstructionContentAbsent": false,
+      "nonPredeclaredExecutableToolCapabilityAbsent": false
+    },
+    "note": "Copy frozenComparisonValues and the matching comparisonSha256 from the automated comparison. Exact cross-commissioning hashes are necessary but not sufficient. Any unrecognized or cell-varying harness content invalidates the attempt."
   },
   "commissioningArtifacts": [
     {
       "cellId": "VS01-PILOT-COMPLETE-DUAL",
       "conditionId": "P_90E7056A96AE",
+      "attempt": "replace-with-1-or-2",
       "agentDebugSealReceiptSha256": "sha256:replace",
+      "requestIsolationAuditSha256": "sha256:replace",
       "wireSha256": "sha256:replace"
     },
     {
       "cellId": "VS01-PILOT-COMPLETE-STRUCTURED_ONLY",
       "conditionId": "P_3A23839ECC44",
+      "attempt": "replace-with-1-or-2",
       "agentDebugSealReceiptSha256": "sha256:replace",
+      "requestIsolationAuditSha256": "sha256:replace",
       "wireSha256": "sha256:replace"
     },
     {
       "cellId": "VS01-PILOT-COMPLETE-TEXT_ONLY",
       "conditionId": "P_C6CA8121679A",
+      "attempt": "replace-with-1-or-2",
       "agentDebugSealReceiptSha256": "sha256:replace",
+      "requestIsolationAuditSha256": "sha256:replace",
       "wireSha256": "sha256:replace"
     }
   ],
@@ -63,7 +105,12 @@
     "oracleAssessmentVisibleToModel": false,
     "memoryContentOrToolVisibleToModel": false,
     "unexpectedCustomInstructionVisible": false,
-    "additionalToolVisible": false
+    "additionalToolVisible": false,
+    "backgroundTodoAgentToolCallObserved": false,
+    "subagentObserved": false,
+    "dedicatedStudyAgentVerified": false,
+    "modelVerifiedAsMAICode11Flash": false,
+    "thinkingEffortMediumVerified": false
   },
   "hiddenBoundaries": [],
   "amendmentsRequired": false,

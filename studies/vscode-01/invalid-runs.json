@@ -1,9 +1,10 @@
 {
   "studyId": "closureprobe-vscode-01",
   "requiredEntryFields": [
+    "phase",
     "cellId",
     "conditionId",
-    "runOrderPosition",
+    "position",
     "attempt",
     "startedAt",
     "invalidatedAt",

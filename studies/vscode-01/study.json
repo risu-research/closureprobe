@@ -1,7 +1,7 @@
 {
   "studyId": "closureprobe-vscode-01",
-  "preregistrationVersion": 4,
-  "status": "final_public_time_anchor_candidate",
+  "preregistrationVersion": 5,
+  "status": "preregistration_v5_pre_gate_a",
   "preregisteredAt": "2026-08-15",
   "instrument": {
     "tag": "v0.1.0-rc3",
@@ -53,6 +53,17 @@
       "secondInvalidStatus": "invalid_exhausted",
       "thirdAttemptPermitted": false,
       "continueAfterInvalidExhausted": true
+    },
+    "harnessIsolation": {
+      "profileName": "ClosureProbe VSCode 01",
+      "customAgentName": "ClosureProbe Study",
+      "customAgentFile": "specimen-workspace/.github/agents/closureprobe-study.agent.md",
+      "model": "MAI-Code-1.1-Flash",
+      "modelConfiguration": "Thinking Effort: Medium",
+      "backgroundTodoAgentEnabled": false,
+      "toolAllowlist": ["closureprobeStudy/*"],
+      "modelFacingToolName": "mcp_closureprobeStudy_closureprobe_probe",
+      "subagents": []
     },
     "commissioning": {
       "scenario": "complete-zero",

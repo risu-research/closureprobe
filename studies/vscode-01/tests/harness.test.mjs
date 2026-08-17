@@ -12,6 +12,9 @@ import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 
 import { canonicalizeJson } from "../../../dist/src/index.js";
 import { inspectAgentDebug } from "../bin/inspect-agent-debug.mjs";
+import { auditAgentDebugRequest } from "../bin/audit-agent-debug-request.mjs";
+import { attemptEvidencePath } from "../bin/attempt-evidence-path.mjs";
+import { compareHarnessEnvelopes } from "../bin/compare-harness-envelopes.mjs";
 import { verifyAgentDebugSeal } from "../bin/verify-agent-debug-seal.mjs";
 import { validateInvalidRunsLedger } from "../bin/invalid-runs.mjs";
 import { createStudyStimulus } from "../bin/study-stimulus.mjs";
@@ -26,6 +29,9 @@ const study = JSON.parse(readFileSync(resolve(studyRoot, "study.json"), "utf8"))
 const matrix = JSON.parse(readFileSync(resolve(studyRoot, "matrix.json"), "utf8"));
 const conditions = JSON.parse(readFileSync(resolve(studyRoot, "conditions.json"), "utf8"));
 const runOrder = JSON.parse(readFileSync(resolve(studyRoot, "run-order.json"), "utf8"));
+const commissioning = JSON.parse(
+  readFileSync(resolve(studyRoot, "commissioning.json"), "utf8"),
+);
 
 function findCondition(scenario, carrier, phase = "primary") {
   const condition = conditions.conditions.find((candidate) =>
@@ -304,6 +310,7 @@ test("the primary design is blinded, identical-input, paired, and time-balanced"
     "chat.plugins.enabled",
     "chat.tools.memory.enabled",
     "workbench.browser.enableChatTools",
+    "github.copilot.chat.agent.backgroundTodoAgent.enabled",
   ]) {
     assert.equal(workspaceSettings[setting], false, `${setting} is not isolated`);
   }
@@ -316,6 +323,35 @@ test("the primary design is blinded, identical-input, paired, and time-balanced"
       "cursor-workspace": false,
     },
     "chat.mcp.discovery.enabled is not isolated",
+  );
+
+  assert.equal(study.preregistrationVersion, 5);
+  assert.equal(study.status, "preregistration_v5_pre_gate_a");
+  assert.deepEqual(study.design.harnessIsolation, {
+    profileName: "ClosureProbe VSCode 01",
+    customAgentName: "ClosureProbe Study",
+    customAgentFile: "specimen-workspace/.github/agents/closureprobe-study.agent.md",
+    model: "MAI-Code-1.1-Flash",
+    modelConfiguration: "Thinking Effort: Medium",
+    backgroundTodoAgentEnabled: false,
+    toolAllowlist: ["closureprobeStudy/*"],
+    modelFacingToolName: "mcp_closureprobeStudy_closureprobe_probe",
+    subagents: [],
+  });
+  assert.equal(
+    readFileSync(
+      resolve(studyRoot, "specimen-workspace/.github/agents/closureprobe-study.agent.md"),
+      "utf8",
+    ),
+    [
+      "---",
+      "name: ClosureProbe Study",
+      "model: MAI-Code-1.1-Flash",
+      "tools: ['closureprobeStudy/*']",
+      "agents: []",
+      "---",
+      "",
+    ].join("\n"),
   );
 });
 
@@ -349,9 +385,10 @@ test("the analysis-side condition activator accepts only frozen opaque IDs", (co
 test("the invalid-run ledger allows one rerun, then deterministically exhausts the cell", () => {
   const cell = matrix.cells[0];
   const base = {
+    phase: "primary",
     cellId: cell.id,
     conditionId: cell.conditionId,
-    runOrderPosition: cell.runOrderPosition,
+    position: cell.runOrderPosition,
     startedAt: "2026-08-15T20:00:00.000Z",
     invalidatedAt: "2026-08-15T20:00:01.000Z",
     specimenId: "synthetic-specimen",
@@ -366,8 +403,15 @@ test("the invalid-run ledger allows one rerun, then deterministically exhausts t
     )).requiredEntryFields,
     entries: [{ ...base, attempt: 1 }, { ...base, attempt: 2 }],
   };
-  const summary = validateInvalidRunsLedger(ledger, study, matrix, runOrder);
-  assert.deepEqual(summary.invalidExhaustedCellIds, [cell.id]);
+  const summary = validateInvalidRunsLedger(
+    ledger,
+    study,
+    matrix,
+    runOrder,
+    commissioning,
+  );
+  assert.deepEqual(summary.invalidExhaustedPrimaryCellIds, [cell.id]);
+  assert.deepEqual(summary.invalidExhaustedCommissioningCellIds, []);
   assert.equal(summary.attemptCount, 2);
 
   assert.throws(
@@ -376,6 +420,7 @@ test("the invalid-run ledger allows one rerun, then deterministically exhausts t
       study,
       matrix,
       runOrder,
+      commissioning,
     ),
     /no retained attempt 1/,
   );
@@ -385,8 +430,70 @@ test("the invalid-run ledger allows one rerun, then deterministically exhausts t
       study,
       matrix,
       runOrder,
+      commissioning,
     ),
     /attempt must be 1 or 2/,
+  );
+
+  const pilot = commissioning.cells[0];
+  const pilotBase = {
+    ...base,
+    phase: "commissioning",
+    cellId: pilot.id,
+    conditionId: pilot.conditionId,
+    position: pilot.commissioningPosition,
+  };
+  const commissioningSummary = validateInvalidRunsLedger(
+    { ...ledger, entries: [{ ...pilotBase, attempt: 1 }, { ...pilotBase, attempt: 2 }] },
+    study,
+    matrix,
+    runOrder,
+    commissioning,
+  );
+  assert.deepEqual(
+    commissioningSummary.invalidExhaustedCommissioningCellIds,
+    [pilot.id],
+  );
+  assert.throws(
+    () => validateInvalidRunsLedger(
+      { ...ledger, entries: [{ ...pilotBase, phase: "primary", attempt: 1 }] },
+      study,
+      matrix,
+      runOrder,
+      commissioning,
+    ),
+    /outside its declared phase/,
+  );
+  assert.throws(
+    () => validateInvalidRunsLedger(
+      { ...ledger, entries: [{ ...base, phase: "commissioning", attempt: 1 }] },
+      study,
+      matrix,
+      runOrder,
+      commissioning,
+    ),
+    /outside its declared phase/,
+  );
+});
+
+test("attempt evidence destinations are phase- and attempt-scoped", () => {
+  const primary = matrix.cells[0];
+  const pilot = commissioning.cells[0];
+  assert.equal(
+    attemptEvidencePath("primary", primary.id, 1, matrix, commissioning),
+    `captures/agent-debug-private/primary/${primary.id}/attempt-1`,
+  );
+  assert.equal(
+    attemptEvidencePath("primary", primary.id, 2, matrix, commissioning),
+    `captures/agent-debug-private/primary/${primary.id}/attempt-2`,
+  );
+  assert.equal(
+    attemptEvidencePath("commissioning", pilot.id, 1, matrix, commissioning),
+    `captures/agent-debug-private/commissioning/${pilot.id}/attempt-1`,
+  );
+  assert.throws(
+    () => attemptEvidencePath("primary", pilot.id, 1, matrix, commissioning),
+    /does not belong to primary/,
   );
 });
 
@@ -420,7 +527,7 @@ test("normalization localizes wire-to-client and client-to-model separately", as
     none: { study: study.studyId, claim: "none" },
     unknown: { study: study.studyId, claim: "unknown" },
   };
-  function sealSyntheticAgentDebug(label, document) {
+  function sealSyntheticAgentDebug(label, document, harnessOverrides = {}) {
     const sourceDirectory = resolve(
       directory,
       `${label}-agent-debug-source`,
@@ -432,9 +539,57 @@ test("normalization localizes wire-to-client and client-to-model separately", as
 
     mkdirSync(sourceDirectory, { recursive: true });
 
+    const systemPrompt = harnessOverrides.systemPrompt ??
+      "Fixed neutral Copilot Agent harness envelope.";
+    const model = harnessOverrides.model ?? study.design.harnessIsolation.model;
+    const toolDefinitions = [{
+      type: "function",
+      name: study.design.harnessIsolation.modelFacingToolName,
+      description: "Return controlled query evidence.",
+      parameters: { type: "object" },
+    }];
+    writeFileSync(
+      resolve(sourceDirectory, "system_prompt_0.json"),
+      `${JSON.stringify({ content: systemPrompt })}\n`,
+      "utf8",
+    );
+    writeFileSync(
+      resolve(sourceDirectory, "tools_0.json"),
+      `${JSON.stringify({ content: JSON.stringify(toolDefinitions) })}\n`,
+      "utf8",
+    );
+    const request = {
+      type: "llm_request",
+      name: `chat:${model}`,
+      attrs: {
+        model,
+        systemPromptFile: "system_prompt_0.json",
+        toolsFile: "tools_0.json",
+        userRequest: readFileSync(resolve(studyRoot, "prompts/01.txt"), "utf8"),
+        inputMessages: JSON.stringify([
+          { role: "system", content: systemPrompt },
+          { role: "user", content: readFileSync(resolve(studyRoot, "prompts/01.txt"), "utf8") },
+        ]),
+      },
+    };
+    const records = [
+      request,
+      { type: "agent_response", name: "agent_response", document },
+      {
+        type: "tool_call",
+        name: "closureprobe_probe",
+        attrs: {
+          args: JSON.stringify({ request: study.request, grounding: study.grounding }),
+          result: "withheld synthetic controlled result",
+        },
+      },
+      structuredClone(request),
+      { type: "agent_response", name: "agent_response", document },
+    ];
+
     writeFileSync(
       resolve(sourceDirectory, "main.jsonl"),
-      `${JSON.stringify(document)}\n`,
+      `${records.map((record) => JSON.stringify(record)).join("\n")}\n`,
       "utf8",
     );
 
@@ -476,10 +631,7 @@ test("normalization localizes wire-to-client and client-to-model separately", as
     };
   }
 
-  const syntheticAgentDebug =
-    sealSyntheticAgentDebug(
-      "synthetic",
-{
+  const syntheticDocument = {
     exactClient: { structuredContent: payload },
     exactModel: { toolPayload: JSON.stringify(payload) },
     modelLoss: { toolPayload: JSON.stringify(modelLoss) },
@@ -494,8 +646,37 @@ test("normalization localizes wire-to-client and client-to-model separately", as
     proseModel: "The tool returned no matches, but the evidence guards are unavailable.",
     noneResponse: JSON.stringify(claims.none),
     unknownResponse: JSON.stringify(claims.unknown),
-  }
-    );
+  };
+  const syntheticAgentDebug = sealSyntheticAgentDebug("synthetic", syntheticDocument);
+
+  const commissioningAudits = commissioning.cells.map((pilot) =>
+    auditAgentDebugRequest(
+      resolve(directory, "synthetic-agent-debug-sealed/seal-receipt.json"),
+      { commissioningCellId: pilot.id },
+    )
+  );
+  const harnessComparison = compareHarnessEnvelopes(commissioningAudits);
+  const extractionPath = resolve(directory, "extraction-freeze.json");
+  writeFileSync(extractionPath, `${JSON.stringify({
+    studyId: study.studyId,
+    status: "commissioned",
+    selectionRuleFrozenBeforePrimary: true,
+    harnessEnvelope: {
+      arbitrarySystemInstructionsWhitelisted: false,
+      automatedComparisonRequiredAcrossAllCommissioningPaths: true,
+      automatedComparisonSha256: harnessComparison.comparisonSha256,
+      frozenComparisonValues: harnessComparison.frozenComparisonValues,
+      manualContentReview: {
+        completed: true,
+        fixedClientGeneratedOnly: true,
+        conditionIndependent: true,
+        representationPathIndependent: true,
+        semanticOrConditionContentAbsent: true,
+        memoryOrUnrelatedInstructionContentAbsent: true,
+        nonPredeclaredExecutableToolCapabilityAbsent: true,
+      },
+    },
+  }, null, 2)}\n`, "utf8");
 
   const inspection = syntheticAgentDebug.inspection;
   assert.equal(
@@ -519,7 +700,7 @@ test("normalization localizes wire-to-client and client-to-model separately", as
   const noneClaim = candidate("noneResponse", "study_claim", "none");
   const unknownClaim = candidate("unknownResponse", "study_claim", "unknown");
   const proseModelCandidate = inspection.candidates.find((item) =>
-    item.kind === "json_value" && item.pointer === "/proseModel"
+    item.kind === "json_value" && item.pointer.endsWith("/proseModel")
   );
   assert.ok(proseModelCandidate);
   const proseModel = {
@@ -553,7 +734,12 @@ test("normalization localizes wire-to-client and client-to-model separately", as
     writeFileSync(selectionPath, `${JSON.stringify({ ...baseSelection, ...overrides }, null, 2)}\n`, "utf8");
     const normalized = spawnSync(
       process.execPath,
-      [resolve(studyRoot, "bin/normalize-run.mjs"), selectionPath, "--out", resultPath],
+      [
+        resolve(studyRoot, "bin/normalize-run.mjs"),
+        selectionPath,
+        "--extraction", extractionPath,
+        "--out", resultPath,
+      ],
       { cwd: repositoryRoot, encoding: "utf8" },
     );
     assert.equal(normalized.status, 0, normalized.stderr);
@@ -561,6 +747,54 @@ test("normalization localizes wire-to-client and client-to-model separately", as
   }
 
   const exact = normalize("exact", {});
+  assert.match(exact.sourceArtifacts.requestIsolationAuditSha256, /^sha256:[a-f0-9]{64}$/);
+  assert.equal(
+    exact.sourceArtifacts.gateBHarnessEnvelopeComparisonSha256,
+    harnessComparison.comparisonSha256,
+  );
+
+  const operatorOverrideFixture = sealSyntheticAgentDebug(
+    "operator-audit-override",
+    syntheticDocument,
+    { model: "operator-claimed-passing-model" },
+  );
+  const operatorCandidate = (pointerPart, kind = "probe_payload", claim) => {
+    const selected = operatorOverrideFixture.inspection.candidates.find((item) =>
+      item.kind === kind && item.pointer.includes(`/${pointerPart}/`) &&
+      (claim === undefined || item.claim === claim)
+    );
+    assert.ok(selected);
+    return kind === "probe_payload"
+      ? { digest: selected.payloadDigest, pointer: selected.pointer, encoding: selected.encoding }
+      : { digest: selected.claimDigest, pointer: selected.pointer, encoding: selected.encoding };
+  };
+  const operatorSelectionPath = resolve(directory, "operator-audit-override-selection.json");
+  writeFileSync(operatorSelectionPath, `${JSON.stringify({
+    ...baseSelection,
+    ...operatorOverrideFixture.selectionEvidence,
+    clientPayload: operatorCandidate("exactClient"),
+    modelPayload: operatorCandidate("exactModel"),
+    claim: operatorCandidate("noneResponse", "study_claim", "none"),
+    requestIsolationAudit: {
+      format: "closureprobe-agent-debug-request-audit-v5",
+      valid: true,
+      note: "Untrusted operator-authored claim.",
+    },
+  }, null, 2)}\n`, "utf8");
+  const operatorOverrideResult = spawnSync(
+    process.execPath,
+    [
+      resolve(studyRoot, "bin/normalize-run.mjs"),
+      operatorSelectionPath,
+      "--extraction", extractionPath,
+    ],
+    { cwd: repositoryRoot, encoding: "utf8" },
+  );
+  assert.notEqual(operatorOverrideResult.status, 0);
+  assert.match(
+    operatorOverrideResult.stderr,
+    /operator-claimed-passing-model != MAI-Code-1\.1-Flash/,
+  );
   assert.equal(exact.endpoints.pClient, "P0_exact");
   assert.equal(exact.endpoints.pModel, "P0_exact");
   assert.equal(exact.endpoints.pCumulative, "P0_exact");

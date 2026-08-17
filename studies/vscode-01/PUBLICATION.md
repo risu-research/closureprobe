@@ -3,31 +3,34 @@
 Local commits and hashes protect integrity but do not independently establish
 when a design existed. This study therefore has two mandatory public gates.
 
-The immutable v3 preregistration release, the original immutable v4
-preregistration release/A2 anchor, and the immutable Version 4 Correction 1
-release/A2 anchor remain historical provenance and are never moved, replaced,
-or relabeled. After Correction 1 Gate A1/A2 and before any v4 commissioning,
-the named VS Code 1.133.0 specimen reproducibly rewrote the legacy boolean
-representation of `chat.mcp.discovery.enabled` to its four-source all-false
-object representation. Version 4 Correction 2 therefore receives a new commit,
-annotated correction tag, immutable release, and post-publication anchor before
-commissioning. Correction 2 changes only this byte-stability representation;
-the Version 4 experimental design is unchanged.
+The immutable v3 and v4 preregistration/correction releases and their A2 anchor
+records remain historical provenance and are never moved, replaced, or
+relabeled. One post-Correction-2 Version 4 commissioning attempt is retained as
+invalid and excluded. Its privacy-safe public hashes are recorded in
+`evidence/public/v4-invalid-commissioning-attempt.json`; private raw debug is not
+published or reused.
+
+Version 5 changes only harness isolation, request-sidecar acquisition,
+provenance, and invalid-attempt bookkeeping. It receives a new source commit,
+annotated tag, immutable Gate A1 release, and separate Gate A2 record before
+all three commissioning paths are repeated. No Version 5 public anchor exists
+at preregistration-candidate time.
 
 ## Gate A1: publish the preregistration release
 
 Create a draft release and attach all frozen assets before publishing it:
 
 1. the exact Git commit;
-2. annotated tag `study-vscode-01-prereg-v4-corr2`;
+2. annotated tag `study-vscode-01-prereg-v5`;
 3. the manually generated study source asset named
-   `closureprobe-study-vscode-01-prereg-v4-corr2.zip`, uploaded directly to the draft
+   `closureprobe-study-vscode-01-prereg-v5.zip`, uploaded directly to the draft
    release rather than relying on GitHub's automatic “Source code” links;
 4. the ZIP SHA-256 recorded verbatim in the release body and post-release
    anchor record;
 5. `MANIFEST.sha256` and its SHA-256;
-6. the preregistration and Amendments 01 through 06, including `AMENDMENT-06.md`; and
-7. a release body stating `Primary executions observed: none. V4 commissioning executions observed: none. Pre-primary v3 commissioning executions: recorded and excluded. Correction 2 changes only the VS Code MCP discovery setting representation required for byte-stable launch of the named specimen; the Version 4 experimental design is unchanged.`
+6. the preregistration and Amendments 01 through 07, including `AMENDMENT-07.md`;
+7. the privacy-safe Version 4 invalid-attempt record; and
+8. a release body stating `Primary executions observed: none. Version 4 commissioning executions observed: one invalid and excluded. Version 5 commissioning executions observed: none. Version 5 changes only harness isolation, request-sidecar acquisition, provenance, and invalid-attempt bookkeeping; study semantics, prompts, conditions, matrix, run order, and endpoints are unchanged.`
 
 Enable immutable releases if available. Publish only after every asset is
 attached. Never move or replace the preregistration tag.
@@ -36,8 +39,8 @@ After publication, verify the manually uploaded local ZIP against the release
 attestation:
 
 ```bash
-gh release verify-asset study-vscode-01-prereg-v4-corr2 \
-  ./closureprobe-study-vscode-01-prereg-v4-corr2.zip \
+gh release verify-asset study-vscode-01-prereg-v5 \
+  ./closureprobe-study-vscode-01-prereg-v5.zip \
   --repo risu-research/closureprobe
 ```
 
@@ -47,7 +50,7 @@ archives and are not substitutes for this named, locally hashed study asset.
 Suggested release title:
 
 ```text
-ClosureProbe External Boundary Study 01 — Preregistration v4 Correction 2
+ClosureProbe External Boundary Study 01 — Preregistration v5
 ```
 
 ## Gate A2: publish the post-release anchor record
@@ -59,7 +62,7 @@ and publish that record in a separate public Git commit. The completed record is
 not an asset inside the release whose publication it records.
 
 The record commit must expose the completed JSON at a durable URL and identify
-the Gate A1 tag target exactly. Correction 2 requires this new
+the Version 5 Gate A1 tag target exactly. Version 5 requires this new
 post-publication A2 anchor before commissioning. Commissioning may begin only
 after both A1 and A2 are public and independently readable. The instrument
 itself must still be run from the immutable A1 tag, not from the later
@@ -67,18 +70,24 @@ metadata-record commit.
 
 ## Gate B1/B2: after commissioning, before primary execution
 
-The three excluded commissioning runs determine only the extraction rule. Then:
+The three excluded Version 5 commissioning runs determine only the extraction
+and harness-envelope freeze. Then:
 
 1. complete and privacy-review `extraction-freeze.json` from
    `extraction.template.json`;
 2. publish the named client-observable specimen tuple;
-3. publish the three wire hashes, the three Agent Debug seal-receipt hashes, and minimal role evidence;
-4. list every hidden or non-version-addressable boundary;
-5. regenerate the study manifest;
-6. commit and create annotated tag `study-vscode-01-extraction-v1`;
-7. publish a second immutable release using the same draft → attach → publish
+3. publish the three wire hashes, three Agent Debug seal-receipt hashes,
+   privacy-safe request-isolation audits, automated harness-envelope comparison,
+   its explicit privacy-safe frozen comparison values and aggregate digest, and
+   minimal role evidence;
+4. manually confirm that the fixed harness envelope is client-generated only
+   and contains none of the prohibited contamination categories;
+5. list every hidden or non-version-addressable boundary;
+6. regenerate the study manifest;
+7. commit and create annotated tag `study-vscode-01-extraction-v2`;
+8. publish a second immutable release using the same draft → attach → publish
    sequence; and
-8. publish its completed post-release anchor record in a separate public commit
+9. publish its completed post-release anchor record in a separate public commit
    before opening primary run 1.
 
 If extraction cannot be frozen without result-dependent selection, stop the

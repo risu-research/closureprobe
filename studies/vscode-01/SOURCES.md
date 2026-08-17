@@ -1,6 +1,6 @@
 # Official sources
 
-Accessed: 2026-08-15
+Accessed: 2026-08-16
 
 Only primary product documentation and the normative protocol specification are
 used for study-design claims.
@@ -9,6 +9,7 @@ used for study-design claims.
 - [VS Code: MCP configuration reference](https://code.visualstudio.com/docs/agents/reference/mcp-configuration) — local stdio `command`, `args`, `cwd`, and environment configuration.
 - [VS Code: Debug chat interactions](https://code.visualstudio.com/docs/agents/agent-troubleshooting/chat-debug-view) — Agent Debug tool/LLM events, Chat Debug raw request/context/tool payloads, and OTLP JSON export/import. The page labels Agent Debug as Preview.
 - [VS Code: AI settings reference](https://code.visualstudio.com/docs/agents/reference/ai-settings) — debug logging and the instruction, skill, plugin, memory, browser-tool, and MCP-discovery controls used by the isolated workspace.
+- [VS Code: Custom agents](https://code.visualstudio.com/docs/agent-customization/custom-agents) — workspace `.github/agents` location, `.agent.md` frontmatter, MCP server tool wildcards, model selection, and `agents: []` subagent restriction.
 - [VS Code: Profiles](https://code.visualstudio.com/docs/configure/profiles) — Empty Profiles, local profile export, and launching a named profile with `--profile`.
 - [VS Code: Command Line Interface](https://code.visualstudio.com/docs/configure/command-line) — listing extension IDs and versions for a named profile.
 - [VS Code 1.112 release notes](https://code.visualstudio.com/updates/v1_112) — introduction of Agent Debug log export/import.

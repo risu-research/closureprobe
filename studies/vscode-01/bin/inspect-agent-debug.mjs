@@ -10,10 +10,10 @@ export function inspectAgentDebug(path, options = {}) {
 
   return {
     ...inspection,
-    format: "closureprobe-agent-debug-inspection-v4",
+    format: "closureprobe-agent-debug-inspection-v5",
     parserCompatibility: "closureprobe-otlp-inspection-v3",
     note:
-      "The v4 Agent Debug inspector uses the frozen v3 JSON/JSONL candidate parser while naming the evidence artifact by its actual client-local role rather than assuming OTLP export provenance.",
+      "The v5 Agent Debug inspector uses the frozen v3 JSON/JSONL candidate parser on receipt-bound main.jsonl; referenced request sidecars remain auxiliary isolation evidence.",
   };
 }
 

@@ -40,7 +40,7 @@ export function resolveAgentDebugEvidence(
   ]) {
     if (Object.hasOwn(selection, legacyField)) {
       throw new Error(
-        `${legacyField} is not permitted by the v4 sealed-receipt evidence contract`,
+        `${legacyField} is not permitted by the v5 sealed-receipt evidence contract`,
       );
     }
   }
